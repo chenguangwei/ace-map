@@ -154,7 +154,7 @@ const Result = (props: { code: string }) => {
                 <p>{messageData.message}</p>
             </div>
 
-            <div className="p-6 grid content-start gap-6 bg-zinc-950/80">
+            <div className="p-6 grid content-start gap-6 bg-zinc-50/80 dark:bg-zinc-950/80">
                 <h1 className="text-xl font-bold">Summary</h1>
 
                 <div className="grid gap-4">

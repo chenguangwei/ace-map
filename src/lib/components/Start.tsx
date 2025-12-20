@@ -20,7 +20,7 @@ const Start = () => {
     const router = useRouter();
 
     return (
-        <div className="flex flex-col gap-6 justify-center max-w-sm bg-zinc-950/80 rounded-2xl p-6 z-10">
+        <div className="flex flex-col gap-6 justify-center max-w-sm bg-zinc-50/80 dark:bg-zinc-950/80 rounded-2xl p-6 z-10">
             <div className="flex flex-col items-center justify-center gap-2">
                 <Select
                     label="Categories"
