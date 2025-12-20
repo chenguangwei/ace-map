@@ -1,0 +1,3 @@
+onlyBuiltDependencies:
+    - sharp
+    - '@heroui/shared-utils'

@@ -1,0 +1,51 @@
+{
+    "name": "ace-map",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "author": {
+        "name": "NaviTheCoderboi",
+        "url": "https://github.com/navithecoderboi"
+    },
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "biome check",
+        "format": "prettier --write ."
+    },
+    "dependencies": {
+        "@heroui/chip": "^2.2.23",
+        "@heroui/input": "^2.4.29",
+        "@heroui/link": "^2.2.24",
+        "@heroui/navbar": "^2.2.26",
+        "@heroui/progress": "^2.2.23",
+        "@heroui/radio": "^2.3.28",
+        "@heroui/react": "^2.8.6",
+        "@heroui/select": "^2.4.29",
+        "@heroui/skeleton": "^2.2.18",
+        "@heroui/spinner": "^2.2.25",
+        "@heroui/switch": "^2.2.25",
+        "@heroui/system": "^2.4.24",
+        "@heroui/theme": "^2.4.24",
+        "@heroui/toast": "^2.0.18",
+        "canvas-confetti": "^1.9.4",
+        "framer-motion": "^12.23.26",
+        "lucide-react": "^0.562.0",
+        "maplibre-gl": "^5.15.0",
+        "next": "16.0.10",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
+        "react-map-gl": "^8.1.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "2.3.10",
+        "@tailwindcss/postcss": "^4.1.17",
+        "@types/node": "^25.0.3",
+        "@types/react": "^19.2.7",
+        "@types/react-dom": "^19.2.3",
+        "prettier": "^3.7.4",
+        "tailwindcss": "^4.1.17",
+        "typescript": "^5.9.3"
+    }
+}

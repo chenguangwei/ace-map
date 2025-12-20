@@ -1,0 +1,52 @@
+{
+    "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
+    "formatter": {
+        "enabled": false
+    },
+    "assist": {
+        "enabled": true,
+        "includes": [
+            "**/*.ts",
+            "**/*.tsx",
+            "**/*.json",
+            "!node_modules/**",
+            "!dist/**",
+            "!build/**"
+        ],
+        "actions": {
+            "source": {
+                "recommended": true,
+                "organizeImports": "on"
+            }
+        }
+    },
+    "linter": {
+        "enabled": true,
+        "includes": [
+            "**/*.ts",
+            "**/*.tsx",
+            "**/*.json",
+            "!node_modules/**",
+            "!dist/**",
+            "!build/**"
+        ],
+        "domains": {
+            "next": "recommended",
+            "react": "recommended"
+        },
+        "rules": {
+            "recommended": true,
+            "style": {
+                "useConst": "info",
+                "noNonNullAssertion": "off"
+            },
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noImplicitAnyLet": "off"
+            },
+            "correctness": {
+                "noUnusedImports": "warn"
+            }
+        }
+    }
+}
