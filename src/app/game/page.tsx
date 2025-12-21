@@ -5,7 +5,7 @@ import Main from '@/lib/components/game/Main';
 
 const page = async () => {
     return (
-        <main className="flex flex-col justify-center items-center h-[calc(100vh-4rem)]">
+        <main className="flex flex-col justify-center items-center h-[calc(100dvh-var(--navbar-height))]">
             <React.Suspense
                 fallback={
                     <>

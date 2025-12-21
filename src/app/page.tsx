@@ -11,7 +11,7 @@ const Page = async ({
     const resultCode = (await searchParams).code;
 
     return (
-        <div className="relative min-h-screen flex flex-col justify-center items-center">
+        <div className="relative h-[calc(100dvh-var(--navbar-height))] flex flex-col justify-center items-center">
             <BackgroundBeams />
             <Show condition={resultCode === undefined}>
                 <Start />
