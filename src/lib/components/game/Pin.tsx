@@ -5,23 +5,28 @@ const ICON = `M20.2,15.7L20.2,15.7c1.1-1.6,1.8-3.6,1.8-5.7c0-5.6-4.5-10-10-10S2,
   C20.1,15.8,20.2,15.8,20.2,15.7z`;
 
 const pinStyle = {
-    fill: '#d00',
-    stroke: 'none'
+	fill: '#d00',
+	stroke: 'none'
 };
 
 const Pin = (
-    props: React.SVGAttributes<SVGSVGElement> & {
-        size?: number;
-    }
+	props: React.SVGAttributes<SVGSVGElement> & {
+		size?: number;
+	}
 ) => {
-    const { size = 20, style, ...restProps } = props;
+	const { size = 20, style, ...restProps } = props;
 
-    return (
-        <svg height={size} viewBox="0 0 24 24" style={{ ...pinStyle, ...style }} {...restProps}>
-            <title>Pin Icon</title>
-            <path d={ICON} />
-        </svg>
-    );
+	return (
+		<svg
+			height={size}
+			viewBox="0 0 24 24"
+			style={{ ...pinStyle, ...style }}
+			{...restProps}
+		>
+			<title>Pin Icon</title>
+			<path d={ICON} />
+		</svg>
+	);
 };
 
 export default React.memo(Pin);

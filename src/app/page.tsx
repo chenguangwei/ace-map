@@ -4,23 +4,23 @@ import Result from '@/lib/components/Result';
 import Start from '@/lib/components/Start';
 
 const Page = async ({
-    searchParams
+	searchParams
 }: {
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
-    const resultCode = (await searchParams).code;
+	const resultCode = (await searchParams).code;
 
-    return (
-        <div className="relative h-[calc(100dvh-var(--navbar-height))] flex flex-col justify-center items-center">
-            <BackgroundBeams />
-            <Show condition={resultCode === undefined}>
-                <Start />
-            </Show>
-            <Show condition={typeof resultCode === 'string'}>
-                <Result code={resultCode as string} />
-            </Show>
-        </div>
-    );
+	return (
+		<div className="relative h-[calc(100dvh-var(--navbar-height))] flex flex-col justify-center items-center">
+			<BackgroundBeams />
+			<Show condition={resultCode === undefined}>
+				<Start />
+			</Show>
+			<Show condition={typeof resultCode === 'string'}>
+				<Result code={resultCode as string} />
+			</Show>
+		</div>
+	);
 };
 
 export default Page;
