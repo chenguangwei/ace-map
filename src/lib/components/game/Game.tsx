@@ -517,58 +517,48 @@ const Game = (
 		[activeCountryRegionSource, countryCode, countryTargetSelection, props.onRegionLabelSelect, props.gameState.setCurrentMarker, props.gameState.toMark]
 	);
 
-	// Fit the map to show both the submitted guess and the correct location.
+	// Cinematic camera reveal after submission
 	useEffect(() => {
-		if (props.info && mapRef.current) {
-			const map = mapRef.current.getMap();
-			const lngs = [
-				props.info.guess.longitude,
-				props.info.toMark.longitude
-			];
-			const lats = [
-				props.info.guess.latitude,
-				props.info.toMark.latitude
-			];
-			const minLng = Math.min(...lngs);
-			const maxLng = Math.max(...lngs);
-			const minLat = Math.min(...lats);
-			const maxLat = Math.max(...lats);
+		if (!props.info || !mapRef.current) return;
 
-			const isSameSpot =
-				Math.abs(maxLng - minLng) < 0.01 &&
-				Math.abs(maxLat - minLat) < 0.01;
+		const { toMark, guess } = props.info;
+		const map = mapRef.current.getMap();
 
+		const lngs = [guess.longitude, toMark.longitude];
+		const lats = [guess.latitude, toMark.latitude];
+		const minLng = Math.min(...lngs);
+		const maxLng = Math.max(...lngs);
+		const minLat = Math.min(...lats);
+		const maxLat = Math.max(...lats);
+		const isSameSpot =
+			Math.abs(maxLng - minLng) < 0.01 && Math.abs(maxLat - minLat) < 0.01;
+
+		// Delay 300ms to let ResultLine render first
+		const timer = setTimeout(() => {
 			if (isSameSpot) {
 				map.flyTo({
-					center: [
-						props.info.toMark.longitude,
-						props.info.toMark.latitude
-					],
+					center: [toMark.longitude, toMark.latitude],
 					zoom: mode === 'world' ? 4.2 : 7,
-					duration: 1200,
+					speed: 0.8,
+					curve: 1.4,
 					essential: true
 				});
 				return;
 			}
 
 			map.fitBounds(
-				[
-					[minLng, minLat],
-					[maxLng, maxLat]
-				],
+				[[minLng, minLat], [maxLng, maxLat]],
 				{
-					padding: {
-						top: 110,
-						right: 72,
-						bottom: 110,
-						left: 72
-					},
+					padding: { top: 110, right: 72, bottom: 110, left: 72 },
 					maxZoom: mode === 'world' ? 4.6 : 7.2,
-					duration: 1200,
+					speed: 0.8,
+					curve: 1.4,
 					essential: true
 				}
 			);
-		}
+		}, 300);
+
+		return () => clearTimeout(timer);
 	}, [props.info, mode]);
 
 	return (
