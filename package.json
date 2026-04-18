@@ -29,6 +29,8 @@
 		"@heroui/system": "^2.4.27",
 		"@heroui/theme": "^2.4.26",
 		"@heroui/toast": "^2.0.21",
+		"@supabase/ssr": "^0.10.2",
+		"@supabase/supabase-js": "^2.103.2",
 		"canvas-confetti": "^1.9.4",
 		"framer-motion": "^12.34.3",
 		"lucide-react": "^0.576.0",

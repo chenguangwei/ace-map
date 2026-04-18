@@ -1,5 +1,5 @@
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import type { ReactNode } from 'react';
 import Navbar from '@/lib/components/Navbar';
@@ -15,9 +15,22 @@ const geistMono = Geist_Mono({
 	subsets: ['latin']
 });
 
+export const viewport: Viewport = {
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#ffffff' },
+		{ media: '(prefers-color-scheme: dark)', color: '#09090b' }
+	],
+	width: 'device-width',
+	initialScale: 1,
+	maximumScale: 1,
+	userScalable: false
+};
+
 export const metadata: Metadata = {
-	title: 'Ace Map',
-	description: 'Ace Map is a map practicing for class 10 CBSE students',
+	metadataBase: new URL('https://ace-map.vercel.app'),
+	title: 'Ace Map — World Geography Quiz',
+	description:
+		'Test your world geography knowledge. Guess countries, cities, and landmarks on an interactive map. Supports India (CBSE), World Countries, and 15+ countries.',
 	authors: [
 		{
 			name: 'NaviTheCoderboi',
@@ -25,29 +38,31 @@ export const metadata: Metadata = {
 		}
 	],
 	keywords: [
-		'Ace Map',
-		'Map',
-		'Class 10',
-		'CBSE',
-		'Geography',
-		'India',
-		'World',
-		'Map Practice',
-		'Map Quiz',
-		'Map Game',
-		'Map Learning',
-		'Map Practice for Class 10',
-		'Map Quiz for Class 10',
-		'Map Game for Class 10',
-		'Map Learning for Class 10'
+		'geography quiz',
+		'world map game',
+		'country guessing game',
+		'map practice',
+		'India map CBSE',
+		'world countries quiz',
+		'geography learning',
+		'interactive map',
+		'state capitals quiz',
+		'Ace Map'
 	],
 	openGraph: {
 		type: 'website',
 		locale: 'en_US',
 		url: 'https://ace-map.vercel.app/',
 		siteName: 'Ace Map',
-		title: 'Ace Map',
-		description: 'Ace Map is a map practicing for class 10 CBSE students'
+		title: 'Ace Map — World Geography Quiz',
+		description:
+			'Test your world geography knowledge on an interactive map. 15+ countries, world mode, and India CBSE mode.'
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: 'Ace Map — World Geography Quiz',
+		description:
+			'Interactive geography quiz with 15+ countries and world mode.'
 	},
 	category: 'Geography'
 };
@@ -60,7 +75,7 @@ const RootLayout = ({
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
-				<script src="/theme.js" type="module"></script>
+				<script src="/theme.js" type="module" />
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}

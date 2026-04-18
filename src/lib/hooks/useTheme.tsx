@@ -11,7 +11,7 @@ interface ThemeCtx {
 export const themeContext = createContext<ThemeCtx | null>(null);
 
 export const ThemeProvider = (props: { children: ReactNode }) => {
-	const [theme, _setTheme] = useLocalStorage<Theme>('theme', 'dark');
+	const [theme, _setTheme] = useLocalStorage<Theme>('theme', 'light');
 
 	const setTheme = useCallback(
 		(value: Theme) => {

@@ -6,6 +6,7 @@
 			"**/*.ts",
 			"**/*.tsx",
 			"**/*.json",
+			"!.next/**",
 			"!node_modules/**",
 			"!dist/**",
 			"!build/**"
@@ -25,6 +26,7 @@
 			"**/*.ts",
 			"**/*.tsx",
 			"**/*.json",
+			"!.next/**",
 			"!node_modules/**",
 			"!dist/**",
 			"!build/**"
@@ -42,6 +44,7 @@
 			"**/*.ts",
 			"**/*.tsx",
 			"**/*.json",
+			"!.next/**",
 			"!node_modules/**",
 			"!dist/**",
 			"!build/**"

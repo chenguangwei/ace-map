@@ -19,8 +19,9 @@ const Pin = (
 	return (
 		<svg
 			height={size}
+			width={size}
 			viewBox="0 0 24 24"
-			style={{ ...pinStyle, ...style }}
+			style={{ display: 'block', ...pinStyle, ...style }}
 			{...restProps}
 		>
 			<title>Pin Icon</title>

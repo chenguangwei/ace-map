@@ -2,42 +2,57 @@ import { addToast } from '@heroui/toast';
 import {
 	type RefObject,
 	useCallback,
+	useEffect,
 	useMemo,
 	useReducer,
 	useRef
 } from 'react';
+import { resolveCountryPlaceSelection } from './countryRegions';
 import {
+	formatDistance,
+	type GameMode,
 	getPlace,
-	isNearlyCorrect,
+	haversineDistance,
 	type Place,
+	type PlaceItems,
 	type PlaceWithoutName,
-	Strictness
+	Strictness,
+	WorldStrictness
 } from './places';
+import { resolveWorldPlaceSelection } from './worldRegions';
 
 type GameStatus = 'idle' | 'running' | 'paused';
 
 export type Marker = Omit<Place, 'name'>;
 export type SubmitInfo = {
-	toMark: Place & {
-		isMarked?: boolean;
-	};
+	toMark: Place & { isMarked?: boolean };
+	guess: PlaceWithoutName;
+	distance: number;
+	isCorrect: boolean;
 	updateGame: () => void;
 } | null;
 
 export interface GameState {
 	status: GameStatus;
+	mode: GameMode;
+	countryCode: string;
 	timer: RefObject<number>;
 	score: {
 		total: number;
 		current: number;
 	};
+	streak: number;
+	bestStreak: number;
 	category: 'all' | string[];
-	strictness: Strictness;
+	strictness: number;
 	currentMarker: PlaceWithoutName | 'submitted' | 'none';
 	toMark: Place | null;
+	setMode: (mode: GameMode) => void;
+	setCountryCode: (code: string) => void;
 	setCategory: (category: 'all' | string[]) => void;
-	setStrictness: (strictness: Strictness) => void;
+	setStrictness: (strictness: number) => void;
 	setCurrentMarker: (marker: PlaceWithoutName | 'submitted' | 'none') => void;
+	setPlaceSource: (source: PlaceItems[]) => void;
 	submitMarker: () => SubmitInfo;
 	resetAndStart: () => void;
 	next: (info: SubmitInfo) => void;
@@ -47,28 +62,47 @@ export interface GameState {
 	reset: () => void;
 }
 
-interface Result {
+export interface EncodedResult {
 	score: number;
 	total: number;
 	time: number;
 	category: 'all' | string[];
 	strictness: number;
+	mode: GameMode;
+	countryCode: string;
+	streak: number;
+	bestStreak: number;
 }
 
-export const encodeResult = (state: GameState) => {
-	const data = {
+export const encodeResult = (state: GameState): string => {
+	const data: EncodedResult = {
 		score: state.score.current,
 		total: state.score.total,
 		time: state.timer.current ?? 0,
 		category: state.category,
-		strictness: state.strictness
+		strictness: state.strictness,
+		mode: state.mode,
+		countryCode: state.countryCode,
+		streak: state.streak,
+		bestStreak: state.bestStreak
 	};
-
 	return encodeURIComponent(btoa(JSON.stringify(data)));
 };
 
-export const decodeResult = (data: string): Result =>
-	JSON.parse(atob(decodeURIComponent(data))) as Result;
+export const decodeResult = (data: string): EncodedResult | null => {
+	try {
+		const parsed = JSON.parse(atob(decodeURIComponent(data)));
+		return {
+			mode: 'india',
+			countryCode: 'in',
+			streak: 0,
+			bestStreak: 0,
+			...parsed
+		} as EncodedResult;
+	} catch {
+		return null;
+	}
+};
 
 const shufflePlaces = (places: Place[]): Place[] => {
 	const shuffled = [...places];
@@ -83,19 +117,24 @@ type MarkedPlace = Place & { isMarked?: boolean };
 
 interface State {
 	status: GameStatus;
-	score: {
-		total: number;
-		current: number;
-	};
+	mode: GameMode;
+	countryCode: string;
+	score: { total: number; current: number };
+	streak: number;
+	bestStreak: number;
 	category: 'all' | string[];
-	strictness: Strictness;
+	strictness: number;
 	currentMarker: PlaceWithoutName | 'submitted' | 'none';
 	toMarkPlaces: MarkedPlace[];
+	placeSource: PlaceItems[];
 }
 
 type Action =
+	| { type: 'SET_MODE'; payload: GameMode }
+	| { type: 'SET_COUNTRY_CODE'; payload: string }
 	| { type: 'SET_CATEGORY'; payload: 'all' | string[] }
-	| { type: 'SET_STRICTNESS'; payload: Strictness }
+	| { type: 'SET_STRICTNESS'; payload: number }
+	| { type: 'SET_PLACE_SOURCE'; payload: PlaceItems[] }
 	| {
 			type: 'SET_CURRENT_MARKER';
 			payload: PlaceWithoutName | 'submitted' | 'none';
@@ -107,21 +146,41 @@ type Action =
 	| { type: 'NEXT_PLACE' }
 	| { type: 'RESET' };
 
+const defaultStrictness = (mode: GameMode): number => {
+	if (mode === 'world') return WorldStrictness.Medium;
+	return Strictness.Medium;
+};
+
 const initialState: State = {
 	status: 'idle',
+	mode: 'india',
+	countryCode: 'in',
 	score: { total: 0, current: 0 },
+	streak: 0,
+	bestStreak: 0,
 	category: 'all',
 	strictness: Strictness.Medium,
 	currentMarker: 'none',
-	toMarkPlaces: []
+	toMarkPlaces: [],
+	placeSource: []
 };
 
 const gameReducer = (state: State, action: Action): State => {
 	switch (action.type) {
+		case 'SET_MODE':
+			return {
+				...state,
+				mode: action.payload,
+				strictness: defaultStrictness(action.payload)
+			};
+		case 'SET_COUNTRY_CODE':
+			return { ...state, countryCode: action.payload };
 		case 'SET_CATEGORY':
 			return { ...state, category: action.payload };
 		case 'SET_STRICTNESS':
 			return { ...state, strictness: action.payload };
+		case 'SET_PLACE_SOURCE':
+			return { ...state, placeSource: action.payload };
 		case 'SET_CURRENT_MARKER':
 			return { ...state, currentMarker: action.payload };
 		case 'SET_STATUS':
@@ -131,14 +190,20 @@ const gameReducer = (state: State, action: Action): State => {
 				...state,
 				status: 'running',
 				score: { total: 0, current: 0 },
+				streak: 0,
+				bestStreak: 0,
 				toMarkPlaces: shufflePlaces(action.payload),
 				currentMarker: 'none'
 			};
-		case 'SUBMIT_MARKER':
+		case 'SUBMIT_MARKER': {
+			const newStreak = action.payload.isCorrect ? state.streak + 1 : 0;
+			const newBestStreak = Math.max(state.bestStreak, newStreak);
 			return {
 				...state,
 				status: 'paused',
 				currentMarker: 'submitted',
+				streak: newStreak,
+				bestStreak: newBestStreak,
 				score: {
 					total: state.score.total + 1,
 					current: action.payload.isCorrect
@@ -146,6 +211,7 @@ const gameReducer = (state: State, action: Action): State => {
 						: state.score.current
 				}
 			};
+		}
 		case 'MARK_PLACE_COMPLETE':
 			return {
 				...state,
@@ -158,16 +224,15 @@ const gameReducer = (state: State, action: Action): State => {
 				)
 			};
 		case 'NEXT_PLACE':
-			return {
-				...state,
-				status: 'running',
-				currentMarker: 'none'
-			};
+			return { ...state, status: 'running', currentMarker: 'none' };
 		case 'RESET':
 			return {
 				...initialState,
+				mode: state.mode,
+				countryCode: state.countryCode,
 				category: state.category,
-				strictness: state.strictness
+				strictness: state.strictness,
+				placeSource: state.placeSource
 			};
 		default:
 			return state;
@@ -185,8 +250,12 @@ export const useGame = (): GameState => {
 	);
 
 	const availablePlaces = useMemo(
-		() => getPlace(state.category),
-		[state.category]
+		() =>
+			getPlace(
+				state.category,
+				state.placeSource.length > 0 ? state.placeSource : undefined
+			),
+		[state.category, state.placeSource]
 	);
 
 	const startTimer = useCallback(() => {
@@ -234,12 +303,24 @@ export const useGame = (): GameState => {
 		setTimeout(start, 0);
 	}, [reset, start]);
 
+	const setMode = useCallback((mode: GameMode) => {
+		dispatch({ type: 'SET_MODE', payload: mode });
+	}, []);
+
+	const setCountryCode = useCallback((code: string) => {
+		dispatch({ type: 'SET_COUNTRY_CODE', payload: code });
+	}, []);
+
 	const setCategory = useCallback((category: 'all' | string[]) => {
 		dispatch({ type: 'SET_CATEGORY', payload: category });
 	}, []);
 
-	const setStrictness = useCallback((strictness: Strictness) => {
+	const setStrictness = useCallback((strictness: number) => {
 		dispatch({ type: 'SET_STRICTNESS', payload: strictness });
+	}, []);
+
+	const setPlaceSource = useCallback((source: PlaceItems[]) => {
+		dispatch({ type: 'SET_PLACE_SOURCE', payload: source });
 	}, []);
 
 	const setCurrentMarker = useCallback(
@@ -258,32 +339,68 @@ export const useGame = (): GameState => {
 			return null;
 		}
 
-		const isCorrect = isNearlyCorrect(
-			state.currentMarker,
-			toMark,
-			state.strictness
+		const dist = haversineDistance(
+			state.currentMarker as PlaceWithoutName,
+			toMark
 		);
-
-		if (!isCorrect) {
-			addToast({
-				color: 'danger',
-				title: 'Incorrect!',
-				description: `The correct location was ${toMark.name}.`
-			});
-		}
+		const guess = state.currentMarker as PlaceWithoutName;
+		const expectedSelectionKey =
+			state.mode === 'world'
+				? (resolveWorldPlaceSelection(toMark)?.selectionKey ?? null)
+				: state.mode === 'country'
+					? (resolveCountryPlaceSelection(state.countryCode, toMark)
+							?.selectionKey ?? null)
+					: null;
+		const hasCategoricalSelection =
+			typeof guess.selectionKey === 'string' &&
+			guess.selectionKey.length > 0 &&
+			typeof expectedSelectionKey === 'string' &&
+			expectedSelectionKey.length > 0;
+		const isCorrect = hasCategoricalSelection
+			? guess.selectionKey === expectedSelectionKey
+			: dist <= state.strictness;
 
 		dispatch({ type: 'SUBMIT_MARKER', payload: { isCorrect } });
 		stopTimer();
 
 		const markedPlace = { ...toMark };
+		const distText = formatDistance(dist);
+
+		if (!isCorrect) {
+			addToast({
+				color: 'danger',
+				title: `Incorrect — ${distText} away`,
+				description: `Correct location: ${toMark.name}`
+			});
+		} else {
+			addToast({
+				color: 'success',
+				title: `Correct! 🎯`,
+				description: `Only ${distText} off`
+			});
+		}
 
 		return {
 			toMark: markedPlace,
+			guess,
+			distance: dist,
+			isCorrect,
 			updateGame: () => {
 				dispatch({ type: 'MARK_PLACE_COMPLETE', payload: markedPlace });
 			}
 		};
-	}, [state.currentMarker, state.strictness, toMark, stopTimer]);
+	}, [
+		state.countryCode,
+		state.currentMarker,
+		state.mode,
+		state.strictness,
+		toMark,
+		stopTimer
+	]);
+
+	useEffect(() => {
+		return () => stopTimer();
+	}, [stopTimer]);
 
 	const next = useCallback(
 		(info: SubmitInfo) => {
@@ -297,15 +414,22 @@ export const useGame = (): GameState => {
 
 	return {
 		status: state.status,
+		mode: state.mode,
+		countryCode: state.countryCode,
 		timer: timerValue,
 		score: state.score,
+		streak: state.streak,
+		bestStreak: state.bestStreak,
 		category: state.category,
 		strictness: state.strictness,
 		currentMarker: state.currentMarker,
 		toMark,
+		setMode,
+		setCountryCode,
 		setCategory,
 		setStrictness,
 		setCurrentMarker,
+		setPlaceSource,
 		submitMarker,
 		resetAndStart,
 		next,
@@ -314,4 +438,11 @@ export const useGame = (): GameState => {
 		resume,
 		reset
 	};
+};
+
+export const getHeatLevel = (streak: number): 'cool' | 'warm' | 'heated' | 'overdrive' => {
+	if (streak >= 7) return 'overdrive';
+	if (streak >= 4) return 'heated';
+	if (streak >= 2) return 'warm';
+	return 'cool';
 };

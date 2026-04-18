@@ -52,6 +52,105 @@ pnpm dev
 
 Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
 
+### Local Terrain Setup
+
+The repo now supports a dedicated `Terrain` map layer for arcade terrain play. For local development, the fastest zero-token option is already wired through `.env.local`:
+
+```env
+NEXT_PUBLIC_TERRAIN_PROVIDER=esri
+```
+
+After changing any terrain-related env var, restart the dev server:
+
+```bash
+pnpm dev
+```
+
+You should then see a fourth `Terrain` button in the in-game `Map Layer` switcher.
+
+## 🌐 Production Terrain Configuration
+
+Ace Map reads terrain imagery from environment variables at runtime in `src/lib/maps/basemaps.ts`.
+
+### Provider comparison
+
+| Option | Cost model | Token required | Best for | Notes |
+| --- | --- | --- | --- | --- |
+| `esri` | Free tier, then usage-based pricing | No | Local development, staging, fastest setup | Simplest zero-config option for getting `Terrain` visible quickly |
+| `mapbox` | Free tier, then usage-based pricing | Yes | International production, commercial deployments | Best if you already use Mapbox elsewhere |
+| `tianditu` | Free key with quota / managed access | Yes | Mainland China production | Better domestic reach and policy fit |
+| `NEXT_PUBLIC_TERRAIN_STYLE_URL` | Depends on your provider | Usually yes | Enterprise / custom hosted styles | Best when you already own a map style service |
+| `NEXT_PUBLIC_TERRAIN_TILE_URL` | Depends on your provider | Sometimes | Raw raster tile integration | Lowest-level and most flexible path |
+
+### Practical recommendation
+
+- **Cheapest local dev path**: `esri`
+- **Best global commercial path**: `mapbox`
+- **Best China-oriented production path**: `tianditu`
+- **Most flexible long-term path**: custom `STYLE_URL` or `TILE_URL`
+
+### Supported production providers
+
+1. **Esri**
+   Best default for staging or production when you want zero-token setup.
+
+```env
+NEXT_PUBLIC_TERRAIN_PROVIDER=esri
+```
+
+2. **Mapbox Satellite**
+   Best when you already use Mapbox and want a managed satellite source.
+
+```env
+NEXT_PUBLIC_TERRAIN_PROVIDER=mapbox
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_public_token
+```
+
+3. **Tianditu**
+   Best for mainland China deployments and domestic access quality.
+
+```env
+NEXT_PUBLIC_TERRAIN_PROVIDER=tianditu
+NEXT_PUBLIC_TIANDITU_TOKEN=your_tianditu_token
+```
+
+4. **Custom Style URL**
+   Use this when your team already has a hosted MapLibre/Mapbox-compatible style JSON.
+
+```env
+NEXT_PUBLIC_TERRAIN_STYLE_URL=https://example.com/terrain-style.json
+```
+
+5. **Custom Raster Tile URL**
+   Use this when you only have raw tile endpoints.
+
+```env
+NEXT_PUBLIC_TERRAIN_TILE_URL=https://example.com/tiles/{z}/{x}/{y}.png
+NEXT_PUBLIC_TERRAIN_ATTRIBUTION=Imagery © Your Provider
+```
+
+### Where to set these online
+
+- **Vercel**: Project Settings → Environment Variables
+- **Netlify**: Site Configuration → Environment Variables
+- **Docker / self-hosted**: inject the same variables into the app container or process manager
+
+All terrain vars are `NEXT_PUBLIC_*`, so they must be present in the frontend runtime environment before build/start.
+
+### Recommended production choices
+
+- **Fastest setup**: `esri`
+- **Best managed global commercial option**: `mapbox`
+- **Best China-oriented deployment option**: `tianditu`
+- **Most flexible enterprise setup**: `NEXT_PUBLIC_TERRAIN_STYLE_URL` or `NEXT_PUBLIC_TERRAIN_TILE_URL`
+
+### Provider references
+
+- [Mapbox Raster Tiles API](https://docs.mapbox.com/api/maps/raster-tiles/)
+- [ArcGIS Static Basemap Tiles](https://developers.arcgis.com/rest/static-basemap-tiles/)
+- [Tianditu Map Service](https://lbs.tianditu.gov.cn/server/MapService.html)
+- [Tianditu Authorization](https://lbs.tianditu.gov.cn/authorization/authorization.html)
+
 ### Build for Production
 
 To create an optimized production build:

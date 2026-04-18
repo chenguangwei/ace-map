@@ -1,6 +1,5 @@
 import * as Navbar from '@heroui/navbar';
 import Link from 'next/link';
-import Github from '@/lib/assets/Github';
 import Logo from '@/lib/assets/Logo';
 import ThemeSwitch from '@/lib/components/ThemeSwitch';
 
@@ -14,10 +13,13 @@ const Nav = () => {
 				</Link>
 			</Navbar.NavbarBrand>
 			<Navbar.NavbarContent justify="end">
-				<Navbar.NavbarItem>
-					<a href="https://github.com/navithecoderboi">
-						<Github />
-					</a>
+				<Navbar.NavbarItem className="hidden sm:flex">
+					<Link
+						href="/quizzes"
+						className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+					>
+						Quiz Library
+					</Link>
 				</Navbar.NavbarItem>
 				<Navbar.NavbarItem>
 					<ThemeSwitch />

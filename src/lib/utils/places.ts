@@ -9,7 +9,14 @@ export interface PlaceItems {
 	places: Place[];
 }
 
-export type PlaceWithoutName = Omit<Place, 'name'>;
+export interface PlaceWithoutName {
+	latitude: number;
+	longitude: number;
+	selectionKey?: string;
+	selectionLabel?: string;
+}
+
+export type GameMode = 'india' | 'world' | 'country';
 
 export enum Strictness {
 	High = 50000, // 50 km
@@ -17,22 +24,53 @@ export enum Strictness {
 	Low = 400000 // 400 km
 }
 
+/** World-mode strictness values (much larger scale) */
+export enum WorldStrictness {
+	High = 300000, // 300 km
+	Medium = 800000, // 800 km
+	Low = 2000000 // 2000 km
+}
+
 export const numToStrictness = (num: number): Strictness => {
-	switch (num) {
-		case 100000:
-			return Strictness.High;
-		case 200000:
-			return Strictness.Medium;
-		case 500000:
-			return Strictness.Low;
-		default:
-			if (num <= 100000) return Strictness.High;
-			if (num <= 200000) return Strictness.Medium;
-			return Strictness.Low;
+	if (num <= Strictness.High) return Strictness.High;
+	if (num <= Strictness.Medium) return Strictness.Medium;
+	return Strictness.Low;
+};
+
+export const strictnessLabel = (
+	value: number,
+	mode: GameMode = 'india'
+): string => {
+	if (mode === 'world') {
+		if (value <= WorldStrictness.High) return 'High';
+		if (value <= WorldStrictness.Medium) return 'Medium';
+		return 'Low';
 	}
+	if (value <= Strictness.High) return 'High';
+	if (value <= Strictness.Medium) return 'Medium';
+	return 'Low';
 };
 
 const toRadians = (deg: number) => (deg * Math.PI) / 180;
+
+/**
+ * Calculate Haversine distance in meters between two coordinates
+ */
+export const haversineDistance = (
+	a: PlaceWithoutName,
+	b: PlaceWithoutName
+): number => {
+	const R = 6371000;
+	const lat1 = toRadians(a.latitude);
+	const lat2 = toRadians(b.latitude);
+	const dLat = toRadians(b.latitude - a.latitude);
+	const dLon = toRadians(b.longitude - a.longitude);
+
+	const sin2 =
+		Math.sin(dLat / 2) ** 2 +
+		Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+	return R * 2 * Math.atan2(Math.sqrt(sin2), Math.sqrt(1 - sin2));
+};
 
 /**
  * Check if the user's guess is nearly correct (Haversine distance)
@@ -40,44 +78,43 @@ const toRadians = (deg: number) => (deg * Math.PI) / 180;
 export const isNearlyCorrect = (
 	userGuess: PlaceWithoutName,
 	correctLocation: PlaceWithoutName,
-	strictness: Strictness
-): boolean => {
-	const R = 6371000;
+	strictness: number
+): boolean => haversineDistance(userGuess, correctLocation) <= strictness;
 
-	const lat1 = toRadians(userGuess.latitude);
-	const lat2 = toRadians(correctLocation.latitude);
-
-	const dLat = toRadians(correctLocation.latitude - userGuess.latitude);
-	const dLon = toRadians(correctLocation.longitude - userGuess.longitude);
-
-	const a =
-		Math.sin(dLat / 2) ** 2 +
-		Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
-
-	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	const distance = R * c;
-
-	return distance <= strictness;
+/**
+ * Format a distance (meters) to a human-readable string
+ */
+export const formatDistance = (meters: number): string => {
+	if (meters < 1000) return `${Math.round(meters)} m`;
+	if (meters < 1_000_000) return `${(meters / 1000).toFixed(0)} km`;
+	return `${(meters / 1_000_000).toFixed(1)}M km`;
 };
 
 /**
- * Get the places based on the categories
+ * Get places from the India predefined list based on categories
  */
-export const getPlace = (categories: 'all' | string[]) => {
+export const getPlace = (
+	categories: 'all' | string[],
+	source: PlaceItems[] = predefinedPlaces
+): Place[] => {
 	if (categories === 'all') {
-		return predefinedPlaces.reduce((acc, curr) => {
+		return source.reduce((acc, curr) => {
 			acc.push(...curr.places);
 			return acc;
 		}, [] as Place[]);
 	}
 
-	return predefinedPlaces.reduce((acc, curr) => {
+	return source.reduce((acc, curr) => {
 		if (categories.includes(curr.category)) {
 			acc.push(...curr.places);
 		}
 		return acc;
 	}, [] as Place[]);
 };
+
+// ─────────────────────────────────────────────────────────────────
+// India (legacy / default country) data
+// ─────────────────────────────────────────────────────────────────
 
 export const predefinedPlaces: PlaceItems[] = [
 	{
