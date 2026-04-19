@@ -451,7 +451,7 @@ const Main = (props: {
 													: 'Flash Run'}
 											</span>
 											<div className="flex items-center gap-2">
-												<span className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/8 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200">
+												<span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/8 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200">
 													<Radio className="size-3" />
 													Live
 												</span>
@@ -521,8 +521,8 @@ const Main = (props: {
 														: 'Tap fast, trust your map read, then send the guess.'}
 												</p>
 												{terrainHintPack && (
-													<div className="mt-2 space-y-2">
-														<div className="flex flex-wrap items-center gap-2">
+													<div className="mt-1.5 sm:mt-2 space-y-1.5 sm:space-y-2">
+														<div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
 															<p className="inline-flex items-center rounded-full border border-amber-200/20 bg-amber-50/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-100/90">
 																{
 																	terrainHintPack.cueLabel
@@ -574,7 +574,7 @@ const Main = (props: {
 														</div>
 														{terrainHintLevel ===
 															0 && (
-															<p className="text-[11px] font-medium text-slate-300">
+															<p className="hidden sm:block text-[11px] font-medium text-slate-300">
 																Start with the
 																cue only. Reveal
 																more terrain
