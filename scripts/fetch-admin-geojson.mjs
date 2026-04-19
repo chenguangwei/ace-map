@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fetches and transforms admin boundary GeoJSON files for use in ace-map.
 // Usage: node scripts/fetch-admin-geojson.mjs <country-code>
-// Supported: jp, cn
+// Supported: jp, cn, in
 
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -27,6 +27,27 @@ const CONFIGS = {
         'Xinjiang Uygur': 'Xinjiang',
       };
       const name = nameMap[raw] || raw;
+      return {
+        type: 'Feature',
+        geometry: feature.geometry,
+        properties: { name },
+      };
+    },
+  },
+  in: {
+    url: 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson',
+    outFile: 'public/data/admin/in-states.geojson',
+    nameProperty: 'name',
+    filter: (feature) => feature.properties.admin === 'India',
+    transform: (feature, nameProp) => {
+      const raw = feature.properties[nameProp] || '';
+      const nameMap = {
+        'Jammu and Kashmi': 'Jammu and Kashmir',
+        'Orissa': 'Odisha',
+        'Uttaranchal': 'Uttarakhand',
+        'NCT of Delhi': 'Delhi',
+      };
+      const name = nameMap[raw] ?? raw;
       return {
         type: 'Feature',
         geometry: feature.geometry,
