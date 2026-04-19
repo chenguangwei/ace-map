@@ -6,7 +6,6 @@ import { Suspense } from 'react';
 import TopicPageTracker from '@/lib/components/analytics/TopicPageTracker';
 import TrackedTopicLink from '@/lib/components/analytics/TrackedTopicLink';
 import Main from '@/lib/components/game/Main';
-import AdSlot from '@/lib/components/monetization/AdSlot';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
 import QuizTopicCard from '@/lib/components/quizzes/QuizTopicCard';
@@ -219,8 +218,8 @@ const QuizTopicPage = async ({
 						</span>
 						<span className="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-600">
 							{topic.kind === 'subtopic'
-								? 'Focused Subtopic'
-								: 'Country Root Topic'}
+								? 'Focused Practice'
+								: 'Full Country Quiz'}
 						</span>
 					</div>
 					<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
@@ -267,11 +266,10 @@ const QuizTopicPage = async ({
 						</TrackedTopicLink>
 					</div>
 
-					<div className="mt-8 grid gap-4 sm:grid-cols-3">
+					<div className="mt-8 grid gap-4 sm:grid-cols-2">
 						{[
-							[`${topic.questionCount}`, 'Locations in pool'],
-							[topic.searchIntent, 'Search intent'],
-							[topic.learningFocus, 'Learning focus']
+							[`${topic.questionCount}`, 'Locations to practice'],
+							[topic.learningFocus, 'What you\'ll learn']
 						].map(([value, label]) => (
 							<div
 								key={label}
@@ -309,9 +307,7 @@ const QuizTopicPage = async ({
 								{parentTopic.title}
 							</p>
 							<p className="mt-2 text-sm leading-6 text-slate-600">
-								This page narrows the broader country quiz into
-								a more specific practice set for the same map
-								engine.
+								This is a focused drill within a broader country quiz — go back for the full set.
 							</p>
 							<Link
 								href={`/quiz/${parentTopic.slug}`}
@@ -322,11 +318,6 @@ const QuizTopicPage = async ({
 						</div>
 					)}
 
-					<AdSlot
-						slot="topic-sidebar"
-						className="mt-6"
-						description="Edge placement for topic-level sponsorships or future display ads without interrupting the quiz loop."
-					/>
 				</aside>
 			</section>
 
@@ -336,11 +327,9 @@ const QuizTopicPage = async ({
 						Play {topic.shortTitle} now
 					</h2>
 					<p className="mt-3 text-base leading-7 text-slate-600">
-						This topic page embeds the same map quiz engine,
-						preloaded with the right mode and category mix for this
-						search intent.
+						Click a location on the map when prompted — or type your answer. Your score updates as you go.
 						{topic.categoryLabels && topic.categoryLabels.length > 0
-							? ` This version is focused on ${topic.categoryLabels.join(', ').toLowerCase()}.`
+							? ` This set focuses on ${topic.categoryLabels.join(', ').toLowerCase()}.`
 							: ''}
 					</p>
 				</div>
@@ -365,7 +354,7 @@ const QuizTopicPage = async ({
 			<section className="mt-16 grid gap-8 lg:grid-cols-[1fr_360px]">
 				<div>
 					<h2 className="text-3xl font-bold tracking-tight text-slate-950">
-						Why this quiz matches the search
+						What you'll practice
 					</h2>
 					<div className="mt-6 grid gap-4 sm:grid-cols-2">
 						{topic.highlights.map((highlight) => (
@@ -403,12 +392,10 @@ const QuizTopicPage = async ({
 
 					<div className="mt-10 rounded-[28px] border border-sky-200/70 bg-sky-50/80 p-6">
 						<h3 className="text-2xl font-bold tracking-tight text-slate-950">
-							Keep exploring the quiz network
+							Keep exploring
 						</h3>
 						<p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-							This page is one node in a broader geography quiz
-							network. Use the related pages to cover adjacent
-							search intent and build longer session depth.
+							Try related quizzes to broaden your geography knowledge and build on what you've already practiced.
 						</p>
 						<div className="mt-5 flex flex-wrap gap-3">
 							<Link
@@ -448,15 +435,11 @@ const QuizTopicPage = async ({
 			</section>
 
 			<div className="mt-16">
-				<div className="grid gap-6 lg:grid-cols-2">
-					<RecentPracticePanel
-						currentSlug={topic.slug}
-						description="Recent practice gives returning users a lightweight habit loop without requiring accounts."
-					/>
+				<div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+					<RecentPracticePanel currentSlug={topic.slug} />
 					<MistakesReviewPanel
 						topicSlug={topic.slug}
 						title={`Review missed ${topic.shortTitle} locations`}
-						description="Wrong answers in this topic are saved locally so you can come back for a tighter replay loop."
 					/>
 				</div>
 			</div>

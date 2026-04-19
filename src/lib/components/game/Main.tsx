@@ -9,7 +9,6 @@ import {
 	Play,
 	Radio,
 	RotateCcw,
-	Users,
 	Volume2,
 	WandSparkles
 } from 'lucide-react';
@@ -34,7 +33,7 @@ import {
 import { getCountryRegions, worldPlaces } from '@/lib/data/regions';
 import { getTerrainBasemapConfig } from '@/lib/maps/basemaps';
 import { saveLastSessionTopic } from '@/lib/utils/challenge';
-import { getHeatLevel, type SubmitInfo, useGame } from '@/lib/utils/game';
+import { getHeatLevel, type SubmitInfo, useGame, weightedShufflePlaces } from '@/lib/utils/game';
 import {
 	buildActivityHotspots,
 	type MapDisplayMode
@@ -376,12 +375,20 @@ const Main = (props: {
 			});
 		}
 
+		const pulseOrdered =
+			mapDisplayMode === 'pulse' && gameState.mode === 'world'
+				? weightedShufflePlaces(
+						gameState.availablePlaces,
+						activityHotspots
+					)
+				: undefined;
+
 		if (gameState.toMark === null && gameState.status === 'running') {
-			gameState.resetAndStart();
+			gameState.resetAndStart(pulseOrdered);
 			return;
 		}
 		if (gameState.status === 'idle') {
-			gameState.start();
+			gameState.start(pulseOrdered);
 		}
 	};
 
@@ -655,8 +662,8 @@ const Main = (props: {
 								<div
 									className={`grid gap-2 ${
 										terrainBasemap
-											? 'grid-cols-4'
-											: 'grid-cols-3'
+											? 'grid-cols-3'
+											: 'grid-cols-2'
 									}`}
 								>
 									{[
@@ -669,11 +676,6 @@ const Main = (props: {
 											id: 'pulse' as const,
 											label: 'Pulse',
 											icon: BarChart3
-										},
-										{
-											id: 'activity' as const,
-											label: 'Crowd',
-											icon: Users
 										},
 										...(terrainBasemap
 											? [

@@ -21,19 +21,20 @@ import {
 } from '@/lib/data/mapScopes';
 import {
 	applyGlobeTerrain,
+	applyPulseStyleOverrides,
 	GLOBE_SKY_CONFIG,
 	getMapStyleForMode,
 	getTerrainBasemapConfig
 } from '@/lib/maps/basemaps';
 import {
 	getCountryRegionSource,
+	getCountryRegionStaticSource,
 	resolveCountryFeatureSelection,
 	resolveCountryPlaceSelection
 } from '@/lib/utils/countryRegions';
 import type { GameState } from '@/lib/utils/game';
 import {
 	type ActivityHotspot,
-	buildActivityHeatmapCollection,
 	buildActivityPulseCollection,
 	type MapDisplayMode
 } from '@/lib/utils/mapActivity';
@@ -67,23 +68,6 @@ const hideSymbolLayers = (map: MapLibreMap) => {
 	}
 };
 
-// Tints the CartoDB dark-matter basemap from near-black to deep navy for pulse mode.
-// Targets only the layers that are visibly too dark; leaves roads/boundaries untouched.
-const PULSE_NAVY_TINTS: Array<{ id: string; prop: string; value: string }> = [
-	{ id: 'background', prop: 'background-color', value: '#080F1E' },
-	{ id: 'water', prop: 'fill-color', value: '#0B1830' },
-	{ id: 'landcover', prop: 'fill-color', value: '#0D1A2D' },
-	{ id: 'land', prop: 'fill-color', value: '#0D1A2D' }
-];
-
-const applyPulseNavyTint = (map: MapLibreMap) => {
-	const layerIds = new Set(map.getStyle().layers?.map((l) => l.id) ?? []);
-	for (const { id, prop, value } of PULSE_NAVY_TINTS) {
-		if (layerIds.has(id)) {
-			try { map.setPaintProperty(id, prop, value); } catch { /* layer may not accept this prop */ }
-		}
-	}
-};
 
 const isWithinBounds = (
 	hotspot: Pick<ActivityHotspot, 'latitude' | 'longitude'>,
@@ -260,6 +244,7 @@ const Game = (
 	const terrainBasemap = useMemo(() => getTerrainBasemapConfig(), []);
 	const { mode, countryCode, category } = props.gameState;
 	const isTerrainMode = props.mapDisplayMode === 'terrain';
+	const isPulseMode = props.mapDisplayMode === 'pulse';
 	const isTerrainModeRef = useRef(isTerrainMode);
 	isTerrainModeRef.current = isTerrainMode;
 	const mapDisplayModeRef = useRef(props.mapDisplayMode);
@@ -280,12 +265,16 @@ const Game = (
 		() => getCountryRegionSource(countryCode, props.gameState.toMark),
 		[countryCode, props.gameState.toMark]
 	);
+	const staticCountryRegionSource = useMemo(
+		() => (mode === 'country' ? getCountryRegionStaticSource(countryCode) : null),
+		[mode, countryCode]
+	);
 	const isWorldRegionClickMode = mode === 'world';
 	const isCountryRegionClickMode =
 		mode === 'country' && activeCountryRegionSource !== null;
 	const interactiveRegionLayerIds = [
 		isWorldRegionClickMode ? 'world-country-hit-fill' : null,
-		activeCountryRegionSource?.hitLayerId ?? null
+		staticCountryRegionSource?.hitLayerId ?? null
 	].filter((value): value is string => Boolean(value));
 	const initialView = getMapViewForGame({ mode, countryCode, category });
 	const activeScope = getMapScopeForGame({ mode, countryCode, category });
@@ -355,10 +344,6 @@ const Game = (
 		props.activityHotspots,
 		visibleActivityHotspots
 	]);
-	const activityHeatmap = useMemo(
-		() => buildActivityHeatmapCollection(displayActivityHotspots),
-		[displayActivityHotspots]
-	);
 	const activityPulseSignals = useMemo(
 		() => buildActivityPulseCollection(displayActivityHotspots, pulseTick),
 		[displayActivityHotspots, pulseTick]
@@ -366,8 +351,7 @@ const Game = (
 
 	useEffect(() => {
 		if (
-			props.mapDisplayMode !== 'pulse' &&
-			props.mapDisplayMode !== 'activity'
+			props.mapDisplayMode !== 'pulse'
 		) {
 			return;
 		}
@@ -380,10 +364,7 @@ const Game = (
 	}, [props.mapDisplayMode]);
 
 	useEffect(() => {
-		if (
-			props.mapDisplayMode !== 'pulse' &&
-			props.mapDisplayMode !== 'activity'
-		) {
+		if (props.mapDisplayMode !== 'pulse') {
 			setSelectedHotspot(null);
 		}
 	}, [props.mapDisplayMode]);
@@ -641,7 +622,11 @@ const Game = (
 			ref={mapRef}
 			initialViewState={initialView}
 			mapStyle={getMapStyleForMode(props.mapDisplayMode, terrainBasemap)}
-			style={{ width: '100%', height: '100%' }}
+			style={{
+					width: '100%',
+					height: '100%',
+					filter: undefined
+				}}
 			attributionControl={false}
 			reuseMaps
 			onLoad={() => {
@@ -652,9 +637,7 @@ const Game = (
 						map.setProjection({ type: 'globe' });
 						map.setSky(GLOBE_SKY_CONFIG);
 						if (!isTerrainModeRef.current) applyGlobeTerrain(map);
-						if (mapDisplayModeRef.current === 'pulse') {
-							applyPulseNavyTint(map);
-						}
+						if (mapDisplayModeRef.current === 'pulse') applyPulseStyleOverrides(map);
 					};
 					applyGlobeEffects();
 					// Re-apply after each subsequent style switch
@@ -668,9 +651,7 @@ const Game = (
 					hideSymbolLayers(map);
 					map.setProjection({ type: 'globe' });
 					map.setSky(GLOBE_SKY_CONFIG);
-					if (mapDisplayModeRef.current === 'pulse') {
-						applyPulseNavyTint(map);
-					}
+					if (mapDisplayModeRef.current === 'pulse') applyPulseStyleOverrides(map);
 					// Terrain is handled by the style.load listener — skip here
 					// to avoid triggering styledata loops from addSource/setTerrain
 				}
@@ -718,15 +699,15 @@ const Game = (
 					setHoveredWorldFeatureName(null);
 				}
 
-				if (isCountryRegionClickMode && activeCountryRegionSource) {
+				if (staticCountryRegionSource) {
 					const countryFeature = event.features?.find(
 						(item) =>
 							item.layer.id ===
-							activeCountryRegionSource.hitLayerId
+							staticCountryRegionSource.hitLayerId
 					);
 					const countryFeatureName =
 						countryFeature?.properties?.[
-							activeCountryRegionSource.featureNameProperty
+							staticCountryRegionSource.featureNameProperty
 						];
 					setHoveredCountryFeatureName(
 						typeof countryFeatureName === 'string'
@@ -800,74 +781,6 @@ const Game = (
 					</Source>
 				)}
 
-			{props.mapDisplayMode === 'activity' &&
-				displayActivityHotspots.length > 0 && (
-					<Source
-						id="activity-heatmap"
-						type="geojson"
-						data={activityHeatmap}
-					>
-						<Layer
-							id="activity-heat"
-							type="heatmap"
-							paint={{
-								'heatmap-weight': [
-									'interpolate',
-									['linear'],
-									['get', 'heat'],
-									0,
-									0.15,
-									1,
-									1
-								],
-								'heatmap-intensity': 1.25,
-								'heatmap-radius': [
-									'interpolate',
-									['linear'],
-									['zoom'],
-									1,
-									28,
-									5,
-									52
-								],
-								'heatmap-opacity': 0.86,
-								'heatmap-color': [
-									'interpolate',
-									['linear'],
-									['heatmap-density'],
-									0,
-									'rgba(8,15,28,0)',
-									0.15,
-									'#1d4ed8',
-									0.45,
-									'#06b6d4',
-									0.75,
-									'#f59e0b',
-									1,
-									'#f97316'
-								]
-							}}
-						/>
-						<Layer
-							id="activity-hotspot-glow"
-							type="circle"
-							paint={{
-								'circle-radius': [
-									'interpolate',
-									['linear'],
-									['get', 'playerCount'],
-									1,
-									16,
-									24,
-									34
-								],
-								'circle-color': '#22d3ee',
-								'circle-opacity': 0.14,
-								'circle-blur': 0.8
-							}}
-						/>
-					</Source>
-				)}
 
 			{isWorldRegionClickMode && (
 				<Source
@@ -917,6 +830,19 @@ const Game = (
 							'line-width': isTerrainMode ? 2.2 : 0,
 							'line-opacity': isTerrainMode ? 0.88 : 0,
 							'line-dasharray': [1.2, 1.6]
+						}}
+					/>
+					<Layer
+						id="world-country-base-outline"
+						type="line"
+						paint={{
+							'line-color': isTerrainMode
+								? '#ffffff'
+								: isPulseMode
+									? '#7EA8C9'
+									: '#94a3b8',
+							'line-width': isTerrainMode ? 0.6 : 1.0,
+							'line-opacity': isTerrainMode ? 0.3 : 0.5
 						}}
 					/>
 					<Layer
@@ -978,97 +904,47 @@ const Game = (
 				</Source>
 			)}
 
-			{isCountryRegionClickMode && activeCountryRegionSource && (
+			{staticCountryRegionSource && (
 				<Source
-					id={activeCountryRegionSource.sourceId}
+					id={staticCountryRegionSource.sourceId}
 					type="geojson"
-					data={activeCountryRegionSource.geojsonPath}
+					data={staticCountryRegionSource.geojsonPath}
 				>
+					{/* Transparent hit fill — always present for hover detection */}
 					<Layer
-						id={activeCountryRegionSource.hitLayerId}
+						id={staticCountryRegionSource.hitLayerId}
 						type="fill"
 						paint={{
 							'fill-color': '#ffffff',
 							'fill-opacity': 0.01
 						}}
 					/>
+					{/* Always-visible base outline for region divisions */}
 					<Layer
-						id={`${activeCountryRegionSource.sourceId}-terrain-reveal-fill`}
-						type="fill"
-						filter={
-							props.info && countryTargetSelection?.featureName
-								? [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										countryTargetSelection.featureName
-									]
-								: [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										''
-									]
-						}
-						paint={{
-							'fill-color': '#f8fafc',
-							'fill-opacity': isTerrainMode ? 0.08 : 0
-						}}
-					/>
-					<Layer
-						id={`${activeCountryRegionSource.sourceId}-terrain-reveal-outline`}
+						id={`${staticCountryRegionSource.sourceId}-base-outline`}
 						type="line"
-						filter={
-							props.info && countryTargetSelection?.featureName
-								? [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										countryTargetSelection.featureName
-									]
-								: [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										''
-									]
-						}
 						paint={{
-							'line-color': '#f59e0b',
-							'line-width': isTerrainMode ? 2.2 : 0,
-							'line-opacity': isTerrainMode ? 0.88 : 0,
-							'line-dasharray': [1.2, 1.6]
+							'line-color': isTerrainMode
+								? '#ffffff'
+								: isPulseMode
+									? '#7EA8C9'
+									: '#94a3b8',
+							'line-width': isTerrainMode ? 0.6 : 1.0,
+							'line-opacity': isTerrainMode ? 0.3 : 0.5
 						}}
 					/>
+					{/* Hover outline — always available so hover works without an active question */}
 					<Layer
-						id={activeCountryRegionSource.hoverLayerId}
+						id={staticCountryRegionSource.hoverLayerId}
 						type="line"
 						filter={
 							hoveredCountryFeatureName
 								? [
 										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
+										['get', staticCountryRegionSource.featureNameProperty],
 										hoveredCountryFeatureName
 									]
-								: [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										''
-									]
+								: ['==', ['get', staticCountryRegionSource.featureNameProperty], '']
 						}
 						paint={{
 							'line-color': isTerrainMode ? '#f8fafc' : '#38bdf8',
@@ -1076,64 +952,124 @@ const Game = (
 							'line-opacity': isTerrainMode ? 0.56 : 0.82
 						}}
 					/>
-					<Layer
-						id={activeCountryRegionSource.selectedFillLayerId}
-						type="fill"
-						filter={
-							selectedCountryFeatureName
-								? [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										selectedCountryFeatureName
-									]
-								: [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										''
-									]
-						}
-						paint={{
-							'fill-color': isTerrainMode ? '#f8fafc' : '#22d3ee',
-							'fill-opacity': isTerrainMode ? 0.08 : 0.18
-						}}
-					/>
-					<Layer
-						id={activeCountryRegionSource.selectedOutlineLayerId}
-						type="line"
-						filter={
-							selectedCountryFeatureName
-								? [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										selectedCountryFeatureName
-									]
-								: [
-										'==',
-										[
-											'get',
-											activeCountryRegionSource.featureNameProperty
-										],
-										''
-									]
-						}
-						paint={{
-							'line-color': isTerrainMode ? '#f8fafc' : '#06b6d4',
-							'line-width': isTerrainMode ? 2.1 : 2.8,
-							'line-opacity': isTerrainMode ? 0.78 : 0.95,
-							'line-dasharray': isTerrainMode
-								? [1.1, 1.4]
-								: [1, 0]
-						}}
-					/>
+					{isCountryRegionClickMode && activeCountryRegionSource && (
+						<>
+							<Layer
+								id={`${activeCountryRegionSource.sourceId}-terrain-reveal-fill`}
+								type="fill"
+								filter={
+									props.info && countryTargetSelection?.featureName
+										? [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												countryTargetSelection.featureName
+											]
+										: [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												''
+											]
+								}
+								paint={{
+									'fill-color': '#f8fafc',
+									'fill-opacity': isTerrainMode ? 0.08 : 0
+								}}
+							/>
+							<Layer
+								id={`${activeCountryRegionSource.sourceId}-terrain-reveal-outline`}
+								type="line"
+								filter={
+									props.info && countryTargetSelection?.featureName
+										? [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												countryTargetSelection.featureName
+											]
+										: [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												''
+											]
+								}
+								paint={{
+									'line-color': '#f59e0b',
+									'line-width': isTerrainMode ? 2.2 : 0,
+									'line-opacity': isTerrainMode ? 0.88 : 0,
+									'line-dasharray': [1.2, 1.6]
+								}}
+							/>
+							<Layer
+								id={activeCountryRegionSource.selectedFillLayerId}
+								type="fill"
+								filter={
+									selectedCountryFeatureName
+										? [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												selectedCountryFeatureName
+											]
+										: [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												''
+											]
+								}
+								paint={{
+									'fill-color': isTerrainMode ? '#f8fafc' : '#22d3ee',
+									'fill-opacity': isTerrainMode ? 0.08 : 0.18
+								}}
+							/>
+							<Layer
+								id={activeCountryRegionSource.selectedOutlineLayerId}
+								type="line"
+								filter={
+									selectedCountryFeatureName
+										? [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												selectedCountryFeatureName
+											]
+										: [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												''
+											]
+								}
+								paint={{
+									'line-color': isTerrainMode ? '#f8fafc' : '#06b6d4',
+									'line-width': isTerrainMode ? 2.1 : 2.8,
+									'line-opacity': isTerrainMode ? 0.78 : 0.95,
+									'line-dasharray': isTerrainMode
+										? [1.1, 1.4]
+										: [1, 0]
+								}}
+							/>
+						</>
+					)}
 				</Source>
 			)}
 
@@ -1149,13 +1085,11 @@ const Game = (
 						paint={{
 							'fill-color': '#38bdf8',
 							'fill-opacity':
-								props.mapDisplayMode === 'activity'
-									? 0.035
-									: props.mapDisplayMode === 'pulse'
-										? 0.02
-										: props.mapDisplayMode === 'terrain'
-											? 0.015
-											: 0.08
+								props.mapDisplayMode === 'pulse'
+									? 0.02
+									: props.mapDisplayMode === 'terrain'
+										? 0.015
+										: 0.08
 						}}
 					/>
 					<Layer
@@ -1165,21 +1099,18 @@ const Game = (
 							'line-color': '#0284c7',
 							'line-width': 2,
 							'line-opacity':
-								props.mapDisplayMode === 'activity'
-									? 0.45
-									: props.mapDisplayMode === 'pulse'
-										? 0.28
-										: props.mapDisplayMode === 'terrain'
-											? 0.42
-											: 0.8,
+								props.mapDisplayMode === 'pulse'
+									? 0.28
+									: props.mapDisplayMode === 'terrain'
+										? 0.42
+										: 0.8,
 							'line-dasharray': [2, 2]
 						}}
 					/>
 				</Source>
 			)}
 
-			{(props.mapDisplayMode === 'pulse' ||
-				props.mapDisplayMode === 'activity') &&
+			{props.mapDisplayMode === 'pulse' &&
 				displayActivityHotspots.map((hotspot) => (
 					<_Marker
 						key={hotspot.id}
@@ -1193,40 +1124,20 @@ const Game = (
 								event.stopPropagation();
 								setSelectedHotspot(hotspot);
 							}}
-							className={`group relative flex items-center justify-center rounded-full border text-white shadow-[0_12px_26px_rgba(15,23,42,0.24)] transition hover:scale-105 cursor-pointer ${
-								props.mapDisplayMode === 'activity'
-									? 'border-cyan-300/50 bg-slate-950/84'
-									: 'border-sky-200/70 bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.45),rgba(8,47,73,0.92)_72%)] shadow-[0_0_0_1px_rgba(125,211,252,0.08),0_0_38px_rgba(34,211,238,0.18)]'
-							}`}
+							className="group relative flex items-center justify-center rounded-full border border-sky-200/70 bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.45),rgba(8,47,73,0.92)_72%)] text-white shadow-[0_0_0_1px_rgba(125,211,252,0.08),0_0_38px_rgba(34,211,238,0.18)] transition hover:scale-105 cursor-pointer"
 							style={{
-								width:
-									props.mapDisplayMode === 'activity'
-										? `${34 + hotspot.playerCount * 2}px`
-										: `${24 + hotspot.playerCount * 1.25}px`,
-								height:
-									props.mapDisplayMode === 'activity'
-										? `${34 + hotspot.playerCount * 2}px`
-										: `${24 + hotspot.playerCount * 1.25}px`
+								width: `${24 + hotspot.playerCount * 1.25}px`,
+								height: `${24 + hotspot.playerCount * 1.25}px`
 							}}
 							aria-label={`Open activity summary for ${hotspot.label}`}
 						>
-							<span
-								className={`absolute inset-0 rounded-full border animate-ping ${
-									props.mapDisplayMode === 'activity'
-										? 'border-white/15 opacity-30'
-										: 'border-cyan-200/40 opacity-45'
-								}`}
-							/>
+							<span className="absolute inset-0 rounded-full border border-cyan-200/40 opacity-45 animate-ping" />
 							<span className="relative text-xs font-black">
-								{props.mapDisplayMode === 'activity'
-									? hotspot.playerCount
-									: hotspot.modeLabel}
+								{hotspot.modeLabel}
 							</span>
-							{props.mapDisplayMode === 'pulse' && (
-								<span className="pointer-events-none absolute top-[calc(100%+0.45rem)] whitespace-nowrap rounded-full border border-cyan-200/20 bg-slate-950/82 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-cyan-100 shadow-[0_10px_24px_rgba(8,47,73,0.24)]">
-									{hotspot.label}
-								</span>
-							)}
+							<span className="pointer-events-none absolute top-[calc(100%+0.45rem)] whitespace-nowrap rounded-full border border-cyan-200/20 bg-slate-950/82 px-2.5 py-1 text-[10px] font-bold tracking-[0.16em] text-cyan-100 shadow-[0_10px_24px_rgba(8,47,73,0.24)]">
+								{hotspot.label}
+							</span>
 						</button>
 					</_Marker>
 				))}
