@@ -641,13 +641,13 @@ const Main = (props: {
 								onClick={() =>
 									setFocusRequest((value) => value + 1)
 								}
-								className="inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.12)] backdrop-blur-md transition hover:border-sky-300 hover:text-slate-900 cursor-pointer"
+								className="inline-flex items-center gap-0 sm:gap-2 rounded-full border border-sky-200/80 bg-white/90 p-2 sm:px-4 sm:py-2 text-sm font-semibold text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.12)] backdrop-blur-md transition hover:border-sky-300 hover:text-slate-900 cursor-pointer"
 							>
 								<Crosshair
 									className="size-4 text-sky-700"
 									strokeWidth={2}
 								/>
-								<span>Re-center</span>
+								<span className="hidden sm:inline">Re-center</span>
 							</button>
 
 							<div className="w-full rounded-[22px] border border-slate-900/10 bg-white/88 p-1.5 sm:p-2 shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur-md">
