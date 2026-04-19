@@ -17,7 +17,10 @@ import type { GameMode } from '@/lib/utils/places';
 export const metadata: Metadata = {
 	title: 'Play Geography Quiz | MapQuiz.pro',
 	description:
-		'Play interactive geography quizzes with instant map feedback and explore related map quiz topics.'
+		'Play interactive geography quizzes with instant map feedback and explore related map quiz topics.',
+	alternates: {
+		canonical: 'https://mapquiz.pro/game'
+	}
 };
 
 const page = async ({
