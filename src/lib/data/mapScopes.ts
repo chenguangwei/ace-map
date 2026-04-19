@@ -1,3 +1,4 @@
+import { worldPlaces } from '@/lib/data/regions';
 import type { GameMode } from '@/lib/utils/places';
 
 export type MapBounds = {
@@ -68,6 +69,23 @@ const COUNTRY_BOUNDS: Record<string, MapBounds> = {
 		east: 141.033852,
 		north: 5.479821
 	}
+};
+
+/** Returns continent bounds for a world-mode place name (e.g. "China" → Asia scope). */
+export const getContinentScopeForWorldPlace = (placeName: string): MapScope | null => {
+	const group = worldPlaces.find((g) =>
+		g.places.some((p) => p.name === placeName)
+	);
+	if (!group) return null;
+
+	const bounds = CONTINENT_BOUNDS[group.category];
+	if (!bounds) return null;
+
+	return {
+		id: `continent-${group.category.toLowerCase()}`,
+		label: group.category,
+		bounds
+	};
 };
 
 export const getMapScopeForGame = ({

@@ -10,12 +10,18 @@ import {
 	Flame,
 	Pause,
 	Play,
+	Satellite,
 	Send,
 	Target,
 	XCircle
 } from 'lucide-react';
 import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
-import { encodeResult, getHeatLevel, type GameState } from '@/lib/utils/game';
+import {
+	deductCredit,
+	getBalance,
+	subscribeToCredits
+} from '@/lib/utils/credits';
+import { encodeResult, type GameState, getHeatLevel } from '@/lib/utils/game';
 import type { MapDisplayMode } from '@/lib/utils/mapActivity';
 import { formatDistance } from '@/lib/utils/places';
 import type { InfoState } from './Main';
@@ -83,9 +89,18 @@ const StreakBadge = ({ streak }: { streak: number }) => {
 };
 
 const heatConfig = {
-	overdrive: { label: 'Overdrive', tone: 'border-orange-300/70 bg-[rgba(255,237,213,0.84)] text-orange-700' },
-	heated: { label: 'Heated', tone: 'border-amber-300/70 bg-[rgba(254,243,199,0.86)] text-amber-700' },
-	warm: { label: 'Warming', tone: 'border-sky-300/70 bg-[rgba(224,242,254,0.84)] text-sky-700' },
+	overdrive: {
+		label: 'Overdrive',
+		tone: 'border-orange-300/70 bg-[rgba(255,237,213,0.84)] text-orange-700'
+	},
+	heated: {
+		label: 'Heated',
+		tone: 'border-amber-300/70 bg-[rgba(254,243,199,0.86)] text-amber-700'
+	},
+	warm: {
+		label: 'Warming',
+		tone: 'border-sky-300/70 bg-[rgba(224,242,254,0.84)] text-sky-700'
+	},
 	cool: { label: '', tone: '' }
 } as const;
 
@@ -143,12 +158,27 @@ const GameBar = (
 	props: InfoState & {
 		gameState: GameState;
 		mapDisplayMode: MapDisplayMode;
+		onSatelliteHint: (lat: number, lng: number, zoom: number) => void;
 	}
 ) => {
-	const { gameState, info, mapDisplayMode, setInfo } = props;
+	const { gameState, info, mapDisplayMode, onSatelliteHint, setInfo } = props;
 	const prevToMarkRef = useRef(gameState.toMark);
 	const gameStateRef = useRef(gameState);
+	const [creditBalance, setCreditBalance] = useState(() => getBalance());
+	const [hintUsedThisTurn, setHintUsedThisTurn] = useState(false);
 	gameStateRef.current = gameState;
+
+	useEffect(() => {
+		setCreditBalance(getBalance());
+
+		return subscribeToCredits((balance) => {
+			setCreditBalance(balance);
+		});
+	}, []);
+
+	useEffect(() => {
+		setHintUsedThisTurn(false);
+	}, [gameState.toMark]);
 
 	useEffect(() => {
 		// Only trigger game-over when transitioning from having a place → null while running
@@ -214,6 +244,35 @@ const GameBar = (
 			? 'Terrain rules: read the relief, lock the region, send fast.'
 			: 'Flash rules: hear the target, lock the spot, send fast.';
 
+	const handleSatelliteHint = () => {
+		if (!gameState.toMark || hintUsedThisTurn) return;
+
+		const didDeduct = deductCredit();
+		if (!didDeduct) {
+			addToast({
+				color: 'warning',
+				title: '今日卫星线索已用完',
+				description: '明天自动补充 5 次，或购买积分包'
+			});
+			return;
+		}
+
+		const { strictness, mode } = gameState;
+		let zoom = 9;
+		if (mode === 'world') {
+			zoom = strictness <= 300000 ? 7 : 5;
+		} else {
+			zoom = strictness <= 50000 ? 12 : strictness <= 150000 ? 9 : 6;
+		}
+
+		onSatelliteHint(
+			gameState.toMark.latitude,
+			gameState.toMark.longitude,
+			zoom
+		);
+		setHintUsedThisTurn(true);
+	};
+
 	return (
 		<div className="pointer-events-none absolute inset-0 z-30">
 			<div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2 sm:left-5 sm:top-5">
@@ -263,6 +322,21 @@ const GameBar = (
 					</AnimatePresence>
 
 					<div className="pointer-events-auto flex w-full max-w-lg items-center justify-center gap-2 sm:w-auto">
+						{gameState.status === 'running' && gameState.toMark && (
+							<Button
+								radius="full"
+								size="md"
+								variant="flat"
+								className="border border-white/45 bg-[rgba(255,255,255,0.72)] px-4 text-slate-800 shadow-[0_12px_28px_rgba(15,23,42,0.12)] backdrop-blur-md"
+								isDisabled={
+									hintUsedThisTurn || creditBalance <= 0
+								}
+								onPress={handleSatelliteHint}
+								startContent={<Satellite className="size-4" />}
+							>
+								卫星线索 · 🪙1
+							</Button>
+						)}
 						{showActionButton && (
 							<Button
 								radius="full"

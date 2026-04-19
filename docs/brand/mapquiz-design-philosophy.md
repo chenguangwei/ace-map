@@ -1,0 +1,14 @@
+# Meridian Precision
+### A Design Philosophy
+
+---
+
+**Form speaks before language.** This movement believes the sphere is the most honest shape — it has no beginning, no edge, no hierarchy. Every point on its surface is equally distant from its center. From this geometry comes a visual language built on curvature, rotation, and the elegant tension between the local and the infinite. Forms are not drawn — they are *traced*, as if lifted from instruments of navigation: the compass arc, the parallel rule, the graticule.
+
+**Color is latitude.** The palette is drawn from the threshold moments of cartography: the deep indigo of the ocean at depth, the cold white of ice sheets at high resolution, the amber of aged vellum, the luminous gold of coordinate markers struck into brass. Saturation is used with the restraint of a navigator who knows that too much information obscures the signal. One accent color — singular, precise, earned — marks the point of arrival. Everything else recedes with purposeful grace.
+
+**Space is the primary medium.** Negative space is not absence but *potential* — the unmapped territory that invites projection. Compositions breathe through their voids, organizing information through careful rhythm: dense passages that reward close attention, open zones that allow the eye to rest and orient. This rhythm mirrors the experience of reading a great chart: overwhelming at first glance, then gradually revealing its logic to the patient observer. The work is meticulous in its spacing — every margin, every gap, chosen with the care of someone who has measured these distances before.
+
+**Typography is an instrument, not decoration.** Characters are selected as one selects a specific pen nib: for weight, for purpose, for the quality of line it leaves behind. Letterforms appear infrequently — as coordinates appear on a map — anchoring vast visual territory with minimal intrusion. Text never explains; it *locates*. A single word, a number, a label. The mix of typefaces is deliberate: one geometric, one humanist, never more than two, placed with the precision of a master typographer who understands that great type design is largely invisible work.
+
+**Craft is the only argument.** The final artifact must feel as though it was made by hand, measured by instrument, revised across many sessions, held up to different lights. Every line weight, every radius, every point of intersection — chosen not once but reconsidered, refined, and chosen again. This is work that reveals itself slowly: on first view, the overall impression; on second, the system beneath it; on third, the countless micro-decisions that make the system feel inevitable. The result is neither decorative nor purely functional — it occupies the rare space where precision becomes beauty through sheer, painstaking accumulation of right choices.

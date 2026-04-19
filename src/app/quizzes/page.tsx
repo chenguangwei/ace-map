@@ -14,7 +14,7 @@ import {
 } from '@/lib/data/quizTopics';
 
 export const metadata: Metadata = {
-	title: 'Quiz Library | Ace Map',
+	title: 'Quiz Library | MapQuiz.pro',
 	description:
 		'Browse world map quizzes, continent quizzes, and country-specific geography practice pages.'
 };
@@ -38,7 +38,7 @@ const QuizzesPage = () => {
 					Quiz Library
 				</span>
 				<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-					Explore the Ace Map quiz network.
+					Explore the MapQuiz.pro quiz network.
 				</h1>
 				<p className="mt-5 text-lg leading-8 text-slate-600">
 					These pages are organized by search intent: broad world quizzes,

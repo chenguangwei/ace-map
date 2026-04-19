@@ -78,6 +78,9 @@ const Main = (props: {
 	const [selectedRegionLabel, setSelectedRegionLabel] = useState<
 		string | null
 	>(null);
+	const [satelliteHintUrl, setSatelliteHintUrl] = useState<string | null>(
+		null
+	);
 	const [terrainHintLevel, setTerrainHintLevel] = useState<0 | 1 | 2>(0);
 	const terrainBasemap = useMemo(() => getTerrainBasemapConfig(), []);
 	const previousPromptRef = useRef<string | null>(null);
@@ -197,6 +200,10 @@ const Main = (props: {
 	}, [activeTopicSlug, infoState]);
 
 	useEffect(() => {
+		setSatelliteHintUrl(null);
+	}, [gameState.toMark]);
+
+	useEffect(() => {
 		const isMistakeReview = searchParams.get('review') === 'mistakes';
 		if (
 			!isMistakeReview ||
@@ -251,12 +258,23 @@ const Main = (props: {
 			: 'Start Flash Run';
 	}, [gameState.status, gameState.toMark, mapDisplayMode]);
 
-	const heatLevel = useMemo(() => getHeatLevel(gameState.streak), [gameState.streak]);
+	const heatLevel = useMemo(
+		() => getHeatLevel(gameState.streak),
+		[gameState.streak]
+	);
 
 	const activityHotspots = useMemo(
 		() => buildActivityHotspots(analytics.snapshot),
 		[analytics.snapshot]
 	);
+	const handleSatelliteHint = (lat: number, lng: number, zoom: number): void => {
+		const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN?.trim();
+		if (!token) return;
+
+		setSatelliteHintUrl(
+			`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/${lng},${lat},${zoom}/400x300@2x?access_token=${token}`
+		);
+	};
 	const terrainHintPack = useMemo(() => {
 		if (mapDisplayMode !== 'terrain' || !gameState.toMark) return null;
 
@@ -390,6 +408,10 @@ const Main = (props: {
 							focusRequest={focusRequest}
 							mapDisplayMode={mapDisplayMode}
 							activityHotspots={activityHotspots}
+							satelliteHintUrl={satelliteHintUrl}
+							onSatelliteHintDismiss={() =>
+								setSatelliteHintUrl(null)
+							}
 							onRegionLabelSelect={(label) => {
 								setSelectedRegionLabel(label);
 								if (!label) return;
@@ -716,6 +738,7 @@ const Main = (props: {
 					gameState={gameState}
 					info={infoState}
 					mapDisplayMode={mapDisplayMode}
+					onSatelliteHint={handleSatelliteHint}
 					setInfo={setInfoState}
 				/>
 			</div>

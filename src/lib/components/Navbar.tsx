@@ -1,6 +1,7 @@
 import * as Navbar from '@heroui/navbar';
 import Link from 'next/link';
 import Logo from '@/lib/assets/Logo';
+import CreditBadge from '@/lib/components/CreditBadge';
 import ThemeSwitch from '@/lib/components/ThemeSwitch';
 
 const Nav = () => {
@@ -9,7 +10,7 @@ const Nav = () => {
 			<Navbar.NavbarBrand>
 				<Logo />
 				<Link href="/" className="text-xl font-semibold">
-					Ace Map
+					MapQuiz<span className="text-amber-500">.pro</span>
 				</Link>
 			</Navbar.NavbarBrand>
 			<Navbar.NavbarContent justify="end">
@@ -20,6 +21,9 @@ const Nav = () => {
 					>
 						Quiz Library
 					</Link>
+				</Navbar.NavbarItem>
+				<Navbar.NavbarItem>
+					<CreditBadge />
 				</Navbar.NavbarItem>
 				<Navbar.NavbarItem>
 					<ThemeSwitch />

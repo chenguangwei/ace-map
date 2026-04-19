@@ -1,4 +1,4 @@
-import type { StyleSpecification } from 'maplibre-gl';
+import type { Map as MapLibreMap, StyleSpecification } from 'maplibre-gl';
 import type { MapDisplayMode } from '@/lib/utils/mapActivity';
 
 const BASEMAP_STYLES: Record<Exclude<MapDisplayMode, 'terrain'>, string> = {
@@ -186,10 +186,46 @@ export const getMapStyleForMode = (
 	return BASEMAP_STYLES[mode];
 };
 
-export const GLOBE_FOG_CONFIG = {
-	color: 'rgb(186, 210, 235)',
-	'high-color': 'rgb(36, 92, 223)',
-	'horizon-blend': 0.02,
-	'space-color': 'rgb(11, 11, 25)',
-	'star-intensity': 0.6
+// MapLibre GL JS v5 uses setSky() for globe atmosphere (setFog was removed)
+export const GLOBE_SKY_CONFIG = {
+	'atmosphere-blend': 1.0
 } as const;
+
+const GLOBE_DEM_SOURCE_ID = 'ace-map-globe-dem';
+
+const GLOBE_HILLSHADE_LAYER_ID = 'ace-map-globe-hillshade';
+
+// Applies 3D terrain + hillshade to the map using free AWS Terrain Tiles (no token required).
+// Safe to call multiple times — skips if source/layer already added.
+export const applyGlobeTerrain = (map: MapLibreMap): void => {
+	if (!map.getSource(GLOBE_DEM_SOURCE_ID)) {
+		map.addSource(GLOBE_DEM_SOURCE_ID, {
+			type: 'raster-dem',
+			// AWS open terrain tiles — public domain, no token needed
+			tiles: [
+				'https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'
+			],
+			tileSize: 256,
+			maxzoom: 14,
+			encoding: 'terrarium'
+		});
+	}
+
+	// Hillshade makes mountain relief visible from top-down view
+	if (!map.getLayer(GLOBE_HILLSHADE_LAYER_ID)) {
+		map.addLayer({
+			id: GLOBE_HILLSHADE_LAYER_ID,
+			type: 'hillshade',
+			source: GLOBE_DEM_SOURCE_ID,
+			paint: {
+				'hillshade-exaggeration': 0.38,
+				'hillshade-shadow-color': '#5C5044',
+				'hillshade-highlight-color': '#FFFFFF',
+				'hillshade-accent-color': '#9B8F82',
+				'hillshade-illumination-anchor': 'viewport'
+			}
+		});
+	}
+
+	map.setTerrain({ source: GLOBE_DEM_SOURCE_ID, exaggeration: 3 });
+};
