@@ -10,7 +10,7 @@ const normalizeRegionName = (value: string) =>
 		.replace(/[^a-z0-9]+/g, ' ')
 		.trim();
 
-type SupportedCountryCode = 'de' | 'us';
+type SupportedCountryCode = 'de' | 'us' | 'jp' | 'cn' | 'in' | 'gb';
 
 interface CountryRegionConfig {
 	countryCode: SupportedCountryCode;
@@ -119,6 +119,54 @@ const COUNTRY_REGION_CONFIGS: Record<
 		toDisplayLabel: (featureName) =>
 			DE_FEATURE_TO_DISPLAY_LABEL.get(normalizeRegionName(featureName)) ??
 			featureName
+	},
+	jp: {
+		countryCode: 'jp',
+		enabledCategory: 'Prefecture Capitals',
+		geojsonPath: '/data/admin/jp-prefectures.geojson',
+		featureNameProperty: 'name',
+		parsePlaceRegionLabel: (place) => {
+			const match = place.name.match(/\(([^)]+)\)\s*$/);
+			return match?.[1]?.trim() ?? null;
+		},
+		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
+		toDisplayLabel: (featureName) => featureName
+	},
+	cn: {
+		countryCode: 'cn',
+		enabledCategory: 'Province Capitals',
+		geojsonPath: '/data/admin/cn-provinces.geojson',
+		featureNameProperty: 'name',
+		parsePlaceRegionLabel: (place) => {
+			const match = place.name.match(/\(([^)]+)\)\s*$/);
+			return match?.[1]?.trim() ?? null;
+		},
+		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
+		toDisplayLabel: (featureName) => featureName
+	},
+	in: {
+		countryCode: 'in',
+		enabledCategory: 'State Capitals',
+		geojsonPath: '/data/admin/in-states.geojson',
+		featureNameProperty: 'name',
+		parsePlaceRegionLabel: (place) => {
+			const match = place.name.match(/\(([^)]+)\)\s*$/);
+			return match?.[1]?.trim() ?? null;
+		},
+		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
+		toDisplayLabel: (featureName) => featureName
+	},
+	gb: {
+		countryCode: 'gb',
+		enabledCategory: 'Nation Capitals',
+		geojsonPath: '/data/admin/gb-nations.geojson',
+		featureNameProperty: 'name',
+		parsePlaceRegionLabel: (place) => {
+			const match = place.name.match(/\(([^)]+)\)\s*$/);
+			return match?.[1]?.trim() ?? null;
+		},
+		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
+		toDisplayLabel: (featureName) => featureName
 	}
 };
 
@@ -155,22 +203,31 @@ const getCountryRegionConfig = (
 ): CountryRegionConfig | null =>
 	COUNTRY_REGION_CONFIGS[countryCode as SupportedCountryCode] ?? null;
 
+const buildCountryRegionSource = (countryCode: string): CountryRegionSource => ({
+	featureNameProperty:
+		getCountryRegionConfig(countryCode)?.featureNameProperty ?? 'name',
+	geojsonPath: getCountryRegionConfig(countryCode)?.geojsonPath ?? '',
+	hoverLayerId: `${countryCode}-admin-region-hover-outline`,
+	hitLayerId: `${countryCode}-admin-region-hit-fill`,
+	selectedFillLayerId: `${countryCode}-admin-region-selected-fill`,
+	selectedOutlineLayerId: `${countryCode}-admin-region-selected-outline`,
+	sourceId: `${countryCode}-admin-region-polygons`
+});
+
+// Returns source metadata whenever the country has region config, regardless of active place.
+export const getCountryRegionStaticSource = (
+	countryCode: string
+): CountryRegionSource | null => {
+	if (!getCountryRegionConfig(countryCode)) return null;
+	return buildCountryRegionSource(countryCode);
+};
+
 export const getCountryRegionSource = (
 	countryCode: string,
 	place: Place | null
 ): CountryRegionSource | null => {
 	if (!resolveCountryPlaceSelection(countryCode, place)) return null;
-
-	return {
-		featureNameProperty:
-			getCountryRegionConfig(countryCode)?.featureNameProperty ?? 'name',
-		geojsonPath: getCountryRegionConfig(countryCode)?.geojsonPath ?? '',
-		hoverLayerId: `${countryCode}-admin-region-hover-outline`,
-		hitLayerId: `${countryCode}-admin-region-hit-fill`,
-		selectedFillLayerId: `${countryCode}-admin-region-selected-fill`,
-		selectedOutlineLayerId: `${countryCode}-admin-region-selected-outline`,
-		sourceId: `${countryCode}-admin-region-polygons`
-	};
+	return buildCountryRegionSource(countryCode);
 };
 
 export const resolveCountryPlaceSelection = (
