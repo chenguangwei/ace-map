@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fetches and transforms admin boundary GeoJSON files for use in ace-map.
 // Usage: node scripts/fetch-admin-geojson.mjs <country-code>
-// Supported: jp, cn, in
+// Supported: jp, cn, in, gb
 
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -54,6 +54,16 @@ const CONFIGS = {
         properties: { name },
       };
     },
+  },
+  gb: {
+    url: 'https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/Countries_December_2022_UK_BUC/FeatureServer/0/query?where=1%3D1&outFields=CTRY22NM&f=geojson',
+    outFile: 'public/data/admin/gb-nations.geojson',
+    nameProperty: 'CTRY22NM',
+    transform: (feature, nameProp) => ({
+      type: 'Feature',
+      geometry: feature.geometry,
+      properties: { name: feature.properties[nameProp] },
+    }),
   },
   jp: {
     url: 'https://raw.githubusercontent.com/dataofjapan/land/master/japan.geojson',

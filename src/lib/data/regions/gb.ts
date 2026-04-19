@@ -2,6 +2,15 @@ import type { PlaceItems } from '@/lib/utils/places';
 
 export const gbPlaces: PlaceItems[] = [
 	{
+		category: 'Nation Capitals',
+		places: [
+			{ name: 'London (England)', latitude: 51.5074, longitude: -0.1278 },
+			{ name: 'Edinburgh (Scotland)', latitude: 55.9533, longitude: -3.1883 },
+			{ name: 'Cardiff (Wales)', latitude: 51.4816, longitude: -3.1791 },
+			{ name: 'Belfast (Northern Ireland)', latitude: 54.5973, longitude: -5.9301 }
+		]
+	},
+	{
 		category: 'Major Cities',
 		places: [
 			{ name: 'London', latitude: 51.5074, longitude: -0.1278 },
