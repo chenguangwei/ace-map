@@ -27,8 +27,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL('https://ace-map.vercel.app'),
-	title: 'Ace Map — World Geography Quiz',
+	metadataBase: new URL('https://mapquiz.pro'),
+	title: 'MapQuiz.pro — World Geography Quiz',
 	description:
 		'Test your world geography knowledge. Guess countries, cities, and landmarks on an interactive map. Supports India (CBSE), World Countries, and 15+ countries.',
 	authors: [
@@ -38,6 +38,7 @@ export const metadata: Metadata = {
 		}
 	],
 	keywords: [
+		'map quiz',
 		'geography quiz',
 		'world map game',
 		'country guessing game',
@@ -47,20 +48,20 @@ export const metadata: Metadata = {
 		'geography learning',
 		'interactive map',
 		'state capitals quiz',
-		'Ace Map'
+		'MapQuiz'
 	],
 	openGraph: {
 		type: 'website',
 		locale: 'en_US',
-		url: 'https://ace-map.vercel.app/',
-		siteName: 'Ace Map',
-		title: 'Ace Map — World Geography Quiz',
+		url: 'https://mapquiz.pro/',
+		siteName: 'MapQuiz.pro',
+		title: 'MapQuiz.pro — World Geography Quiz',
 		description:
 			'Test your world geography knowledge on an interactive map. 15+ countries, world mode, and India CBSE mode.'
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: 'Ace Map — World Geography Quiz',
+		title: 'MapQuiz.pro — World Geography Quiz',
 		description:
 			'Interactive geography quiz with 15+ countries and world mode.'
 	},

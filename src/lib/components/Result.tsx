@@ -225,15 +225,15 @@ const Result = (props: { code: string }) => {
 		const origin =
 			typeof window !== 'undefined'
 				? window.location.origin
-				: 'https://ace-map.vercel.app';
+				: 'https://mapquiz.pro';
 		return `${origin}/?code=${props.code}`;
 	}, [props.code]);
 	const shareTitle = isDailyChallengeResult
-		? `I finished today's Ace Map challenge`
-		: `I just played ${currentTopic?.title ?? 'Ace Map'}`;
+		? `I finished today's MapQuiz.pro challenge`
+		: `I just played ${currentTopic?.title ?? 'MapQuiz.pro'}`;
 	const shareText = isDailyChallengeResult
-		? `I scored ${accuracy}% on today's Ace Map daily challenge${challengeState.currentStreak > 0 ? ` and kept a ${challengeState.currentStreak}-day streak alive` : ''}. Can you beat it?`
-		: `I scored ${accuracy}% on ${currentTopic?.title ?? modeLabel.text} in Ace Map. See if you can beat my result.`;
+		? `I scored ${accuracy}% on today's MapQuiz.pro daily challenge${challengeState.currentStreak > 0 ? ` and kept a ${challengeState.currentStreak}-day streak alive` : ''}. Can you beat it?`
+		: `I scored ${accuracy}% on ${currentTopic?.title ?? modeLabel.text} in MapQuiz.pro. See if you can beat my result.`;
 
 	const handleCopy = async () => {
 		try {

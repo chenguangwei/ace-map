@@ -52,7 +52,7 @@ const Page = async ({
 								quizzes.
 							</h1>
 							<p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-								Ace Map now covers broad map quiz intent with
+								MapQuiz.pro covers broad map quiz intent with
 								focused landing pages, instant answer feedback,
 								and fast replay loops for world regions,
 								countries, and classroom-style practice.

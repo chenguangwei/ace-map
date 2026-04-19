@@ -18,7 +18,7 @@ import {
 	quizTopics
 } from '@/lib/data/quizTopics';
 
-const SITE_URL = 'https://ace-map.vercel.app';
+const SITE_URL = 'https://mapquiz.pro';
 
 export const generateStaticParams = () =>
 	quizTopics.map((topic) => ({ slug: topic.slug }));
@@ -36,7 +36,7 @@ export const generateMetadata = async ({
 
 	if (!topic) {
 		return {
-			title: 'Quiz Topic Not Found | Ace Map'
+			title: 'Quiz Topic Not Found | MapQuiz.pro'
 		};
 	}
 
@@ -104,7 +104,7 @@ const QuizTopicPage = async ({
 				}
 			: {
 					'@type': 'WebSite',
-					name: 'Ace Map',
+					name: 'MapQuiz.pro',
 					url: SITE_URL
 				},
 		about: {
@@ -120,13 +120,13 @@ const QuizTopicPage = async ({
 				'@type': 'ListItem',
 				position: 1,
 				name: 'Ace Map',
-				item: 'https://ace-map.vercel.app'
+				item: 'https://mapquiz.pro'
 			},
 			{
 				'@type': 'ListItem',
 				position: 2,
 				name: 'Quiz Library',
-				item: 'https://ace-map.vercel.app/quizzes'
+				item: 'https://mapquiz.pro/quizzes'
 			},
 			...(parentTopic
 				? [
@@ -134,13 +134,13 @@ const QuizTopicPage = async ({
 							'@type': 'ListItem',
 							position: 3,
 							name: parentTopic.title,
-							item: `https://ace-map.vercel.app/quiz/${parentTopic.slug}`
+							item: `https://mapquiz.pro/quiz/${parentTopic.slug}`
 						},
 						{
 							'@type': 'ListItem',
 							position: 4,
 							name: topic.title,
-							item: `https://ace-map.vercel.app/quiz/${topic.slug}`
+							item: `https://mapquiz.pro/quiz/${topic.slug}`
 						}
 					]
 				: [
@@ -148,7 +148,7 @@ const QuizTopicPage = async ({
 							'@type': 'ListItem',
 							position: 3,
 							name: topic.title,
-							item: `https://ace-map.vercel.app/quiz/${topic.slug}`
+							item: `https://mapquiz.pro/quiz/${topic.slug}`
 						}
 					])
 		]

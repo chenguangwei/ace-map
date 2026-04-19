@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { quizTopics } from '@/lib/data/quizTopics';
 
-const SITE_URL = 'https://ace-map.vercel.app';
+const SITE_URL = 'https://mapquiz.pro';
 
 const sitemap = (): MetadataRoute.Sitemap => [
 	{

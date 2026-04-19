@@ -247,7 +247,7 @@ const buildWorldTopic = (def: (typeof WORLD_TOPIC_DEFS)[number]): QuizTopic => {
 		title: def.title,
 		shortTitle: def.shortTitle,
 		seoTitle: `${def.title} | Interactive Geography Practice`,
-		seoDescription: `${def.description} Start the ${def.primaryKeyword} on Ace Map and get instant answer checks.`,
+		seoDescription: `${def.description} Start the ${def.primaryKeyword} on MapQuiz.pro and get instant answer checks.`,
 		description: def.description,
 		primaryKeyword: def.primaryKeyword,
 		searchIntent: def.searchIntent,
@@ -316,7 +316,7 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		description:
 			'Practice Japan prefectures on an interactive map with instant answer feedback and repeatable study loops.',
 		seoDescription:
-			'Learn Japan prefectures with an interactive map quiz built for fast recall, instant answer checks, and repeat practice on Ace Map.',
+			'Learn Japan prefectures with an interactive map quiz built for fast recall, instant answer checks, and repeat practice on MapQuiz.pro.',
 		benefits: [
 			'Practice the full Japan prefecture set from Hokkaido to Okinawa in one replayable loop',
 			'Spot weak regions quickly when neighboring prefectures start to blur together',
@@ -959,7 +959,7 @@ const buildCountrySubtopic = (def: CountrySubtopicDef): QuizTopic | null => {
 		seoTitle: `${def.title} | Interactive Geography Practice`,
 		seoDescription:
 			def.seoDescription ??
-			`${def.description} Replay missed answers and improve faster on Ace Map.`,
+			`${def.description} Replay missed answers and improve faster on MapQuiz.pro.`,
 		description: def.description,
 		primaryKeyword: def.primaryKeyword,
 		searchIntent: def.searchIntent,

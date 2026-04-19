@@ -1,5 +1,6 @@
 'use client';
 import type { Map as MapLibreMap } from 'maplibre-gl';
+import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import _Map, {
 	Marker as _Marker,
@@ -13,14 +14,16 @@ import _Map, {
 } from 'react-map-gl/maplibre';
 import { getCountryByCode } from '@/lib/data/countries';
 import {
+	getContinentScopeForWorldPlace,
 	getMapScopeForGame,
 	mapBoundsToFeatureCollection,
 	mapBoundsToLngLatBounds
 } from '@/lib/data/mapScopes';
 import {
+	applyGlobeTerrain,
+	GLOBE_SKY_CONFIG,
 	getMapStyleForMode,
-	getTerrainBasemapConfig,
-	GLOBE_FOG_CONFIG
+	getTerrainBasemapConfig
 } from '@/lib/maps/basemaps';
 import {
 	getCountryRegionSource,
@@ -60,6 +63,24 @@ const hideSymbolLayers = (map: MapLibreMap) => {
 	for (const layer of map.getStyle().layers ?? []) {
 		if (layer.type === 'symbol') {
 			map.setLayoutProperty(layer.id, 'visibility', 'none');
+		}
+	}
+};
+
+// Tints the CartoDB dark-matter basemap from near-black to deep navy for pulse mode.
+// Targets only the layers that are visibly too dark; leaves roads/boundaries untouched.
+const PULSE_NAVY_TINTS: Array<{ id: string; prop: string; value: string }> = [
+	{ id: 'background', prop: 'background-color', value: '#080F1E' },
+	{ id: 'water', prop: 'fill-color', value: '#0B1830' },
+	{ id: 'landcover', prop: 'fill-color', value: '#0D1A2D' },
+	{ id: 'land', prop: 'fill-color', value: '#0D1A2D' }
+];
+
+const applyPulseNavyTint = (map: MapLibreMap) => {
+	const layerIds = new Set(map.getStyle().layers?.map((l) => l.id) ?? []);
+	for (const { id, prop, value } of PULSE_NAVY_TINTS) {
+		if (layerIds.has(id)) {
+			try { map.setPaintProperty(id, prop, value); } catch { /* layer may not accept this prop */ }
 		}
 	}
 };
@@ -215,6 +236,8 @@ const Game = (
 		focusRequest: number;
 		mapDisplayMode: MapDisplayMode;
 		activityHotspots: ActivityHotspot[];
+		satelliteHintUrl: string | null;
+		onSatelliteHintDismiss: () => void;
 		onRegionLabelSelect: (label: string | null) => void;
 	}
 ) => {
@@ -237,6 +260,10 @@ const Game = (
 	const terrainBasemap = useMemo(() => getTerrainBasemapConfig(), []);
 	const { mode, countryCode, category } = props.gameState;
 	const isTerrainMode = props.mapDisplayMode === 'terrain';
+	const isTerrainModeRef = useRef(isTerrainMode);
+	isTerrainModeRef.current = isTerrainMode;
+	const mapDisplayModeRef = useRef(props.mapDisplayMode);
+	mapDisplayModeRef.current = props.mapDisplayMode;
 	const worldTargetSelection = useMemo(
 		() => resolveWorldPlaceSelection(props.gameState.toMark),
 		[props.gameState.toMark]
@@ -361,6 +388,9 @@ const Game = (
 		}
 	}, [props.mapDisplayMode]);
 
+	const toMarkRef = useRef(props.gameState.toMark);
+	toMarkRef.current = props.gameState.toMark;
+
 	const focusGameArea = useCallback(
 		(duration = 1100) => {
 			const map = mapRef.current?.getMap();
@@ -385,6 +415,24 @@ const Game = (
 					essential: true
 				});
 				return;
+			}
+
+			// World/all mode: zoom to the continent of the current target place
+			if (mode === 'world') {
+				const toMark = toMarkRef.current;
+				const continentScope = toMark
+					? getContinentScopeForWorldPlace(toMark.name)
+					: null;
+
+				if (continentScope) {
+					map.fitBounds(mapBoundsToLngLatBounds(continentScope.bounds), {
+						padding: { top: 88, right: 72, bottom: 88, left: 72 },
+						maxZoom: 4.6,
+						duration,
+						essential: true
+					});
+					return;
+				}
 			}
 
 			const nextView = getMapViewForGame({ mode, countryCode, category });
@@ -472,7 +520,12 @@ const Game = (
 			});
 			return true;
 		},
-		[props.onRegionLabelSelect, props.gameState.setCurrentMarker, props.gameState.toMark, worldTargetSelection]
+		[
+			props.onRegionLabelSelect,
+			props.gameState.setCurrentMarker,
+			props.gameState.toMark,
+			worldTargetSelection
+		]
 	);
 
 	const handleCountryRegionSelection = useCallback(
@@ -514,7 +567,14 @@ const Game = (
 			});
 			return true;
 		},
-		[activeCountryRegionSource, countryCode, countryTargetSelection, props.onRegionLabelSelect, props.gameState.setCurrentMarker, props.gameState.toMark]
+		[
+			activeCountryRegionSource,
+			countryCode,
+			countryTargetSelection,
+			props.onRegionLabelSelect,
+			props.gameState.setCurrentMarker,
+			props.gameState.toMark
+		]
 	);
 
 	// Cinematic camera reveal after submission
@@ -531,7 +591,8 @@ const Game = (
 		const minLat = Math.min(...lats);
 		const maxLat = Math.max(...lats);
 		const isSameSpot =
-			Math.abs(maxLng - minLng) < 0.01 && Math.abs(maxLat - minLat) < 0.01;
+			Math.abs(maxLng - minLng) < 0.01 &&
+			Math.abs(maxLat - minLat) < 0.01;
 
 		// Delay 300ms to let ResultLine render first
 		const timer = setTimeout(() => {
@@ -547,7 +608,10 @@ const Game = (
 			}
 
 			map.fitBounds(
-				[[minLng, minLat], [maxLng, maxLat]],
+				[
+					[minLng, minLat],
+					[maxLng, maxLat]
+				],
 				{
 					padding: { top: 110, right: 72, bottom: 110, left: 72 },
 					maxZoom: mode === 'world' ? 4.6 : 7.2,
@@ -572,9 +636,18 @@ const Game = (
 			onLoad={() => {
 				const map = mapRef.current?.getMap();
 				if (map) {
-					hideSymbolLayers(map);
-					(map as any).setProjection({ type: 'globe' });
-					(map as any).setFog(GLOBE_FOG_CONFIG);
+					const applyGlobeEffects = () => {
+						hideSymbolLayers(map);
+						map.setProjection({ type: 'globe' });
+						map.setSky(GLOBE_SKY_CONFIG);
+						if (!isTerrainModeRef.current) applyGlobeTerrain(map);
+						if (mapDisplayModeRef.current === 'pulse') {
+							applyPulseNavyTint(map);
+						}
+					};
+					applyGlobeEffects();
+					// Re-apply after each subsequent style switch
+					map.on('style.load', applyGlobeEffects);
 				}
 				focusGameArea(0);
 			}}
@@ -582,8 +655,13 @@ const Game = (
 				const map = mapRef.current?.getMap();
 				if (map?.isStyleLoaded()) {
 					hideSymbolLayers(map);
-					(map as any).setProjection({ type: 'globe' });
-					(map as any).setFog(GLOBE_FOG_CONFIG);
+					map.setProjection({ type: 'globe' });
+					map.setSky(GLOBE_SKY_CONFIG);
+					if (mapDisplayModeRef.current === 'pulse') {
+						applyPulseNavyTint(map);
+					}
+					// Terrain is handled by the style.load listener — skip here
+					// to avoid triggering styledata loops from addSource/setTerrain
 				}
 			}}
 			onClick={(e) => {
@@ -1198,6 +1276,29 @@ const Game = (
 
 			{props.info && (
 				<ResultLine info={props.info} isTerrainMode={isTerrainMode} />
+			)}
+			{props.satelliteHintUrl && (
+				<div className="pointer-events-auto absolute bottom-16 right-4 z-10 overflow-hidden rounded-xl border border-white/20 shadow-2xl">
+					<div className="relative">
+						<Image
+							src={props.satelliteHintUrl}
+							width={200}
+							height={150}
+							alt="Satellite hint"
+							className="block"
+						/>
+						<button
+							type="button"
+							onClick={props.onSatelliteHintDismiss}
+							className="absolute right-1.5 top-1.5 flex size-5 items-center justify-center rounded-full bg-black/50 text-[10px] text-white hover:bg-black/70"
+						>
+							✕
+						</button>
+						<div className="absolute bottom-0 left-0 right-0 bg-black/40 px-2 py-1 text-[9px] text-white/70">
+							© Mapbox · 卫星线索（无地名）
+						</div>
+					</div>
+				</div>
 			)}
 			<Marker {...props} />
 		</_Map>
