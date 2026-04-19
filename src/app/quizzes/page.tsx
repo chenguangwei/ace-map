@@ -14,7 +14,10 @@ import {
 export const metadata: Metadata = {
 	title: 'Quiz Library | MapQuiz.pro',
 	description:
-		'Browse world map quizzes, continent quizzes, and country-specific geography practice pages.'
+		'Browse world map quizzes, continent quizzes, and country-specific geography practice pages.',
+	alternates: {
+		canonical: 'https://mapquiz.pro/quizzes'
+	}
 };
 
 const QuizzesPage = () => {

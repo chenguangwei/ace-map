@@ -50,6 +50,9 @@ export const metadata: Metadata = {
 		'state capitals quiz',
 		'MapQuiz'
 	],
+	alternates: {
+		canonical: 'https://mapquiz.pro'
+	},
 	openGraph: {
 		type: 'website',
 		locale: 'en_US',
