@@ -440,7 +440,7 @@ const Main = (props: {
 					)}
 
 					<div className="pointer-events-none absolute inset-0">
-						<div className="pointer-events-auto absolute right-3 top-3 flex max-w-[min(19rem,calc(100%-1.5rem))] flex-col items-end gap-2 sm:right-5 sm:top-5">
+						<div className="pointer-events-auto absolute right-3 top-3 flex max-w-[min(13rem,calc(100%-1.5rem))] sm:max-w-[min(19rem,calc(100%-1.5rem))] flex-col items-end gap-1.5 sm:gap-2 sm:right-5 sm:top-5">
 							{gameState.toMark &&
 								gameState.status !== 'idle' && (
 									<div className="w-full rounded-[24px] border border-slate-900/10 bg-[linear-gradient(145deg,rgba(15,23,42,0.78),rgba(30,41,59,0.72))] px-3 py-2.5 sm:px-4 sm:py-3.5 text-white shadow-[0_20px_40px_rgba(15,23,42,0.24)] backdrop-blur-md">
