@@ -650,8 +650,8 @@ const Main = (props: {
 								<span>Re-center</span>
 							</button>
 
-							<div className="w-full rounded-[22px] border border-slate-900/10 bg-white/88 p-2 shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur-md">
-								<div className="mb-2 flex items-center justify-between gap-3 px-1">
+							<div className="w-full rounded-[22px] border border-slate-900/10 bg-white/88 p-1.5 sm:p-2 shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur-md">
+								<div className="hidden sm:flex mb-2 items-center justify-between gap-3 px-1">
 									<p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
 										Map Layer
 									</p>
@@ -697,14 +697,14 @@ const Main = (props: {
 												onClick={() =>
 													setMapDisplayMode(option.id)
 												}
-												className={`inline-flex flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-2.5 text-xs font-semibold transition cursor-pointer ${
+												className={`inline-flex flex-col items-center justify-center gap-1 rounded-2xl border p-2 sm:px-2 sm:py-2.5 text-xs font-semibold transition cursor-pointer ${
 													isActive
 														? 'border-slate-900 bg-slate-950 text-white shadow-[0_12px_24px_rgba(15,23,42,0.18)]'
 														: 'border-slate-200 bg-white text-slate-700 hover:border-sky-300 hover:text-slate-950'
 												}`}
 											>
 												<Icon className="size-4" />
-												<span>{option.label}</span>
+												<span className="hidden sm:inline">{option.label}</span>
 											</button>
 										);
 									})}
