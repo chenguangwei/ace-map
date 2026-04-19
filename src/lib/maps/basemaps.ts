@@ -3,8 +3,7 @@ import type { MapDisplayMode } from '@/lib/utils/mapActivity';
 
 const BASEMAP_STYLES: Record<Exclude<MapDisplayMode, 'terrain'>, string> = {
 	play: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
-	pulse: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-	activity: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json'
+	pulse: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json'
 };
 
 type SatelliteProvider = 'custom' | 'esri' | 'mapbox' | 'tianditu';
@@ -184,6 +183,24 @@ export const getMapStyleForMode = (
 	}
 
 	return BASEMAP_STYLES[mode];
+};
+
+export const applyPulseStyleOverrides = (map: MapLibreMap): void => {
+	const LAND_COLOR = '#F1F3F9';
+	const WATER_COLOR = '#A6CDF6';
+
+	for (const layer of map.getStyle().layers ?? []) {
+		const id = layer.id.toLowerCase();
+		if (layer.type === 'background') {
+			map.setPaintProperty(layer.id, 'background-color', LAND_COLOR);
+		} else if (layer.type === 'fill') {
+			if (id.includes('water') || id.includes('ocean') || id.includes('lake') || id.includes('river')) {
+				map.setPaintProperty(layer.id, 'fill-color', WATER_COLOR);
+			} else if (id.includes('land') || id.includes('earth') || id.includes('landuse') || id.includes('ground')) {
+				map.setPaintProperty(layer.id, 'fill-color', LAND_COLOR);
+			}
+		}
+	}
 };
 
 // MapLibre GL JS v5 uses setSky() for globe atmosphere (setFog was removed)

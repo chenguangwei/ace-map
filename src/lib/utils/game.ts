@@ -47,6 +47,7 @@ export interface GameState {
 	strictness: number;
 	currentMarker: PlaceWithoutName | 'submitted' | 'none';
 	toMark: Place | null;
+	availablePlaces: Place[];
 	setMode: (mode: GameMode) => void;
 	setCountryCode: (code: string) => void;
 	setCategory: (category: 'all' | string[]) => void;
@@ -54,9 +55,9 @@ export interface GameState {
 	setCurrentMarker: (marker: PlaceWithoutName | 'submitted' | 'none') => void;
 	setPlaceSource: (source: PlaceItems[]) => void;
 	submitMarker: () => SubmitInfo;
-	resetAndStart: () => void;
+	resetAndStart: (orderedPlaces?: Place[]) => void;
 	next: (info: SubmitInfo) => void;
-	start: () => void;
+	start: (orderedPlaces?: Place[]) => void;
 	pause: () => void;
 	resume: () => void;
 	reset: () => void;
@@ -111,6 +112,40 @@ const shufflePlaces = (places: Place[]): Place[] => {
 		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
 	}
 	return shuffled;
+};
+
+interface HotspotAnchor {
+	latitude: number;
+	longitude: number;
+	heat: number;
+}
+
+/** Weighted shuffle biased toward places near high-heat hotspots. */
+export const weightedShufflePlaces = (
+	places: Place[],
+	hotspots: HotspotAnchor[]
+): Place[] => {
+	if (hotspots.length === 0) return shufflePlaces(places);
+
+	const weighted = places.map((place) => {
+		// Find max heat contribution from any hotspot within ~2500 km
+		let heatBoost = 0;
+		for (const h of hotspots) {
+			const dlat = place.latitude - h.latitude;
+			const dlng = place.longitude - h.longitude;
+			const distDeg = Math.sqrt(dlat * dlat + dlng * dlng);
+			const distKm = distDeg * 111;
+			const contribution = h.heat * Math.max(0, 1 - distKm / 2500);
+			if (contribution > heatBoost) heatBoost = contribution;
+		}
+		// Score = random base * heat multiplier (hot places score higher on average)
+		const score = Math.random() * (1 + heatBoost * 1.8);
+		return { place, score };
+	});
+
+	return weighted
+		.sort((a, b) => b.score - a.score)
+		.map((w) => w.place);
 };
 
 type MarkedPlace = Place & { isMarked?: boolean };
@@ -277,9 +312,9 @@ export const useGame = (): GameState => {
 		timerValue.current = 0;
 	}, [stopTimer]);
 
-	const start = useCallback(() => {
+	const start = useCallback((orderedPlaces?: Place[]) => {
 		resetTimer();
-		dispatch({ type: 'START_GAME', payload: availablePlaces });
+		dispatch({ type: 'START_GAME', payload: orderedPlaces ?? availablePlaces });
 		startTimer();
 	}, [availablePlaces, resetTimer, startTimer]);
 
@@ -298,9 +333,9 @@ export const useGame = (): GameState => {
 		resetTimer();
 	}, [resetTimer]);
 
-	const resetAndStart = useCallback(() => {
+	const resetAndStart = useCallback((orderedPlaces?: Place[]) => {
 		reset();
-		setTimeout(start, 0);
+		setTimeout(() => start(orderedPlaces), 0);
 	}, [reset, start]);
 
 	const setMode = useCallback((mode: GameMode) => {
@@ -424,6 +459,7 @@ export const useGame = (): GameState => {
 		strictness: state.strictness,
 		currentMarker: state.currentMarker,
 		toMark,
+		availablePlaces,
 		setMode,
 		setCountryCode,
 		setCategory,

@@ -10,7 +10,7 @@ import {
 } from '@/lib/data/countries';
 import { getQuizTopicBySlug } from '@/lib/data/quizTopics';
 
-export type MapDisplayMode = 'play' | 'pulse' | 'activity' | 'terrain';
+export type MapDisplayMode = 'play' | 'pulse' | 'terrain';
 
 export interface ActivityHotspot {
 	id: string;
@@ -144,29 +144,6 @@ export const buildActivityHotspots = (
 	const next = [...merged.values()].sort((a, b) => b.heat - a.heat);
 	return next.length > 0 ? next.slice(0, 12) : buildFallbackHotspots();
 };
-
-export const buildActivityHeatmapCollection = (
-	hotspots: ActivityHotspot[]
-) => ({
-	type: 'FeatureCollection' as const,
-	features: hotspots.map((hotspot) => ({
-		type: 'Feature' as const,
-		properties: {
-			id: hotspot.id,
-			label: hotspot.label,
-			playerCount: hotspot.playerCount,
-			playStarts: hotspot.playStarts,
-			completions: hotspot.completions,
-			heat: hotspot.heat,
-			modeLabel: hotspot.modeLabel,
-			regionType: hotspot.regionType
-		},
-		geometry: {
-			type: 'Point' as const,
-			coordinates: [hotspot.longitude, hotspot.latitude]
-		}
-	}))
-});
 
 export const buildActivityPulseCollection = (
 	hotspots: ActivityHotspot[],

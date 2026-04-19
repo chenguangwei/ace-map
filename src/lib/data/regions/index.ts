@@ -8,6 +8,7 @@ import { esPlaces } from './es';
 import { frPlaces } from './fr';
 import { gbPlaces } from './gb';
 import { idPlaces } from './id';
+import { inPlaces } from './in';
 import { itPlaces } from './it';
 import { jpPlaces } from './jp';
 import { krPlaces } from './kr';
@@ -20,7 +21,7 @@ export type RegionMap = Record<string, PlaceItems[]>;
 
 /** Map of country code → region places */
 export const COUNTRY_REGIONS: RegionMap = {
-	in: predefinedPlaces,
+	in: [...inPlaces, ...predefinedPlaces],
 	us: usPlaces,
 	cn: cnPlaces,
 	gb: gbPlaces,

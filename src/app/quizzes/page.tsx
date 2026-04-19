@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import AdSlot from '@/lib/components/monetization/AdSlot';
-import TopicObservabilityPanel from '@/lib/components/analytics/TopicObservabilityPanel';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MasteryDashboard from '@/lib/components/quizzes/MasteryDashboard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
@@ -38,29 +36,22 @@ const QuizzesPage = () => {
 					Quiz Library
 				</span>
 				<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-					Explore the MapQuiz.pro quiz network.
+					Explore every map quiz in one place.
 				</h1>
 				<p className="mt-5 text-lg leading-8 text-slate-600">
-					These pages are organized by search intent: broad world quizzes,
-					continent drills, country hubs, and focused subtopic practice.
+					World quizzes, continent drills, country hubs, and focused regional practice — all in one library.
 				</p>
 			</section>
 
-			<div className="mt-12 grid gap-6 lg:grid-cols-[1fr_320px]">
+			<div className="mt-12">
 				<DailyChallengeCard />
-				<AdSlot
-					slot="quiz-library-rail"
-					description="A non-blocking library placement for future ads, sponsorships, or premium upsells."
-				/>
 			</div>
 
 			<div className="mt-14 space-y-16">
 				<MasteryDashboard
-					title="Progress and mastery"
-					description="This local dashboard shows which quiz topics are compounding well, where mistakes are piling up, and which next session is most useful."
+					title="Your progress"
+					description="Track which topics you've practiced, where you're making mistakes, and what to focus on next."
 				/>
-
-				<TopicObservabilityPanel />
 
 				{QUIZ_SECTIONS.filter((section) => section.id !== 'countries').map(
 					(section) => (
@@ -74,28 +65,28 @@ const QuizzesPage = () => {
 				)}
 
 				<QuizTopicSection
-					title="Country Map Quiz Hubs"
-					description="These country hub pages cover the broadest country-level intents and link outward into narrower geography drills."
+					title="Country Map Quizzes"
+					description="Start with any country for a full quiz covering its regions, cities, and landmarks."
 					topics={rootCountryTopics}
 				/>
 
 				<QuizTopicSection
-					title="Featured Developed-Country Drills"
-					description="This layer highlights one focused drill per priority country so searchers can jump directly into narrower intents without passing through the hub first."
+					title="Featured Country Deep-Dives"
+					description="Jump straight into focused practice for a specific country — states, prefectures, provinces, and more."
 					topics={featuredCountryDrills}
 					compact
 				/>
 
 				<QuizTopicSection
-					title="Focused Country Drills"
-					description="These long-tail pages target narrower study intent such as prefectures, state capitals, major cities, and landmark practice."
+					title="Focused Regional Practice"
+					description="Narrow your practice to specific regions, capitals, cities, or landmarks within a country."
 					topics={focusedDrillTopics}
 					compact
 				/>
 			</div>
 
 			<div className="mt-16">
-				<div className="grid gap-6 lg:grid-cols-2">
+				<div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
 					<RecentPracticePanel />
 					<MistakesReviewPanel />
 				</div>
