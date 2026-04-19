@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fetches and transforms admin boundary GeoJSON files for use in ace-map.
 // Usage: node scripts/fetch-admin-geojson.mjs <country-code>
-// Supported: jp
+// Supported: jp, cn
 
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -11,6 +11,29 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
 const CONFIGS = {
+  cn: {
+    url: 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson',
+    outFile: 'public/data/admin/cn-provinces.geojson',
+    nameProperty: 'name',
+    filter: (feature) => feature.properties.admin === 'China',
+    transform: (feature, nameProp) => {
+      const raw = feature.properties[nameProp] || '';
+      const nameMap = {
+        'Nei Mongol': 'Inner Mongolia',
+        'Inner Mongol': 'Inner Mongolia',
+        'Xizang': 'Tibet',
+        'Guangxi Zhuang': 'Guangxi',
+        'Ningxia Hui': 'Ningxia',
+        'Xinjiang Uygur': 'Xinjiang',
+      };
+      const name = nameMap[raw] || raw;
+      return {
+        type: 'Feature',
+        geometry: feature.geometry,
+        properties: { name },
+      };
+    },
+  },
   jp: {
     url: 'https://raw.githubusercontent.com/dataofjapan/land/master/japan.geojson',
     outFile: 'public/data/admin/jp-prefectures.geojson',
@@ -55,7 +78,8 @@ async function main() {
     console.log('First feature properties:', JSON.stringify(raw.features[0].properties));
   }
 
-  const features = raw.features.map((f) => config.transform(f, config.nameProperty));
+  const filtered = config.filter ? raw.features.filter(config.filter) : raw.features;
+  const features = filtered.map((f) => config.transform(f, config.nameProperty));
 
   const output = {
     type: 'FeatureCollection',
