@@ -28,7 +28,7 @@ export enum Strictness {
 export enum WorldStrictness {
 	High = 300000, // 300 km
 	Medium = 800000, // 800 km
-	Low = 2000000 // 2000 km
+	Low = 1500000 // 1500 km
 }
 
 export const numToStrictness = (num: number): Strictness => {

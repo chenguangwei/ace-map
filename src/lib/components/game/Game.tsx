@@ -417,17 +417,20 @@ const Game = (
 				return;
 			}
 
-			// World/all mode: zoom to the continent of the current target place
+			// World/all mode: centre globe on the target place so it's always
+			// in the middle of the screen. Use a continent-level zoom so the
+			// surrounding region is visible for clicking.
 			if (mode === 'world') {
 				const toMark = toMarkRef.current;
-				const continentScope = toMark
-					? getContinentScopeForWorldPlace(toMark.name)
-					: null;
-
-				if (continentScope) {
-					map.fitBounds(mapBoundsToLngLatBounds(continentScope.bounds), {
-						padding: { top: 88, right: 72, bottom: 88, left: 72 },
-						maxZoom: 4.6,
+				if (toMark) {
+					const continentScope = getContinentScopeForWorldPlace(toMark.name);
+					// Larger continents (Asia, Americas) get a slightly wider zoom
+					const zoom = continentScope
+						? (['Asia', 'Americas'].includes(continentScope.label) ? 2.4 : 2.8)
+						: 2.4;
+					map.easeTo({
+						center: [toMark.longitude, toMark.latitude],
+						zoom,
 						duration,
 						essential: true
 					});
@@ -452,13 +455,21 @@ const Game = (
 		focusGameArea();
 	}, [focusGameArea, props.focusRequest]);
 
+	// When a new question appears in world mode, fly to its continent automatically
 	useEffect(() => {
-		if (previousInfoRef.current !== null && props.info === null) {
+		if (mode === 'world' && props.gameState.toMark) {
+			focusGameArea(1200);
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.gameState.toMark?.name]);
+
+	useEffect(() => {
+		if (previousInfoRef.current !== null && props.info === null && mode !== 'world') {
 			focusGameArea(900);
 		}
 
 		previousInfoRef.current = props.info;
-	}, [focusGameArea, props.info]);
+	}, [focusGameArea, props.info, mode]);
 
 	useEffect(() => {
 		if (

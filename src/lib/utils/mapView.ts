@@ -8,9 +8,9 @@ export interface MapViewState {
 }
 
 const DEFAULT_WORLD_VIEW: MapViewState = {
-	latitude: 20,
-	longitude: 10,
-	zoom: 1.5
+	latitude: 15,
+	longitude: -80,
+	zoom: 2.2
 };
 
 const DEFAULT_INDIA_VIEW: MapViewState = {
