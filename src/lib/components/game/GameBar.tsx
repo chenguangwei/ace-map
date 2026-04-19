@@ -251,8 +251,8 @@ const GameBar = (
 		if (!didDeduct) {
 			addToast({
 				color: 'warning',
-				title: '今日卫星线索已用完',
-				description: '明天自动补充 5 次，或购买积分包'
+				title: 'No satellite hints left today',
+				description: 'Refills automatically tomorrow, or purchase more credits'
 			});
 			return;
 		}
@@ -334,7 +334,7 @@ const GameBar = (
 								onPress={handleSatelliteHint}
 								startContent={<Satellite className="size-4" />}
 							>
-								卫星线索 · 🪙1
+								Satellite Hint · 🪙1
 							</Button>
 						)}
 						{showActionButton && (
