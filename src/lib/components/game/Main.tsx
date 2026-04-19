@@ -440,11 +440,11 @@ const Main = (props: {
 					)}
 
 					<div className="pointer-events-none absolute inset-0">
-						<div className="pointer-events-auto absolute right-3 top-3 flex max-w-[min(19rem,calc(100%-1.5rem))] flex-col items-end gap-2 sm:right-5 sm:top-5">
+						<div className="pointer-events-auto absolute right-3 top-3 flex max-w-[min(13rem,calc(100%-1.5rem))] sm:max-w-[min(19rem,calc(100%-1.5rem))] flex-col items-end gap-1.5 sm:gap-2 sm:right-5 sm:top-5">
 							{gameState.toMark &&
 								gameState.status !== 'idle' && (
-									<div className="w-full rounded-[24px] border border-slate-900/10 bg-[linear-gradient(145deg,rgba(15,23,42,0.78),rgba(30,41,59,0.72))] px-4 py-3.5 text-white shadow-[0_20px_40px_rgba(15,23,42,0.24)] backdrop-blur-md">
-										<div className="mb-3 flex items-center justify-between gap-3">
+									<div className="w-full rounded-[24px] border border-slate-900/10 bg-[linear-gradient(145deg,rgba(15,23,42,0.78),rgba(30,41,59,0.72))] px-3 py-2.5 sm:px-4 sm:py-3.5 text-white shadow-[0_20px_40px_rgba(15,23,42,0.24)] backdrop-blur-md">
+										<div className="mb-2 sm:mb-3 flex items-center justify-between gap-3">
 											<span className="rounded-full border border-white/16 bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-sky-100">
 												{mapDisplayMode === 'terrain'
 													? 'Terrain Sense'
@@ -485,7 +485,7 @@ const Main = (props: {
 										</div>
 										<div className="flex items-start gap-3">
 											<span
-												className={`mt-0.5 rounded-2xl p-2.5 text-white shadow-[0_12px_24px_rgba(6,182,212,0.26)] ${
+												className={`mt-0.5 rounded-2xl p-2 sm:p-2.5 text-white shadow-[0_12px_24px_rgba(6,182,212,0.26)] ${
 													mapDisplayMode === 'terrain'
 														? 'bg-[linear-gradient(145deg,#f59e0b,#854d0e)] shadow-[0_12px_24px_rgba(245,158,11,0.26)]'
 														: 'bg-[linear-gradient(145deg,#38bdf8,#0f766e)]'
@@ -511,10 +511,10 @@ const Main = (props: {
 														? 'Terrain read'
 														: 'Lock target'}
 												</p>
-												<p className="truncate text-xl font-black leading-tight text-white">
+												<p className="truncate text-base sm:text-xl font-black leading-tight text-white">
 													{gameState.toMark.name}
 												</p>
-												<p className="mt-1 text-xs font-medium text-slate-300">
+												<p className="hidden sm:block mt-1 text-xs font-medium text-slate-300">
 													{mapDisplayMode ===
 													'terrain'
 														? 'Read the land first, then trust the terrain and send the guess.'
@@ -641,17 +641,17 @@ const Main = (props: {
 								onClick={() =>
 									setFocusRequest((value) => value + 1)
 								}
-								className="inline-flex items-center gap-2 rounded-full border border-sky-200/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.12)] backdrop-blur-md transition hover:border-sky-300 hover:text-slate-900 cursor-pointer"
+								className="inline-flex items-center gap-0 sm:gap-2 rounded-full border border-sky-200/80 bg-white/90 p-2 sm:px-4 sm:py-2 text-sm font-semibold text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.12)] backdrop-blur-md transition hover:border-sky-300 hover:text-slate-900 cursor-pointer"
 							>
 								<Crosshair
 									className="size-4 text-sky-700"
 									strokeWidth={2}
 								/>
-								<span>Re-center</span>
+								<span className="hidden sm:inline">Re-center</span>
 							</button>
 
-							<div className="w-full rounded-[22px] border border-slate-900/10 bg-white/88 p-2 shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur-md">
-								<div className="mb-2 flex items-center justify-between gap-3 px-1">
+							<div className="w-full rounded-[22px] border border-slate-900/10 bg-white/88 p-1.5 sm:p-2 shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur-md">
+								<div className="hidden sm:flex mb-2 items-center justify-between gap-3 px-1">
 									<p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
 										Map Layer
 									</p>
@@ -697,14 +697,14 @@ const Main = (props: {
 												onClick={() =>
 													setMapDisplayMode(option.id)
 												}
-												className={`inline-flex flex-col items-center justify-center gap-1 rounded-2xl border px-2 py-2.5 text-xs font-semibold transition cursor-pointer ${
+												className={`inline-flex flex-col items-center justify-center gap-1 rounded-2xl border p-2 sm:px-2 sm:py-2.5 text-xs font-semibold transition cursor-pointer ${
 													isActive
 														? 'border-slate-900 bg-slate-950 text-white shadow-[0_12px_24px_rgba(15,23,42,0.18)]'
 														: 'border-slate-200 bg-white text-slate-700 hover:border-sky-300 hover:text-slate-950'
 												}`}
 											>
 												<Icon className="size-4" />
-												<span>{option.label}</span>
+												<span className="hidden sm:inline">{option.label}</span>
 											</button>
 										);
 									})}

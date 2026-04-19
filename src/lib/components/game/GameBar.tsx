@@ -275,20 +275,20 @@ const GameBar = (
 
 	return (
 		<div className="pointer-events-none absolute inset-0 z-30">
-			<div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-2 sm:left-5 sm:top-5">
-				<div className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-slate-950/72 px-3 py-1.5 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] backdrop-blur-md">
-					<span className="text-[10px] font-bold uppercase tracking-[0.24em] text-sky-200/90">
+			<div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-1.5 sm:gap-2 sm:left-5 sm:top-5">
+				<div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/14 bg-slate-950/72 px-2.5 py-1 sm:px-3 sm:py-1.5 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] backdrop-blur-md">
+					<span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.24em] text-sky-200/90">
 						Mode
 					</span>
-					<span className="text-sm font-semibold text-white">
+					<span className="text-xs sm:text-sm font-semibold text-white">
 						{modeLabel}
 					</span>
 				</div>
-				<div className="inline-flex items-center gap-2 rounded-full border border-white/14 bg-slate-950/72 px-3 py-1.5 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] backdrop-blur-md">
-					<span className="text-[10px] font-bold uppercase tracking-[0.24em] text-slate-300/90">
+				<div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/14 bg-slate-950/72 px-2.5 py-1 sm:px-3 sm:py-1.5 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] backdrop-blur-md">
+					<span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.24em] text-slate-300/90">
 						Session
 					</span>
-					<span className="text-sm font-semibold text-white">
+					<span className="text-xs sm:text-sm font-semibold text-white">
 						{sessionLabel}
 					</span>
 				</div>
