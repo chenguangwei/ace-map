@@ -15,7 +15,7 @@ const CONFIGS = {
     url: 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_1_states_provinces.geojson',
     outFile: 'public/data/admin/cn-provinces.geojson',
     nameProperty: 'name',
-    filter: (feature) => feature.properties.admin === 'China',
+    filter: (feature) => feature.properties.admin === 'China' && feature.properties.name !== 'Paracel Islands',
     transform: (feature, nameProp) => {
       const raw = feature.properties[nameProp] || '';
       const nameMap = {
