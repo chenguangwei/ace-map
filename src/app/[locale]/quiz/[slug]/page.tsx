@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 import TopicPageTracker from '@/lib/components/analytics/TopicPageTracker';
 import TrackedTopicLink from '@/lib/components/analytics/TrackedTopicLink';
 import Main from '@/lib/components/game/Main';
@@ -20,14 +22,16 @@ import {
 const SITE_URL = 'https://mapquiz.pro';
 
 export const generateStaticParams = () =>
-	quizTopics.map((topic) => ({ slug: topic.slug }));
+	routing.locales.flatMap((locale) =>
+		quizTopics.map((topic) => ({ locale, slug: topic.slug }))
+	);
 
 export const generateMetadata = async ({
 	params
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> => {
-	const { slug } = await params;
+	const { slug, locale: _locale } = await params;
 	const topic = getQuizTopicBySlug(slug);
 	const parentTopic = topic?.parentSlug
 		? getQuizTopicBySlug(topic.parentSlug)
@@ -73,9 +77,10 @@ export const generateMetadata = async ({
 const QuizTopicPage = async ({
 	params
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 }) => {
-	const { slug } = await params;
+	const { slug, locale } = await params;
+	setRequestLocale(locale);
 	const topic = getQuizTopicBySlug(slug);
 	if (!topic) notFound();
 

@@ -3,6 +3,7 @@ import { Skeleton } from '@heroui/skeleton';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
+import { setRequestLocale } from 'next-intl/server';
 import Main from '@/lib/components/game/Main';
 import AdSlot from '@/lib/components/monetization/AdSlot';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
@@ -24,10 +25,14 @@ export const metadata: Metadata = {
 };
 
 const page = async ({
-	searchParams
+	searchParams,
+	params
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+	params: Promise<{ locale: string }>;
 }) => {
+	const { locale } = await params;
+	setRequestLocale(locale);
 	const resolved = await searchParams;
 	const topicParam =
 		typeof resolved.topic === 'string' ? resolved.topic : undefined;

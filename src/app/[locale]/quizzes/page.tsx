@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { setRequestLocale } from 'next-intl/server';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MasteryDashboard from '@/lib/components/quizzes/MasteryDashboard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
@@ -20,7 +21,9 @@ export const metadata: Metadata = {
 	}
 };
 
-const QuizzesPage = () => {
+const QuizzesPage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+	const { locale } = await params;
+	setRequestLocale(locale);
 	const featuredCountryCodes = ['jp', 'de', 'ca', 'au', 'fr', 'gb', 'it', 'es'];
 	const rootCountryTopics = getQuizTopicsByKind('root').filter(
 		(topic) => topic.section === 'countries'

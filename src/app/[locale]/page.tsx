@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { setRequestLocale } from 'next-intl/server';
 import { BackgroundBeams } from '@/lib/components/BgBeams';
 import { Show } from '@/lib/components/Flow';
 import AdSlot from '@/lib/components/monetization/AdSlot';
@@ -19,10 +20,14 @@ import {
 } from '@/lib/data/quizTopics';
 
 const Page = async ({
-	searchParams
+	searchParams,
+	params
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+	params: Promise<{ locale: string }>;
 }) => {
+	const { locale } = await params;
+	setRequestLocale(locale);
 	const featuredCountryCodes = ['jp', 'de', 'ca', 'au', 'fr', 'gb', 'it', 'es'];
 	const resultCode = (await searchParams).code;
 	const popularTopics = getQuizTopicsBySection('popular');
