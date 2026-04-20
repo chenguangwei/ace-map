@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import AdSlot from '@/lib/components/monetization/AdSlot';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
@@ -60,14 +61,6 @@ const shadows = {
 	50: 'sm:shadow-yellow-500/50',
 	75: 'sm:shadow-emerald-500/50'
 };
-const messages = {
-	0: {
-		title: 'Keep Practising!',
-		message: 'Geography is a skill — keep at it!'
-	},
-	50: { title: 'Good Job!', message: "You're getting the hang of it." },
-	75: { title: 'Outstanding!', message: 'You really know your geography!' }
-};
 
 const fire = (particleRatio: number, opts: Record<string, unknown>) => {
 	confetti({
@@ -79,6 +72,12 @@ const fire = (particleRatio: number, opts: Record<string, unknown>) => {
 
 const Result = (props: { code: string }) => {
 	const router = useRouter();
+	const t = useTranslations('Result');
+	const messages = {
+		0: { title: t('grade0Title'), message: t('grade0Message') },
+		50: { title: t('grade50Title'), message: t('grade50Message') },
+		75: { title: t('grade75Title'), message: t('grade75Message') }
+	} as const;
 	const result = useMemo(() => decodeResult(props.code), [props.code]);
 	const sessionIdRef = useRef(createPracticeSessionId());
 	const persistedRef = useRef(false);
@@ -311,27 +310,27 @@ const Result = (props: { code: string }) => {
 					<div className="flex flex-col gap-3">
 						<SummaryRow
 							icon={<Target className="size-5" />}
-							label="Accuracy"
+							label={t('accuracy')}
 							value={`${accuracy}% (${result.score}/${result.total})`}
 						/>
 						<SummaryRow
 							icon={<Clock className="size-5" />}
-							label="Time"
+							label={t('time')}
 							value={formattedTime}
 						/>
 						<SummaryRow
 							icon={<Flame className="size-5" />}
-							label="Precision"
+							label={t('precision')}
 							value={strictnessLabel}
 						/>
 						<SummaryRow
 							icon={modeLabel.icon}
-							label="Mode"
+							label={t('mode')}
 							value={modeLabel.text}
 						/>
 						<SummaryRow
 							icon={<ChartBarStacked className="size-5" />}
-							label="Categories"
+							label={t('categories')}
 							value={
 								<span className="max-w-[160px] line-clamp-2 text-right text-sm text-default-600 dark:text-default-400">
 									{categoryText}
@@ -341,7 +340,7 @@ const Result = (props: { code: string }) => {
 						{(result.bestStreak ?? 0) > 0 && (
 							<SummaryRow
 								icon={<Zap className="size-5" />}
-								label="Best Streak"
+								label={t('bestStreak')}
 								value={`${result.bestStreak}×`}
 							/>
 						)}
@@ -392,7 +391,7 @@ const Result = (props: { code: string }) => {
 						</p>
 						<h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-950">
 							{isDailyChallengeResult
-								? "Today's challenge is done. Share your score."
+								? t('shareScore')
 								: 'Turn this result into a challenge link.'}
 						</h2>
 						<p className="mt-2 text-sm leading-6 text-slate-600">
@@ -527,13 +526,13 @@ const Result = (props: { code: string }) => {
 
 			<div className="mt-8">
 				<MasteryDashboard
-					title="How your map practice is trending"
-					description="This local summary now updates after every finished run, so you can decide whether to push your strongest topic or clean up missed locations."
+					title={t('masteryTitle')}
+					description={t('masteryDesc')}
 				/>
 			</div>
 
 			<div className="mt-8">
-				<MistakesReviewPanel title="Retry your missed locations" />
+				<MistakesReviewPanel title={t('retryMissed')} />
 			</div>
 		</div>
 	);

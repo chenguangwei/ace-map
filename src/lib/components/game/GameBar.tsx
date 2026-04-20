@@ -15,6 +15,7 @@ import {
 	Target,
 	XCircle
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	deductCredit,
@@ -27,6 +28,7 @@ import { formatDistance } from '@/lib/utils/places';
 import type { InfoState } from './Main';
 
 const TimerComp = (props: { timer: RefObject<number> }) => {
+	const t = useTranslations('GameBar');
 	const [_, setTick] = useState(false);
 
 	useEffect(() => {
@@ -48,7 +50,7 @@ const TimerComp = (props: { timer: RefObject<number> }) => {
 		<div className="inline-flex items-center gap-2 rounded-full border border-sky-300/75 bg-slate-950/92 px-3 py-1.5 text-white shadow-[0_8px_20px_rgba(15,23,42,0.18)] backdrop-blur-md">
 			<Clock className="size-3.5 text-sky-300" />
 			<span className="text-[10px] font-bold uppercase tracking-[0.22em] text-sky-200/90">
-				Time
+				{t('time')}
 			</span>
 			<span className="text-sm font-bold tabular-nums text-white">
 				{timeValue}
@@ -57,16 +59,19 @@ const TimerComp = (props: { timer: RefObject<number> }) => {
 	);
 };
 
-const ScorePill = ({ current, total }: { current: number; total: number }) => (
-	<div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/70 bg-[rgba(236,253,245,0.82)] px-3 py-1.5 text-emerald-950 shadow-[0_10px_24px_rgba(16,185,129,0.12)] backdrop-blur-md">
-		<span className="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-700">
-			Score
-		</span>
-		<span className="text-sm font-bold tabular-nums">
-			{current}/{total}
-		</span>
-	</div>
-);
+const ScorePill = ({ current, total }: { current: number; total: number }) => {
+	const t = useTranslations('GameBar');
+	return (
+		<div className="inline-flex items-center gap-2 rounded-full border border-emerald-300/70 bg-[rgba(236,253,245,0.82)] px-3 py-1.5 text-emerald-950 shadow-[0_10px_24px_rgba(16,185,129,0.12)] backdrop-blur-md">
+			<span className="text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-700">
+				{t('score')}
+			</span>
+			<span className="text-sm font-bold tabular-nums">
+				{current}/{total}
+			</span>
+		</div>
+	);
+};
 
 const StreakBadge = ({ streak }: { streak: number }) => {
 	if (streak < 2) return null;
@@ -88,25 +93,25 @@ const StreakBadge = ({ streak }: { streak: number }) => {
 	);
 };
 
-const heatConfig = {
-	overdrive: {
-		label: 'Overdrive',
-		tone: 'border-orange-300/70 bg-[rgba(255,237,213,0.84)] text-orange-700'
-	},
-	heated: {
-		label: 'Heated',
-		tone: 'border-amber-300/70 bg-[rgba(254,243,199,0.86)] text-amber-700'
-	},
-	warm: {
-		label: 'Warming',
-		tone: 'border-sky-300/70 bg-[rgba(224,242,254,0.84)] text-sky-700'
-	},
-	cool: { label: '', tone: '' }
-} as const;
-
 const HeatBadge = ({ streak }: { streak: number }) => {
+	const t = useTranslations('GameBar');
 	const level = getHeatLevel(streak);
 	if (level === 'cool') return null;
+
+	const heatConfig = {
+		overdrive: {
+			label: t('overdrive'),
+			tone: 'border-orange-300/70 bg-[rgba(255,237,213,0.84)] text-orange-700'
+		},
+		heated: {
+			label: t('heated'),
+			tone: 'border-amber-300/70 bg-[rgba(254,243,199,0.86)] text-amber-700'
+		},
+		warm: {
+			label: t('warming'),
+			tone: 'border-sky-300/70 bg-[rgba(224,242,254,0.84)] text-sky-700'
+		}
+	};
 
 	const { label, tone } = heatConfig[level];
 
@@ -229,10 +234,11 @@ const GameBar = (
 
 	const showActionButton =
 		gameState.status === 'running' || gameState.status === 'paused';
+	const t = useTranslations('GameBar');
 	const sessionLabel =
 		gameState.score.total === 0
 			? mapDisplayMode === 'terrain'
-				? 'Terrain warm-up'
+				? t('terrainWarmup')
 				: 'Opening run'
 			: mapDisplayMode === 'terrain'
 				? 'Terrain chain'

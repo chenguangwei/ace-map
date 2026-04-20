@@ -1,10 +1,13 @@
+'use client';
 import * as Navbar from '@heroui/navbar';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import Logo from '@/lib/assets/Logo';
 import CreditBadge from '@/lib/components/CreditBadge';
 import ThemeSwitch from '@/lib/components/ThemeSwitch';
 
 const Nav = () => {
+	const t = useTranslations('Navbar');
 	return (
 		<Navbar.Navbar className="z-50">
 			<Navbar.NavbarBrand>
@@ -19,7 +22,7 @@ const Nav = () => {
 						href="/quizzes"
 						className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
 					>
-						Quiz Library
+						{t('quizLibrary')}
 					</Link>
 				</Navbar.NavbarItem>
 				<Navbar.NavbarItem>

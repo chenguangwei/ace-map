@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Check, Globe, Map as MapIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import type { CountryDef } from '@/lib/data/countries';
@@ -13,19 +14,6 @@ import { Strictness, WorldStrictness } from '../utils/places';
 
 type Step = 'mode' | 'country' | 'world-config';
 
-// ─── precision options ────────────────────────────────────────────────────────
-
-const COUNTRY_PRECISION = [
-	{ value: Strictness.Low, label: 'Easy' },
-	{ value: Strictness.Medium, label: 'Normal' },
-	{ value: Strictness.High, label: 'Hard' }
-];
-
-const WORLD_PRECISION = [
-	{ value: WorldStrictness.Low, label: 'Easy' },
-	{ value: WorldStrictness.Medium, label: 'Normal' },
-	{ value: WorldStrictness.High, label: 'Hard' }
-];
 
 // ─── motion variants ──────────────────────────────────────────────────────────
 
@@ -164,6 +152,20 @@ const CountryCard = ({
 // ─── main component ───────────────────────────────────────────────────────────
 
 const Start = () => {
+	const t = useTranslations('Start');
+
+	const COUNTRY_PRECISION = [
+		{ value: Strictness.Low, label: t('easy') },
+		{ value: Strictness.Medium, label: t('normal') },
+		{ value: Strictness.High, label: t('hard') }
+	];
+
+	const WORLD_PRECISION = [
+		{ value: WorldStrictness.Low, label: t('easy') },
+		{ value: WorldStrictness.Medium, label: t('normal') },
+		{ value: WorldStrictness.High, label: t('hard') }
+	];
+
 	const [step, setStep] = useState<Step>('mode');
 	const [selectedCountry, setSelectedCountry] = useState<CountryDef | null>(
 		null
