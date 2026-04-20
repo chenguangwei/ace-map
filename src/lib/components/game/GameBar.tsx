@@ -23,6 +23,7 @@ import {
 	subscribeToCredits
 } from '@/lib/utils/credits';
 import { encodeResult, type GameState, getHeatLevel } from '@/lib/utils/game';
+import { localizePlace } from '@/lib/utils/localizePlace';
 import type { MapDisplayMode } from '@/lib/utils/mapActivity';
 import { formatDistance } from '@/lib/utils/places';
 import type { InfoState } from './Main';
@@ -163,9 +164,10 @@ const GameBar = (
 		gameState: GameState;
 		mapDisplayMode: MapDisplayMode;
 		onSatelliteHint: (lat: number, lng: number, zoom: number) => void;
+		placeNameMap?: Record<string, string> | null;
 	}
 ) => {
-	const { gameState, info, mapDisplayMode, onSatelliteHint, setInfo } = props;
+	const { gameState, info, mapDisplayMode, onSatelliteHint, setInfo, placeNameMap } = props;
 	const prevToMarkRef = useRef(gameState.toMark);
 	const gameStateRef = useRef(gameState);
 	const [creditBalance, setCreditBalance] = useState(() => getBalance());

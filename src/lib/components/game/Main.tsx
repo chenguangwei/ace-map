@@ -23,6 +23,7 @@ import {
 	useState
 } from 'react';
 import { useMapVoice } from '@/lib/audio/useMapVoice';
+import { useLocale } from 'next-intl';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
 import { getCountryByCode } from '@/lib/data/countries';
 import {
@@ -33,6 +34,7 @@ import {
 import { getCountryRegions, worldPlaces } from '@/lib/data/regions';
 import { getTerrainBasemapConfig } from '@/lib/maps/basemaps';
 import { saveLastSessionTopic } from '@/lib/utils/challenge';
+import { localizePlace } from '@/lib/utils/localizePlace';
 import { encodeResult, getHeatLevel, type SubmitInfo, useGame, weightedShufflePlaces } from '@/lib/utils/game';
 import {
 	buildActivityHotspots,
@@ -72,6 +74,7 @@ const Main = (props: {
 }) => {
 	const gameState = useGame();
 	const analytics = useAnalytics();
+	const locale = useLocale();
 	const voice = useMapVoice();
 	const [infoState, setInfoState] = useState<SubmitInfo | null>(null);
 	const [focusRequest, setFocusRequest] = useState(0);
@@ -88,6 +91,21 @@ const Main = (props: {
 	);
 	const [terrainHintLevel, setTerrainHintLevel] = useState<0 | 1 | 2>(0);
 	const terrainBasemap = useMemo(() => getTerrainBasemapConfig(), []);
+
+	const placeNameMap = useMemo<Record<string, string> | null>(() => {
+		if (locale === 'en') return null;
+		const isWorld = !props.initialConfig?.countryCode;
+		const isJp = props.initialConfig?.countryCode === 'jp';
+		if (locale === 'zh') {
+			if (isWorld) return require('@/lib/data/regions/locales/zh/world').zhWorldNames;
+			if (isJp) return require('@/lib/data/regions/locales/zh/jp').zhJpNames;
+		}
+		if (locale === 'ja') {
+			if (isWorld) return require('@/lib/data/regions/locales/ja/world').jaWorldNames;
+			if (isJp) return require('@/lib/data/regions/locales/ja/jp').jaJpNames;
+		}
+		return null;
+	}, [locale, props.initialConfig?.countryCode]);
 	const previousPromptRef = useRef<string | null>(null);
 	const previousInfoRef = useRef<SubmitInfo | null>(null);
 	const searchParams = useSearchParams();
@@ -508,7 +526,7 @@ const Main = (props: {
 															);
 														}}
 														className="inline-flex size-9 items-center justify-center rounded-full border border-white/12 bg-white/8 text-slate-100 transition hover:bg-white/14 cursor-pointer"
-														aria-label={`Replay prompt for ${gameState.toMark.name}`}
+														aria-label={`Replay prompt for ${localizePlace(gameState.toMark.name, placeNameMap)}`}
 													>
 														<Volume2 className="size-4" />
 													</button>
@@ -544,7 +562,7 @@ const Main = (props: {
 														: 'Lock target'}
 												</p>
 												<p className="truncate text-base sm:text-xl font-black leading-tight text-white">
-													{gameState.toMark.name}
+													{localizePlace(gameState.toMark.name, placeNameMap)}
 												</p>
 												<p className="hidden sm:block mt-1 text-xs font-medium text-slate-300">
 													{mapDisplayMode ===
@@ -774,6 +792,7 @@ const Main = (props: {
 					mapDisplayMode={mapDisplayMode}
 					onSatelliteHint={handleSatelliteHint}
 					setInfo={setInfoState}
+					placeNameMap={placeNameMap}
 				/>
 			</div>
 		</div>
