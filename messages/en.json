@@ -1,0 +1,284 @@
+{
+  "Common": {
+    "back": "Back",
+    "next": "Next",
+    "play": "Play",
+    "submit": "Submit",
+    "retry": "Retry",
+    "share": "Share",
+    "copy": "Copy",
+    "loading": "Loading..."
+  },
+  "Navbar": {
+    "quizLibrary": "Quiz Library"
+  },
+  "HomePage": {
+    "badge": "Interactive Geography Quiz Network",
+    "headline": "Build geography memory with topic-based map quizzes.",
+    "subheadline": "MapQuiz.pro covers broad map quiz intent with focused landing pages, instant answer feedback, and fast replay loops for world regions, countries, and classroom-style practice.",
+    "browseLibrary": "Browse quiz library",
+    "playNow": "Play world quiz now",
+    "quizTopicPages": "quiz topic pages",
+    "countryDataPacks": "country data packs",
+    "focusedDrillPages": "focused drill pages",
+    "startWithBiggest": "Start with the biggest search intents",
+    "startWithBiggestDesc": "These landing pages capture the broadest geography and map quiz queries while still leading users into the same replayable interaction loop.",
+    "chooseContinents": "Choose a continent and drill it fast",
+    "chooseContinentsDesc": "Each continent page narrows the country pool, increases replay value, and gives searchers a clearer page match.",
+    "goDeeper": "Go deeper with country-specific map quizzes",
+    "goDeeperDesc": "Country pages turn the same engine into narrower study products for state capitals, province capitals, major cities, and landmarks.",
+    "jumpStraight": "Jump straight into focused country drills",
+    "jumpStraightDesc": "These subtopic pages surface the most rankable long-tail intents across Japan, Germany, Canada, Australia, France, the UK, Italy, and Spain."
+  },
+  "QuizzesPage": {
+    "badge": "Quiz Library",
+    "headline": "Explore every map quiz in one place.",
+    "subheadline": "World quizzes, continent drills, country hubs, and focused regional practice — all in one library."
+  },
+  "Start": {
+    "easy": "Easy",
+    "normal": "Normal",
+    "hard": "Hard",
+    "worldMode": "World Mode",
+    "countryMode": "Country Mode",
+    "selectCountry": "Select a country",
+    "precision": "Precision",
+    "startQuiz": "Start Quiz",
+    "categories": "Categories"
+  },
+  "GameBar": {
+    "time": "Time",
+    "score": "Score",
+    "overdrive": "Overdrive",
+    "heated": "Heated",
+    "warming": "Warming",
+    "terrainWarmup": "Terrain warm-up",
+    "satellite": "Satellite",
+    "next": "Next",
+    "submit": "Submit"
+  },
+  "Result": {
+    "accuracy": "Accuracy",
+    "time": "Time",
+    "precision": "Precision",
+    "mode": "Mode",
+    "categories": "Categories",
+    "bestStreak": "Best Streak",
+    "shareScore": "Today's challenge is done. Share your score.",
+    "masteryTitle": "How your map practice is trending",
+    "masteryDesc": "This local summary now updates after every finished run, so you can decide whether to push your strongest topic or clean up missed locations.",
+    "retryMissed": "Retry your missed locations",
+    "grade0Title": "Keep Practicing",
+    "grade0Message": "Every attempt builds your mental map.",
+    "grade50Title": "Good Job!",
+    "grade50Message": "You're getting the hang of it.",
+    "grade75Title": "Excellent!",
+    "grade75Message": "Your geography skills are sharp."
+  },
+  "QuizSections": {
+    "popular": "Popular Geography Quizzes",
+    "popularDesc": "The broadest geography and map quiz landing pages.",
+    "continents": "Continent Map Quizzes",
+    "continentsDesc": "Drill each continent's countries.",
+    "countries": "Country-Focused Map Quizzes",
+    "countriesDesc": "Deep dives into specific countries."
+  },
+  "QuizTopics": {
+    "world-map-quiz": {
+      "title": "World Map Quiz",
+      "shortTitle": "World Map",
+      "badge": "Popular",
+      "seoTitle": "World Map Quiz — Interactive Geography Game",
+      "seoDescription": "Test your world geography knowledge. Guess countries on an interactive map with instant feedback."
+    },
+    "asia-countries-quiz": {
+      "title": "Asia Countries Quiz",
+      "shortTitle": "Asia",
+      "badge": "Continent",
+      "seoTitle": "Asia Countries Quiz — Interactive Map Game",
+      "seoDescription": "Identify all Asian countries on an interactive map. Instant feedback and fast replay."
+    },
+    "europe-countries-quiz": {
+      "title": "Europe Countries Quiz",
+      "shortTitle": "Europe",
+      "badge": "Continent",
+      "seoTitle": "Europe Countries Quiz — Interactive Map Game",
+      "seoDescription": "Identify all European countries on an interactive map. Instant feedback and fast replay."
+    },
+    "americas-countries-quiz": {
+      "title": "Americas Countries Quiz",
+      "shortTitle": "Americas",
+      "badge": "Continent",
+      "seoTitle": "Americas Countries Quiz — Interactive Map Game",
+      "seoDescription": "Identify all countries in North and South America on an interactive map."
+    },
+    "africa-countries-quiz": {
+      "title": "Africa Countries Quiz",
+      "shortTitle": "Africa",
+      "badge": "Continent",
+      "seoTitle": "Africa Countries Quiz — Interactive Map Game",
+      "seoDescription": "Identify all African countries on an interactive map. Instant feedback and fast replay."
+    },
+    "oceania-countries-quiz": {
+      "title": "Oceania Countries Quiz",
+      "shortTitle": "Oceania",
+      "badge": "Continent",
+      "seoTitle": "Oceania Countries Quiz — Interactive Map Game",
+      "seoDescription": "Identify all Oceanian countries on an interactive map. Instant feedback and fast replay."
+    },
+    "japan-prefectures-quiz": {
+      "title": "Japan Prefectures Quiz",
+      "shortTitle": "Japan Prefectures",
+      "badge": "Country",
+      "seoTitle": "Japan Prefectures Quiz — Learn All 47 Prefectures",
+      "seoDescription": "Learn all 47 Japanese prefectures on an interactive map. Instant feedback."
+    },
+    "japan-capitals-quiz": {
+      "title": "Japan Capitals Quiz",
+      "shortTitle": "Japan Capitals",
+      "badge": "Country",
+      "seoTitle": "Japan Prefecture Capitals Quiz — Interactive Map",
+      "seoDescription": "Learn all Japanese prefecture capital cities on an interactive map."
+    },
+    "japan-landmarks-quiz": {
+      "title": "Japan Landmarks Quiz",
+      "shortTitle": "Japan Landmarks",
+      "badge": "Country",
+      "seoTitle": "Japan Landmarks Quiz — Famous Sites on the Map",
+      "seoDescription": "Identify famous Japanese landmarks and tourist sites on an interactive map."
+    },
+    "germany-states-quiz": {
+      "title": "Germany States Quiz",
+      "shortTitle": "Germany States",
+      "badge": "Country",
+      "seoTitle": "Germany States Quiz — All 16 Bundesländer",
+      "seoDescription": "Learn all 16 German federal states on an interactive map."
+    },
+    "germany-state-capitals-quiz": {
+      "title": "Germany State Capitals Quiz",
+      "shortTitle": "Germany Capitals",
+      "badge": "Country",
+      "seoTitle": "Germany State Capitals Quiz — Interactive Map",
+      "seoDescription": "Learn the capitals of all 16 German states on an interactive map."
+    },
+    "germany-cities-quiz": {
+      "title": "Germany Cities Quiz",
+      "shortTitle": "Germany Cities",
+      "badge": "Country",
+      "seoTitle": "Germany Cities Quiz — Major Cities on the Map",
+      "seoDescription": "Identify major German cities on an interactive map."
+    },
+    "canada-provinces-quiz": {
+      "title": "Canada Provinces Quiz",
+      "shortTitle": "Canada Provinces",
+      "badge": "Country",
+      "seoTitle": "Canada Provinces and Territories Quiz",
+      "seoDescription": "Learn all Canadian provinces and territories on an interactive map."
+    },
+    "canada-cities-quiz": {
+      "title": "Canada Cities Quiz",
+      "shortTitle": "Canada Cities",
+      "badge": "Country",
+      "seoTitle": "Canada Cities Quiz — Major Cities on the Map",
+      "seoDescription": "Identify major Canadian cities on an interactive map."
+    },
+    "canada-landmarks-quiz": {
+      "title": "Canada Landmarks Quiz",
+      "shortTitle": "Canada Landmarks",
+      "badge": "Country",
+      "seoTitle": "Canada Landmarks Quiz — Famous Sites on the Map",
+      "seoDescription": "Identify famous Canadian landmarks on an interactive map."
+    },
+    "australia-states-quiz": {
+      "title": "Australia States Quiz",
+      "shortTitle": "Australia States",
+      "badge": "Country",
+      "seoTitle": "Australia States and Territories Quiz",
+      "seoDescription": "Learn all Australian states and territories on an interactive map."
+    },
+    "australia-cities-quiz": {
+      "title": "Australia Cities Quiz",
+      "shortTitle": "Australia Cities",
+      "badge": "Country",
+      "seoTitle": "Australia Cities Quiz — Major Cities on the Map",
+      "seoDescription": "Identify major Australian cities on an interactive map."
+    },
+    "australia-landmarks-quiz": {
+      "title": "Australia Landmarks Quiz",
+      "shortTitle": "Australia Landmarks",
+      "badge": "Country",
+      "seoTitle": "Australia Landmarks Quiz — Famous Sites on the Map",
+      "seoDescription": "Identify famous Australian landmarks on an interactive map."
+    },
+    "france-regions-quiz": {
+      "title": "France Regions Quiz",
+      "shortTitle": "France Regions",
+      "badge": "Country",
+      "seoTitle": "France Regions Quiz — All 18 Regions on the Map",
+      "seoDescription": "Learn all French regions on an interactive map."
+    },
+    "france-cities-quiz": {
+      "title": "France Cities Quiz",
+      "shortTitle": "France Cities",
+      "badge": "Country",
+      "seoTitle": "France Cities Quiz — Major Cities on the Map",
+      "seoDescription": "Identify major French cities on an interactive map."
+    },
+    "france-landmarks-quiz": {
+      "title": "France Landmarks Quiz",
+      "shortTitle": "France Landmarks",
+      "badge": "Country",
+      "seoTitle": "France Landmarks Quiz — Famous Sites on the Map",
+      "seoDescription": "Identify famous French landmarks on an interactive map."
+    },
+    "uk-cities-quiz": {
+      "title": "UK Cities Quiz",
+      "shortTitle": "UK Cities",
+      "badge": "Country",
+      "seoTitle": "UK Cities Quiz — Major British Cities on the Map",
+      "seoDescription": "Identify major UK cities on an interactive map."
+    },
+    "uk-landmarks-quiz": {
+      "title": "UK Landmarks Quiz",
+      "shortTitle": "UK Landmarks",
+      "badge": "Country",
+      "seoTitle": "UK Landmarks Quiz — Famous British Sites on the Map",
+      "seoDescription": "Identify famous UK landmarks on an interactive map."
+    },
+    "england-counties-quiz": {
+      "title": "England Counties Quiz",
+      "shortTitle": "England Counties",
+      "badge": "Country",
+      "seoTitle": "England Counties Quiz — All Counties on the Map",
+      "seoDescription": "Learn all English counties on an interactive map."
+    },
+    "italy-regions-quiz": {
+      "title": "Italy Regions Quiz",
+      "shortTitle": "Italy Regions",
+      "badge": "Country",
+      "seoTitle": "Italy Regions Quiz — All 20 Regions on the Map",
+      "seoDescription": "Learn all Italian regions on an interactive map."
+    },
+    "italy-landmarks-quiz": {
+      "title": "Italy Landmarks Quiz",
+      "shortTitle": "Italy Landmarks",
+      "badge": "Country",
+      "seoTitle": "Italy Landmarks Quiz — Famous Sites on the Map",
+      "seoDescription": "Identify famous Italian landmarks on an interactive map."
+    },
+    "spain-regions-quiz": {
+      "title": "Spain Regions Quiz",
+      "shortTitle": "Spain Regions",
+      "badge": "Country",
+      "seoTitle": "Spain Regions Quiz — All Autonomous Communities",
+      "seoDescription": "Learn all Spanish autonomous communities on an interactive map."
+    },
+    "spain-landmarks-quiz": {
+      "title": "Spain Landmarks Quiz",
+      "shortTitle": "Spain Landmarks",
+      "badge": "Country",
+      "seoTitle": "Spain Landmarks Quiz — Famous Sites on the Map",
+      "seoDescription": "Identify famous Spanish landmarks on an interactive map."
+    }
+  }
+}
