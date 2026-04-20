@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import Logo from '@/lib/assets/Logo';
 import CreditBadge from '@/lib/components/CreditBadge';
+import LocaleSwitcher from '@/lib/components/LocaleSwitcher';
 import ThemeSwitch from '@/lib/components/ThemeSwitch';
 
 const Nav = () => {
@@ -27,6 +28,9 @@ const Nav = () => {
 				</Navbar.NavbarItem>
 				<Navbar.NavbarItem>
 					<CreditBadge />
+				</Navbar.NavbarItem>
+				<Navbar.NavbarItem>
+					<LocaleSwitcher />
 				</Navbar.NavbarItem>
 				<Navbar.NavbarItem>
 					<ThemeSwitch />
