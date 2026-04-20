@@ -23,7 +23,6 @@ import {
 	subscribeToCredits
 } from '@/lib/utils/credits';
 import { encodeResult, type GameState, getHeatLevel } from '@/lib/utils/game';
-import { localizePlace } from '@/lib/utils/localizePlace';
 import type { MapDisplayMode } from '@/lib/utils/mapActivity';
 import { formatDistance } from '@/lib/utils/places';
 import type { InfoState } from './Main';
