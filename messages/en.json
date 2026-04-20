@@ -279,6 +279,118 @@
       "badge": "Country",
       "seoTitle": "Spain Landmarks Quiz — Famous Sites on the Map",
       "seoDescription": "Identify famous Spanish landmarks on an interactive map."
+    },
+    "japan-map-quiz": {
+      "title": "Japan Map Quiz",
+      "shortTitle": "Japan",
+      "badge": "Country",
+      "seoTitle": "Japan Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Japan's geography on an interactive map."
+    },
+    "germany-map-quiz": {
+      "title": "Germany Map Quiz",
+      "shortTitle": "Germany",
+      "badge": "Country",
+      "seoTitle": "Germany Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Germany's geography on an interactive map."
+    },
+    "canada-map-quiz": {
+      "title": "Canada Map Quiz",
+      "shortTitle": "Canada",
+      "badge": "Country",
+      "seoTitle": "Canada Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Canada's geography on an interactive map."
+    },
+    "australia-map-quiz": {
+      "title": "Australia Map Quiz",
+      "shortTitle": "Australia",
+      "badge": "Country",
+      "seoTitle": "Australia Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Australia's geography on an interactive map."
+    },
+    "france-map-quiz": {
+      "title": "France Map Quiz",
+      "shortTitle": "France",
+      "badge": "Country",
+      "seoTitle": "France Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of France's geography on an interactive map."
+    },
+    "united-kingdom-map-quiz": {
+      "title": "United Kingdom Map Quiz",
+      "shortTitle": "UK",
+      "badge": "Country",
+      "seoTitle": "United Kingdom Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of the United Kingdom's geography on an interactive map."
+    },
+    "italy-map-quiz": {
+      "title": "Italy Map Quiz",
+      "shortTitle": "Italy",
+      "badge": "Country",
+      "seoTitle": "Italy Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Italy's geography on an interactive map."
+    },
+    "spain-map-quiz": {
+      "title": "Spain Map Quiz",
+      "shortTitle": "Spain",
+      "badge": "Country",
+      "seoTitle": "Spain Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Spain's geography on an interactive map."
+    },
+    "india-map-quiz": {
+      "title": "India Map Quiz",
+      "shortTitle": "India",
+      "badge": "Country",
+      "seoTitle": "India Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of India's geography on an interactive map."
+    },
+    "united-states-map-quiz": {
+      "title": "United States Map Quiz",
+      "shortTitle": "USA",
+      "badge": "Country",
+      "seoTitle": "United States Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of the United States' geography on an interactive map."
+    },
+    "china-map-quiz": {
+      "title": "China Map Quiz",
+      "shortTitle": "China",
+      "badge": "Country",
+      "seoTitle": "China Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of China's geography on an interactive map."
+    },
+    "brazil-map-quiz": {
+      "title": "Brazil Map Quiz",
+      "shortTitle": "Brazil",
+      "badge": "Country",
+      "seoTitle": "Brazil Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Brazil's geography on an interactive map."
+    },
+    "south-korea-map-quiz": {
+      "title": "South Korea Map Quiz",
+      "shortTitle": "South Korea",
+      "badge": "Country",
+      "seoTitle": "South Korea Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of South Korea's geography on an interactive map."
+    },
+    "russia-map-quiz": {
+      "title": "Russia Map Quiz",
+      "shortTitle": "Russia",
+      "badge": "Country",
+      "seoTitle": "Russia Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Russia's geography on an interactive map."
+    },
+    "mexico-map-quiz": {
+      "title": "Mexico Map Quiz",
+      "shortTitle": "Mexico",
+      "badge": "Country",
+      "seoTitle": "Mexico Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Mexico's geography on an interactive map."
+    },
+    "indonesia-map-quiz": {
+      "title": "Indonesia Map Quiz",
+      "shortTitle": "Indonesia",
+      "badge": "Country",
+      "seoTitle": "Indonesia Map Quiz — Interactive Geography",
+      "seoDescription": "Test your knowledge of Indonesia's geography on an interactive map."
     }
   }
 }

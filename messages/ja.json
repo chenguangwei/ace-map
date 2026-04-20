@@ -111,6 +111,22 @@
     "italy-regions-quiz": { "title": "イタリアの州クイズ", "shortTitle": "イタリアの州", "badge": "国別", "seoTitle": "イタリアの州クイズ — 20州すべて", "seoDescription": "インタラクティブな地図でイタリアのすべての州を学ぼう。" },
     "italy-landmarks-quiz": { "title": "イタリアのランドマーククイズ", "shortTitle": "イタリアのランドマーク", "badge": "国別", "seoTitle": "イタリアのランドマーククイズ — 地図上の有名スポット", "seoDescription": "インタラクティブな地図でイタリアの有名なランドマークを当てよう。" },
     "spain-regions-quiz": { "title": "スペインの自治州クイズ", "shortTitle": "スペインの自治州", "badge": "国別", "seoTitle": "スペインの自治州クイズ — すべての自治コムニダード", "seoDescription": "インタラクティブな地図でスペインのすべての自治コムニダードを学ぼう。" },
-    "spain-landmarks-quiz": { "title": "スペインのランドマーククイズ", "shortTitle": "スペインのランドマーク", "badge": "国別", "seoTitle": "スペインのランドマーククイズ — 地図上の有名スポット", "seoDescription": "インタラクティブな地図でスペインの有名なランドマークを当てよう。" }
+    "spain-landmarks-quiz": { "title": "スペインのランドマーククイズ", "shortTitle": "スペインのランドマーク", "badge": "国別", "seoTitle": "スペインのランドマーククイズ — 地図上の有名スポット", "seoDescription": "インタラクティブな地図でスペインの有名なランドマークを当てよう。" },
+    "japan-map-quiz": { "title": "日本地図クイズ", "shortTitle": "日本", "badge": "国別", "seoTitle": "日本地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図で日本の地理知識を試そう。" },
+    "germany-map-quiz": { "title": "ドイツ地図クイズ", "shortTitle": "ドイツ", "badge": "国別", "seoTitle": "ドイツ地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でドイツの地理知識を試そう。" },
+    "canada-map-quiz": { "title": "カナダ地図クイズ", "shortTitle": "カナダ", "badge": "国別", "seoTitle": "カナダ地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でカナダの地理知識を試そう。" },
+    "australia-map-quiz": { "title": "オーストラリア地図クイズ", "shortTitle": "オーストラリア", "badge": "国別", "seoTitle": "オーストラリア地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でオーストラリアの地理知識を試そう。" },
+    "france-map-quiz": { "title": "フランス地図クイズ", "shortTitle": "フランス", "badge": "国別", "seoTitle": "フランス地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でフランスの地理知識を試そう。" },
+    "united-kingdom-map-quiz": { "title": "イギリス地図クイズ", "shortTitle": "イギリス", "badge": "国別", "seoTitle": "イギリス地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でイギリスの地理知識を試そう。" },
+    "italy-map-quiz": { "title": "イタリア地図クイズ", "shortTitle": "イタリア", "badge": "国別", "seoTitle": "イタリア地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でイタリアの地理知識を試そう。" },
+    "spain-map-quiz": { "title": "スペイン地図クイズ", "shortTitle": "スペイン", "badge": "国別", "seoTitle": "スペイン地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でスペインの地理知識を試そう。" },
+    "india-map-quiz": { "title": "インド地図クイズ", "shortTitle": "インド", "badge": "国別", "seoTitle": "インド地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でインドの地理知識を試そう。" },
+    "united-states-map-quiz": { "title": "アメリカ地図クイズ", "shortTitle": "アメリカ", "badge": "国別", "seoTitle": "アメリカ地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でアメリカの地理知識を試そう。" },
+    "china-map-quiz": { "title": "中国地図クイズ", "shortTitle": "中国", "badge": "国別", "seoTitle": "中国地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図で中国の地理知識を試そう。" },
+    "brazil-map-quiz": { "title": "ブラジル地図クイズ", "shortTitle": "ブラジル", "badge": "国別", "seoTitle": "ブラジル地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でブラジルの地理知識を試そう。" },
+    "south-korea-map-quiz": { "title": "韓国地図クイズ", "shortTitle": "韓国", "badge": "国別", "seoTitle": "韓国地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図で韓国の地理知識を試そう。" },
+    "russia-map-quiz": { "title": "ロシア地図クイズ", "shortTitle": "ロシア", "badge": "国別", "seoTitle": "ロシア地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でロシアの地理知識を試そう。" },
+    "mexico-map-quiz": { "title": "メキシコ地図クイズ", "shortTitle": "メキシコ", "badge": "国別", "seoTitle": "メキシコ地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でメキシコの地理知識を試そう。" },
+    "indonesia-map-quiz": { "title": "インドネシア地図クイズ", "shortTitle": "インドネシア", "badge": "国別", "seoTitle": "インドネシア地図クイズ — インタラクティブ地理", "seoDescription": "インタラクティブな地図でインドネシアの地理知識を試そう。" }
   }
 }

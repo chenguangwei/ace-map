@@ -111,6 +111,22 @@
     "italy-regions-quiz": { "title": "意大利大区测验", "shortTitle": "意大利大区", "badge": "国家", "seoTitle": "意大利大区测验 — 全部20个大区", "seoDescription": "在互动地图上学习所有意大利大区。" },
     "italy-landmarks-quiz": { "title": "意大利地标测验", "shortTitle": "意大利地标", "badge": "国家", "seoTitle": "意大利地标测验 — 地图上的著名景点", "seoDescription": "在互动地图上识别意大利著名地标。" },
     "spain-regions-quiz": { "title": "西班牙自治区测验", "shortTitle": "西班牙自治区", "badge": "国家", "seoTitle": "西班牙自治区测验 — 所有自治社区", "seoDescription": "在互动地图上学习西班牙所有自治社区。" },
-    "spain-landmarks-quiz": { "title": "西班牙地标测验", "shortTitle": "西班牙地标", "badge": "国家", "seoTitle": "西班牙地标测验 — 地图上的著名景点", "seoDescription": "在互动地图上识别西班牙著名地标。" }
+    "spain-landmarks-quiz": { "title": "西班牙地标测验", "shortTitle": "西班牙地标", "badge": "国家", "seoTitle": "西班牙地标测验 — 地图上的著名景点", "seoDescription": "在互动地图上识别西班牙著名地标。" },
+    "japan-map-quiz": { "title": "日本地图测验", "shortTitle": "日本", "badge": "国家", "seoTitle": "日本地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对日本地理的了解。" },
+    "germany-map-quiz": { "title": "德国地图测验", "shortTitle": "德国", "badge": "国家", "seoTitle": "德国地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对德国地理的了解。" },
+    "canada-map-quiz": { "title": "加拿大地图测验", "shortTitle": "加拿大", "badge": "国家", "seoTitle": "加拿大地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对加拿大地理的了解。" },
+    "australia-map-quiz": { "title": "澳大利亚地图测验", "shortTitle": "澳大利亚", "badge": "国家", "seoTitle": "澳大利亚地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对澳大利亚地理的了解。" },
+    "france-map-quiz": { "title": "法国地图测验", "shortTitle": "法国", "badge": "国家", "seoTitle": "法国地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对法国地理的了解。" },
+    "united-kingdom-map-quiz": { "title": "英国地图测验", "shortTitle": "英国", "badge": "国家", "seoTitle": "英国地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对英国地理的了解。" },
+    "italy-map-quiz": { "title": "意大利地图测验", "shortTitle": "意大利", "badge": "国家", "seoTitle": "意大利地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对意大利地理的了解。" },
+    "spain-map-quiz": { "title": "西班牙地图测验", "shortTitle": "西班牙", "badge": "国家", "seoTitle": "西班牙地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对西班牙地理的了解。" },
+    "india-map-quiz": { "title": "印度地图测验", "shortTitle": "印度", "badge": "国家", "seoTitle": "印度地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对印度地理的了解。" },
+    "united-states-map-quiz": { "title": "美国地图测验", "shortTitle": "美国", "badge": "国家", "seoTitle": "美国地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对美国地理的了解。" },
+    "china-map-quiz": { "title": "中国地图测验", "shortTitle": "中国", "badge": "国家", "seoTitle": "中国地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对中国地理的了解。" },
+    "brazil-map-quiz": { "title": "巴西地图测验", "shortTitle": "巴西", "badge": "国家", "seoTitle": "巴西地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对巴西地理的了解。" },
+    "south-korea-map-quiz": { "title": "韩国地图测验", "shortTitle": "韩国", "badge": "国家", "seoTitle": "韩国地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对韩国地理的了解。" },
+    "russia-map-quiz": { "title": "俄罗斯地图测验", "shortTitle": "俄罗斯", "badge": "国家", "seoTitle": "俄罗斯地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对俄罗斯地理的了解。" },
+    "mexico-map-quiz": { "title": "墨西哥地图测验", "shortTitle": "墨西哥", "badge": "国家", "seoTitle": "墨西哥地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对墨西哥地理的了解。" },
+    "indonesia-map-quiz": { "title": "印度尼西亚地图测验", "shortTitle": "印度尼西亚", "badge": "国家", "seoTitle": "印度尼西亚地图测验 — 互动地理", "seoDescription": "在互动地图上测试你对印度尼西亚地理的了解。" }
   }
 }
