@@ -33,7 +33,7 @@ import {
 import { getCountryRegions, worldPlaces } from '@/lib/data/regions';
 import { getTerrainBasemapConfig } from '@/lib/maps/basemaps';
 import { saveLastSessionTopic } from '@/lib/utils/challenge';
-import { getHeatLevel, type SubmitInfo, useGame, weightedShufflePlaces } from '@/lib/utils/game';
+import { encodeResult, getHeatLevel, type SubmitInfo, useGame, weightedShufflePlaces } from '@/lib/utils/game';
 import {
 	buildActivityHotspots,
 	type MapDisplayMode
@@ -48,6 +48,10 @@ import {
 } from '@/lib/utils/review';
 import { getTerrainHintPack } from '@/lib/utils/terrainHints';
 import { recordTopicObservabilityEvent } from '@/lib/utils/topicObservability';
+import {
+	createPracticeSessionId,
+	savePracticeSession
+} from '@/lib/utils/progress';
 import GameBar from './GameBar';
 
 const Game = dynamic(() => import('@/lib/components/game/Game'), {
@@ -72,6 +76,8 @@ const Main = (props: {
 	const [infoState, setInfoState] = useState<SubmitInfo | null>(null);
 	const [focusRequest, setFocusRequest] = useState(0);
 	const [isReady, setIsReady] = useState(false);
+	const sessionIdRef = useRef<string>(createPracticeSessionId());
+	const sessionSavedRef = useRef(false);
 	const [mapDisplayMode, setMapDisplayMode] =
 		useState<MapDisplayMode>('play');
 	const [selectedRegionLabel, setSelectedRegionLabel] = useState<
@@ -344,6 +350,30 @@ const Main = (props: {
 		}
 	}, [infoState]);
 
+	// Save session when the game ends (all places marked, status still 'running')
+	useEffect(() => {
+		const gameOver =
+			gameState.toMark === null && gameState.status === 'running' && gameState.score.total > 0;
+		if (!gameOver || sessionSavedRef.current) return;
+		sessionSavedRef.current = true;
+		savePracticeSession({
+			id: sessionIdRef.current,
+			resultCode: encodeResult(gameState),
+			topicSlug: activeTopicSlug,
+			score: gameState.score.current,
+			total: gameState.score.total,
+			accuracy: Math.round(
+				gameState.score.total === 0
+					? 0
+					: (gameState.score.current / gameState.score.total) * 100
+			),
+			time: gameState.timer.current ?? 0,
+			bestStreak: gameState.bestStreak,
+			isDailyChallenge: false,
+			completedAt: new Date().toISOString()
+		});
+	}, [activeTopicSlug, gameState]);
+
 	useEffect(() => {
 		if (mapDisplayMode === 'terrain' && !terrainBasemap) {
 			setMapDisplayMode('play');
@@ -357,6 +387,8 @@ const Main = (props: {
 	}, [mapDisplayMode]);
 
 	const handlePrimaryStart = () => {
+		sessionIdRef.current = createPracticeSessionId();
+		sessionSavedRef.current = false;
 		const activeTopic = activeTopicSlug
 			? getQuizTopicBySlug(activeTopicSlug)
 			: null;
