@@ -29,6 +29,7 @@ export type SubmitInfo = {
 	guess: PlaceWithoutName;
 	distance: number;
 	isCorrect: boolean;
+	categorical: boolean;
 	updateGame: () => void;
 } | null;
 
@@ -420,6 +421,7 @@ export const useGame = (): GameState => {
 			guess,
 			distance: dist,
 			isCorrect,
+			categorical: hasCategoricalSelection,
 			updateGame: () => {
 				dispatch({ type: 'MARK_PLACE_COMPLETE', payload: markedPlace });
 			}

@@ -127,29 +127,28 @@ const DistanceFeedback = ({
 }: {
 	info: NonNullable<InfoState['info']>;
 }) => (
-	<AnimatePresence>
-		<motion.div
-			initial={{ opacity: 0, y: 8 }}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: -8 }}
-			className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium shadow-[0_14px_28px_rgba(15,23,42,0.12)] backdrop-blur-md ${
-				info.isCorrect
-					? 'border border-green-300/80 bg-[rgba(240,253,244,0.88)] text-green-700'
-					: 'border border-red-300/80 bg-[rgba(254,242,242,0.88)] text-red-700'
-			}`}
-		>
-			{info.isCorrect ? (
-				<CheckCircle className="size-4 shrink-0" />
-			) : (
-				<XCircle className="size-4 shrink-0" />
-			)}
-			<span className="truncate max-w-[160px] sm:max-w-xs">
-				{info.isCorrect
+	<div
+		className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium shadow-[0_14px_28px_rgba(15,23,42,0.12)] backdrop-blur-md ${
+			info.isCorrect
+				? 'border border-green-300/80 bg-[rgba(240,253,244,0.88)] text-green-700'
+				: 'border border-red-300/80 bg-[rgba(254,242,242,0.88)] text-red-700'
+		}`}
+	>
+		{info.isCorrect ? (
+			<CheckCircle className="size-4 shrink-0" />
+		) : (
+			<XCircle className="size-4 shrink-0" />
+		)}
+		<span className="truncate max-w-[160px] sm:max-w-xs">
+			{info.categorical
+				? info.isCorrect
+					? 'Correct region ✓'
+					: `${formatDistance(info.distance)} away`
+				: info.isCorrect
 					? `${formatDistance(info.distance)} off ✓`
 					: `${formatDistance(info.distance)} away`}
-			</span>
-		</motion.div>
-	</AnimatePresence>
+		</span>
+	</div>
 );
 
 const MotionLink = motion.create(Link);
@@ -251,8 +250,8 @@ const GameBar = (
 		if (!didDeduct) {
 			addToast({
 				color: 'warning',
-				title: '今日卫星线索已用完',
-				description: '明天自动补充 5 次，或购买积分包'
+				title: 'No satellite hints left today',
+				description: 'Refills automatically tomorrow, or purchase more credits'
 			});
 			return;
 		}
@@ -305,16 +304,25 @@ const GameBar = (
 			</div>
 
 			<div className="absolute inset-x-0 bottom-0 safe-area-bottom">
-				<div className="flex flex-col items-center gap-2 px-3 pb-2.5 sm:px-5 sm:pb-4">
+				<div className="relative flex flex-col items-center px-3 pb-2.5 sm:px-5 sm:pb-4">
 					<AnimatePresence>
 						{info ? (
-							<DistanceFeedback info={info} />
+							<motion.div
+								key="feedback"
+								initial={{ opacity: 0, y: 6 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: 6 }}
+								className="absolute bottom-full mb-2 left-0 right-0 flex justify-center pointer-events-none"
+							>
+								<DistanceFeedback info={info} />
+							</motion.div>
 						) : gameState.status === 'idle' ? (
 							<motion.p
-								initial={{ opacity: 0, y: 8 }}
+								key="idle-hint"
+								initial={{ opacity: 0, y: 6 }}
 								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: 8 }}
-								className="rounded-full border border-slate-900/10 bg-[rgba(255,255,255,0.78)] px-4 py-2 text-center text-xs font-semibold text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] backdrop-blur-md"
+								exit={{ opacity: 0, y: 6 }}
+								className="absolute bottom-full mb-2 left-0 right-0 text-center rounded-full border border-slate-900/10 bg-[rgba(255,255,255,0.78)] mx-3 px-4 py-2 text-xs font-semibold text-slate-700 shadow-[0_10px_24px_rgba(15,23,42,0.08)] backdrop-blur-md"
 							>
 								{idleHint}
 							</motion.p>
@@ -334,7 +342,7 @@ const GameBar = (
 								onPress={handleSatelliteHint}
 								startContent={<Satellite className="size-4" />}
 							>
-								卫星线索 · 🪙1
+								Satellite Hint · 🪙1
 							</Button>
 						)}
 						{showActionButton && (

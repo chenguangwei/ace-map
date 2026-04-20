@@ -1217,7 +1217,7 @@ const Game = (
 							✕
 						</button>
 						<div className="absolute bottom-0 left-0 right-0 bg-black/40 px-2 py-1 text-[9px] text-white/70">
-							© Mapbox · 卫星线索（无地名）
+							© Mapbox · Satellite hint (no labels)
 						</div>
 					</div>
 				</div>
