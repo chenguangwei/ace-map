@@ -144,9 +144,13 @@ const DistanceFeedback = ({
 				<XCircle className="size-4 shrink-0" />
 			)}
 			<span className="truncate max-w-[160px] sm:max-w-xs">
-				{info.isCorrect
-					? `${formatDistance(info.distance)} off ✓`
-					: `${formatDistance(info.distance)} away`}
+				{info.categorical
+					? info.isCorrect
+						? 'Correct region ✓'
+						: `${formatDistance(info.distance)} away`
+					: info.isCorrect
+						? `${formatDistance(info.distance)} off ✓`
+						: `${formatDistance(info.distance)} away`}
 			</span>
 		</motion.div>
 	</AnimatePresence>
