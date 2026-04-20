@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MasteryDashboard from '@/lib/components/quizzes/MasteryDashboard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 const QuizzesPage = async ({ params }: { params: Promise<{ locale: string }> }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
+	const t = await getTranslations('QuizzesPage');
 	const featuredCountryCodes = ['jp', 'de', 'ca', 'au', 'fr', 'gb', 'it', 'es'];
 	const rootCountryTopics = getQuizTopicsByKind('root').filter(
 		(topic) => topic.section === 'countries'
@@ -39,13 +40,13 @@ const QuizzesPage = async ({ params }: { params: Promise<{ locale: string }> }) 
 		<main className="mx-auto min-h-[calc(100dvh-var(--navbar-height))] w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
 			<section className="max-w-3xl">
 				<span className="rounded-full border border-sky-200 bg-sky-50 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-sky-800">
-					Quiz Library
+					{t('badge')}
 				</span>
 				<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-					Explore every map quiz in one place.
+					{t('headline')}
 				</h1>
 				<p className="mt-5 text-lg leading-8 text-slate-600">
-					World quizzes, continent drills, country hubs, and focused regional practice — all in one library.
+					{t('subheadline')}
 				</p>
 			</section>
 

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import TopicPageTracker from '@/lib/components/analytics/TopicPageTracker';
 import TrackedTopicLink from '@/lib/components/analytics/TrackedTopicLink';
@@ -31,7 +31,7 @@ export const generateMetadata = async ({
 }: {
 	params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> => {
-	const { slug, locale: _locale } = await params;
+	const { slug, locale } = await params;
 	const topic = getQuizTopicBySlug(slug);
 	const parentTopic = topic?.parentSlug
 		? getQuizTopicBySlug(topic.parentSlug)
@@ -41,6 +41,16 @@ export const generateMetadata = async ({
 		return {
 			title: 'Quiz Topic Not Found | MapQuiz.pro'
 		};
+	}
+
+	const tTopics = await getTranslations({ locale, namespace: 'QuizTopics' });
+	let seoTitle = topic.seoTitle;
+	let seoDescription = topic.seoDescription;
+	try {
+		seoTitle = tTopics(`${slug}.seoTitle`);
+		seoDescription = tTopics(`${slug}.seoDescription`);
+	} catch {
+		// key not found, use English fallback
 	}
 
 	const keywordSet = new Set([
@@ -54,22 +64,22 @@ export const generateMetadata = async ({
 	]);
 
 	return {
-		title: topic.seoTitle,
-		description: topic.seoDescription,
+		title: seoTitle,
+		description: seoDescription,
 		alternates: {
 			canonical: `${SITE_URL}/quiz/${topic.slug}`
 		},
 		keywords: [...keywordSet],
 		openGraph: {
 			url: `${SITE_URL}/quiz/${topic.slug}`,
-			title: topic.seoTitle,
-			description: topic.seoDescription,
+			title: seoTitle,
+			description: seoDescription,
 			type: 'article'
 		},
 		twitter: {
 			card: 'summary_large_image',
-			title: topic.seoTitle,
-			description: topic.seoDescription
+			title: seoTitle,
+			description: seoDescription
 		}
 	};
 };
@@ -83,6 +93,10 @@ const QuizTopicPage = async ({
 	setRequestLocale(locale);
 	const topic = getQuizTopicBySlug(slug);
 	if (!topic) notFound();
+
+	const tTopics = await getTranslations({ locale, namespace: 'QuizTopics' });
+	let localizedTitle = topic.title;
+	try { localizedTitle = tTopics(`${slug}.title`); } catch {}
 
 	const parentTopic = topic.parentSlug
 		? getQuizTopicBySlug(topic.parentSlug)
@@ -211,7 +225,7 @@ const QuizTopicPage = async ({
 				)}
 				<span>/</span>
 				<span className="font-semibold text-slate-900">
-					{topic.title}
+					{localizedTitle}
 				</span>
 			</nav>
 
@@ -228,7 +242,7 @@ const QuizTopicPage = async ({
 						</span>
 					</div>
 					<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-						{topic.title}
+						{localizedTitle}
 					</h1>
 					<p className="mt-5 text-lg leading-8 text-slate-600">
 						{topic.description}
