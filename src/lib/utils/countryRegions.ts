@@ -10,16 +10,37 @@ const normalizeRegionName = (value: string) =>
 		.replace(/[^a-z0-9]+/g, ' ')
 		.trim();
 
-type SupportedCountryCode = 'de' | 'us' | 'jp' | 'cn' | 'in' | 'gb';
+type SupportedCountryCode =
+	| 'au'
+	| 'br'
+	| 'ca'
+	| 'cn'
+	| 'de'
+	| 'es'
+	| 'fr'
+	| 'gb'
+	| 'id'
+	| 'in'
+	| 'it'
+	| 'jp'
+	| 'kr'
+	| 'mx'
+	| 'ru'
+	| 'us';
+
+interface CountryRegionSelectionConfig {
+	enabledCategory: string;
+	parsePlaceRegionLabel: (place: Place) => string | null;
+	normalizeFeatureName: (featureName: string) => string;
+	toFeatureName: (featureName: string) => string;
+	toDisplayLabel: (featureName: string) => string;
+}
 
 interface CountryRegionConfig {
 	countryCode: SupportedCountryCode;
-	enabledCategory: string;
-	geojsonPath: string;
 	featureNameProperty: string;
-	parsePlaceRegionLabel: (place: Place) => string | null;
-	normalizeFeatureName: (featureName: string) => string;
-	toDisplayLabel: (featureName: string) => string;
+	geojsonPath: string;
+	selection?: CountryRegionSelectionConfig;
 }
 
 export interface CountryRegionSource {
@@ -39,41 +60,44 @@ export interface CountryRegionSelection {
 	selectionKey: string;
 }
 
-const US_REGION_ALIASES: Record<string, string> = {
-	'd c': 'district of columbia',
-	dc: 'district of columbia',
-	'washington d c': 'district of columbia',
-	'washington dc': 'district of columbia'
-};
+const buildAliasSelectionConfig = ({
+	aliases,
+	enabledCategory,
+	parsePlaceRegionLabel
+}: {
+	aliases?: Record<string, string>;
+	enabledCategory: string;
+	parsePlaceRegionLabel: (place: Place) => string | null;
+}): CountryRegionSelectionConfig => {
+	const normalizedAliases = new Map(
+		Object.entries(aliases ?? {}).map(([displayLabel, featureName]) => [
+			normalizeRegionName(displayLabel),
+			featureName
+		])
+	);
+	const displayLabels = new Map(
+		Object.entries(aliases ?? {}).map(([displayLabel, featureName]) => [
+			normalizeRegionName(featureName),
+			displayLabel
+		])
+	);
 
-const DE_STATE_LABEL_TO_FEATURE: Record<string, string> = {
-	'baden wurttemberg': 'Baden-Württemberg',
-	bavaria: 'Bayern',
-	berlin: 'Berlin',
-	brandenburg: 'Brandenburg',
-	bremen: 'Bremen',
-	hamburg: 'Hamburg',
-	hesse: 'Hessen',
-	'lower saxony': 'Niedersachsen',
-	'mecklenburg vorpommern': 'Mecklenburg-Vorpommern',
-	'north rhine westphalia': 'Nordrhein-Westfalen',
-	'rhineland palatinate': 'Rheinland-Pfalz',
-	saarland: 'Saarland',
-	saxony: 'Sachsen',
-	'saxony anhalt': 'Sachsen-Anhalt',
-	'schleswig holstein': 'Schleswig-Holstein',
-	thuringia: 'Thüringen'
+	return {
+		enabledCategory,
+		parsePlaceRegionLabel,
+		toFeatureName: (featureName) =>
+			normalizedAliases.get(normalizeRegionName(featureName)) ??
+			featureName,
+		normalizeFeatureName: (featureName) => {
+			const normalized = normalizeRegionName(featureName);
+			return normalizeRegionName(
+				normalizedAliases.get(normalized) ?? featureName
+			);
+		},
+		toDisplayLabel: (featureName) =>
+			displayLabels.get(normalizeRegionName(featureName)) ?? featureName
+	};
 };
-
-const DE_FEATURE_TO_DISPLAY_LABEL = new Map<string, string>(
-	Object.entries(DE_STATE_LABEL_TO_FEATURE).map(([label, featureName]) => [
-		normalizeRegionName(featureName),
-		label
-			.split(' ')
-			.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-			.join(' ')
-	])
-);
 
 const COUNTRY_REGION_CONFIGS: Record<
 	SupportedCountryCode,
@@ -81,113 +105,116 @@ const COUNTRY_REGION_CONFIGS: Record<
 > = {
 	us: {
 		countryCode: 'us',
-		enabledCategory: 'State Capitals',
-		geojsonPath: '/data/admin/us-states.geojson',
 		featureNameProperty: 'name',
-		parsePlaceRegionLabel: (place) => {
-			if (place.name === 'Washington D.C.') {
-				return 'District of Columbia';
-			}
-
-			const segments = place.name.split(',');
-			const regionName = segments.at(-1)?.trim() ?? null;
-			return regionName && regionName.length > 0 ? regionName : null;
-		},
-		normalizeFeatureName: (featureName) => {
-			const normalized = normalizeRegionName(featureName);
-			return US_REGION_ALIASES[normalized] ?? normalized;
-		},
-		toDisplayLabel: (featureName) =>
-			featureName === 'District of Columbia'
-				? 'District of Columbia'
-				: featureName
+		geojsonPath: '/data/admin/us-states.geojson'
 	},
 	de: {
 		countryCode: 'de',
-		enabledCategory: 'Federal State Capitals',
-		geojsonPath: '/data/admin/de-states.geojson',
 		featureNameProperty: 'name',
-		parsePlaceRegionLabel: (place) => {
-			const match = place.name.match(/\(([^)]+)\)\s*$/);
-			return match?.[1]?.trim() ?? null;
-		},
-		normalizeFeatureName: (featureName) => {
-			const normalized = normalizeRegionName(featureName);
-			const mappedFeature = DE_STATE_LABEL_TO_FEATURE[normalized];
-			return normalizeRegionName(mappedFeature ?? featureName);
-		},
-		toDisplayLabel: (featureName) =>
-			DE_FEATURE_TO_DISPLAY_LABEL.get(normalizeRegionName(featureName)) ??
-			featureName
+		geojsonPath: '/data/admin/de-states.geojson'
 	},
 	jp: {
 		countryCode: 'jp',
-		enabledCategory: 'Prefecture Capitals',
-		geojsonPath: '/data/admin/jp-prefectures.geojson',
 		featureNameProperty: 'name',
-		parsePlaceRegionLabel: (place) => {
-			const match = place.name.match(/\(([^)]+)\)\s*$/);
-			return match?.[1]?.trim() ?? null;
-		},
-		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
-		toDisplayLabel: (featureName) => featureName
+		geojsonPath: '/data/admin/jp-prefectures.geojson'
 	},
 	cn: {
 		countryCode: 'cn',
-		enabledCategory: 'Province Capitals',
-		geojsonPath: '/data/admin/cn-provinces.geojson',
 		featureNameProperty: 'name',
-		parsePlaceRegionLabel: (place) => {
-			const match = place.name.match(/\(([^)]+)\)\s*$/);
-			return match?.[1]?.trim() ?? null;
-		},
-		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
-		toDisplayLabel: (featureName) => featureName
+		geojsonPath: '/data/admin/cn-provinces.geojson'
 	},
 	in: {
 		countryCode: 'in',
-		enabledCategory: 'State Capitals',
-		geojsonPath: '/data/admin/in-states.geojson',
 		featureNameProperty: 'name',
-		parsePlaceRegionLabel: (place) => {
-			const match = place.name.match(/\(([^)]+)\)\s*$/);
-			return match?.[1]?.trim() ?? null;
-		},
-		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
-		toDisplayLabel: (featureName) => featureName
+		geojsonPath: '/data/admin/in-states.geojson'
 	},
 	gb: {
 		countryCode: 'gb',
-		enabledCategory: 'Nation Capitals',
-		geojsonPath: '/data/admin/gb-nations.geojson',
 		featureNameProperty: 'name',
-		parsePlaceRegionLabel: (place) => {
-			const match = place.name.match(/\(([^)]+)\)\s*$/);
-			return match?.[1]?.trim() ?? null;
-		},
-		normalizeFeatureName: (featureName) => normalizeRegionName(featureName),
-		toDisplayLabel: (featureName) => featureName
+		geojsonPath: '/data/admin/gb-nations.geojson'
+	},
+	fr: {
+		countryCode: 'fr',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/fr-regions.geojson'
+	},
+	it: {
+		countryCode: 'it',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/it-regions.geojson'
+	},
+	es: {
+		countryCode: 'es',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/es-communities.geojson'
+	},
+	au: {
+		countryCode: 'au',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/au-states.geojson'
+	},
+	ca: {
+		countryCode: 'ca',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/ca-provinces.geojson'
+	},
+	br: {
+		countryCode: 'br',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/br-states.geojson'
+	},
+	mx: {
+		countryCode: 'mx',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/mx-states.geojson'
+	},
+	id: {
+		countryCode: 'id',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/id-provinces.geojson'
+	},
+	kr: {
+		countryCode: 'kr',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/kr-provinces.geojson',
+		selection: buildAliasSelectionConfig({
+			enabledCategory: 'Provinces',
+			parsePlaceRegionLabel: (place) => place.name,
+			aliases: {
+				'Gangwon Province': 'Gangwon',
+				'Gyeonggi Province': 'Gyeonggi',
+				'Jeju Island': 'Jeju'
+			}
+		})
+	},
+	ru: {
+		countryCode: 'ru',
+		featureNameProperty: 'name',
+		geojsonPath: '/data/admin/ru-federal-subjects.geojson'
 	}
 };
 
 const COUNTRY_REGION_INDEX = new Map<SupportedCountryCode, Map<string, Place>>(
 	(Object.values(COUNTRY_REGION_CONFIGS) as CountryRegionConfig[]).map(
 		(config) => {
-			const places =
-				getCountryRegions(config.countryCode).find(
-					(group) => group.category === config.enabledCategory
-				)?.places ?? [];
+			const selection = config.selection;
+			const places = selection
+				? (getCountryRegions(config.countryCode).find(
+						(group) => group.category === selection.enabledCategory
+					)?.places ?? [])
+				: [];
 
 			return [
 				config.countryCode,
 				new Map(
 					places.flatMap((place) => {
-						const regionLabel = config.parsePlaceRegionLabel(place);
-						if (!regionLabel) return [];
+						const regionLabel =
+							selection?.parsePlaceRegionLabel(place);
+						if (!selection || !regionLabel) return [];
 
 						return [
 							[
-								config.normalizeFeatureName(regionLabel),
+								selection.normalizeFeatureName(regionLabel),
 								place
 							] as const
 						];
@@ -203,7 +230,9 @@ const getCountryRegionConfig = (
 ): CountryRegionConfig | null =>
 	COUNTRY_REGION_CONFIGS[countryCode as SupportedCountryCode] ?? null;
 
-const buildCountryRegionSource = (countryCode: string): CountryRegionSource => ({
+const buildCountryRegionSource = (
+	countryCode: string
+): CountryRegionSource => ({
 	featureNameProperty:
 		getCountryRegionConfig(countryCode)?.featureNameProperty ?? 'name',
 	geojsonPath: getCountryRegionConfig(countryCode)?.geojsonPath ?? '',
@@ -214,7 +243,6 @@ const buildCountryRegionSource = (countryCode: string): CountryRegionSource => (
 	sourceId: `${countryCode}-admin-region-polygons`
 });
 
-// Returns source metadata whenever the country has region config, regardless of active place.
 export const getCountryRegionStaticSource = (
 	countryCode: string
 ): CountryRegionSource | null => {
@@ -237,27 +265,22 @@ export const resolveCountryPlaceSelection = (
 	if (!place) return null;
 
 	const config = getCountryRegionConfig(countryCode);
-	if (!config) return null;
+	const selection = config?.selection;
+	if (!config || !selection) return null;
 
-	const regionLabel = config.parsePlaceRegionLabel(place);
+	const regionLabel = selection.parsePlaceRegionLabel(place);
 	if (!regionLabel) return null;
 
-	const selectionKey = config.normalizeFeatureName(regionLabel);
+	const selectionKey = selection.normalizeFeatureName(regionLabel);
 	const canonicalPlace = COUNTRY_REGION_INDEX.get(config.countryCode)?.get(
 		selectionKey
 	);
 
 	if (!canonicalPlace) return null;
 
-	const featureName =
-		countryCode === 'de'
-			? (DE_STATE_LABEL_TO_FEATURE[normalizeRegionName(regionLabel)] ??
-				regionLabel)
-			: regionLabel;
-
 	return {
-		featureName,
-		label: config.toDisplayLabel(featureName),
+		featureName: selection.toFeatureName(regionLabel),
+		label: selection.toDisplayLabel(selection.toFeatureName(regionLabel)),
 		place: canonicalPlace,
 		selectionKey
 	};
@@ -268,9 +291,10 @@ export const resolveCountryFeatureSelection = (
 	featureName: string
 ): CountryRegionSelection | null => {
 	const config = getCountryRegionConfig(countryCode);
-	if (!config) return null;
+	const selection = config?.selection;
+	if (!config || !selection) return null;
 
-	const selectionKey = config.normalizeFeatureName(featureName);
+	const selectionKey = selection.normalizeFeatureName(featureName);
 	const place = COUNTRY_REGION_INDEX.get(config.countryCode)?.get(
 		selectionKey
 	);
@@ -279,7 +303,7 @@ export const resolveCountryFeatureSelection = (
 
 	return {
 		featureName,
-		label: config.toDisplayLabel(featureName),
+		label: selection.toDisplayLabel(featureName),
 		place,
 		selectionKey
 	};

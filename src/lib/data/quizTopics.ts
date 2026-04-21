@@ -734,7 +734,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'French regions and regional capital recall',
 		searchIntent: 'France regions geography practice',
 		description:
-			'Practice France regions and regional capitals on an interactive map with instant answer feedback and repeatable review.'
+			'Practice France regions and regional capitals on an interactive map with instant answer feedback and repeatable review.',
+		seoDescription:
+			'Learn France regions with an interactive map quiz covering regional capitals, instant feedback, and repeat practice on MapQuiz.pro.',
+		benefits: [
+			'Practice French regions in one map loop instead of memorizing a flat list',
+			'Build a clear national frame before drilling cities or landmarks separately',
+			'Use repeated runs to distinguish neighboring regions across the country'
+		],
+		highlights: ['Regional capital focus', 'Full France coverage', 'Best first France drill'],
+		faq: [
+			{
+				question: 'Does this France regions quiz cover all metropolitan regions?',
+				answer: 'Yes. The page is built around the full set of French metropolitan regions so you can learn the country frame before moving into cities.'
+			},
+			{
+				question: 'Should I start here before France cities?',
+				answer: 'Usually yes. Learning the regional framework first makes city and landmark recall much easier in the next step.'
+			},
+			{
+				question: 'Is this page useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce regional geography efficiently.'
+			}
+		]
 	},
 	{
 		slug: 'france-cities-quiz',
@@ -747,7 +769,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Major cities across France',
 		searchIntent: 'France cities map quiz searches',
 		description:
-			'Test yourself on major French cities with a replayable interactive map quiz built for fast geography practice.'
+			'Test yourself on major French cities with a replayable interactive map quiz built for fast geography practice.',
+		seoDescription:
+			'Practice France cities on an interactive map quiz covering major urban centers, instant answer checks, and repeat study.',
+		benefits: [
+			'Focus on France\u2019s main urban centers without mixing in regional administrative prompts',
+			'Build a practical mental map of French cities from Paris to Bordeaux',
+			'Replay missed cities quickly while staying inside the same country context'
+		],
+		highlights: ['Major-city coverage', 'Urban France focus', 'Good after regions drill'],
+		faq: [
+			{
+				question: 'What kind of cities appear in this France cities quiz?',
+				answer: 'The page focuses on major French cities rather than only regional capitals, so it works well for broader city recognition practice.'
+			},
+			{
+				question: 'Is this different from France regions practice?',
+				answer: 'Yes. The regions page teaches the country framework, while this one focuses on the urban geography layer.'
+			},
+			{
+				question: 'Who is this page most useful for?',
+				answer: 'It works for students, quiz players, and anyone who wants a city-focused France map drill without extra setup.'
+			}
+		]
 	},
 	{
 		slug: 'france-landmarks-quiz',
@@ -760,7 +804,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Famous landmarks and iconic places across France',
 		searchIntent: 'France landmarks geography practice',
 		description:
-			'Practice France landmarks with an interactive map quiz covering famous sites and iconic locations.'
+			'Practice France landmarks with an interactive map quiz covering famous sites and iconic locations.',
+		seoDescription:
+			'Test your knowledge of France landmarks with an interactive map quiz covering famous sites, instant corrections, and repeat review.',
+		benefits: [
+			'Switch from administrative geography into iconic place recognition across France',
+			'Build spatial memory around famous destinations instead of only memorizing names',
+			'Use a lighter, more visual loop for travel-style recall and cultural trivia'
+		],
+		highlights: ['Iconic place recall', 'Culture-and-geography blend', 'Fast landmark replay'],
+		faq: [
+			{
+				question: 'What kind of places appear in this France landmarks quiz?',
+				answer: 'The quiz focuses on famous landmarks and widely recognized locations rather than regional capitals or administrative units.'
+			},
+			{
+				question: 'Is this page better for travel-style geography practice?',
+				answer: 'Yes. It is especially useful when you want to recognize famous French places on a map rather than only study political geography.'
+			},
+			{
+				question: 'Should I do landmarks before or after regions?',
+				answer: 'Most users should do regions first, then landmarks, because the landmark layer becomes easier once the country frame is already familiar.'
+			}
+		]
 	},
 	{
 		slug: 'uk-cities-quiz',
@@ -773,7 +839,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Major cities across the United Kingdom',
 		searchIntent: 'UK cities map quiz searches',
 		description:
-			'Practice major UK cities with an interactive map quiz built for fast recall and repeat study.'
+			'Practice major UK cities with an interactive map quiz built for fast recall and repeat study.',
+		seoDescription:
+			'Practice UK cities on an interactive map quiz covering major urban centers across England, Scotland, Wales, and Northern Ireland.',
+		benefits: [
+			'Train on major UK cities without mixing in historical or county prompts',
+			'Build a usable mental map of British urban centers from London to Glasgow',
+			'Use quick replays to separate nearby or commonly confused city locations'
+		],
+		highlights: ['Major-city coverage', 'All four nations', 'Good for general knowledge'],
+		faq: [
+			{
+				question: 'Does this UK cities quiz include cities from Scotland, Wales, and Northern Ireland?',
+				answer: 'Yes. The page covers major cities from all four nations of the United Kingdom, not just English cities.'
+			},
+			{
+				question: 'Is this useful alongside UK landmarks practice?',
+				answer: 'Yes. Cities and landmarks complement each other — one covers urban geography, the other covers historic and iconic places.'
+			},
+			{
+				question: 'Who is this page most useful for?',
+				answer: 'It works for students, quiz players, and anyone who wants a city-focused UK map drill without account creation.'
+			}
+		]
 	},
 	{
 		slug: 'uk-landmarks-quiz',
@@ -786,7 +874,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Historical landmarks and iconic places across the UK',
 		searchIntent: 'UK landmarks geography practice',
 		description:
-			'Test yourself on UK landmarks with an interactive map quiz covering historic sites and famous locations.'
+			'Test yourself on UK landmarks with an interactive map quiz covering historic sites and famous locations.',
+		seoDescription:
+			'Test your knowledge of UK landmarks with an interactive map quiz covering historical sites, famous locations, and repeat geography study.',
+		benefits: [
+			'Practice iconic British landmarks in a more memorable format than a plain list',
+			'Connect historical sites back to their country and region on the map',
+			'Use a lighter, more visual loop for cultural and travel-style geography practice'
+		],
+		highlights: ['Historic site focus', 'Iconic-place recall', 'Travel-friendly geography'],
+		faq: [
+			{
+				question: 'What kinds of landmarks appear in this UK landmarks quiz?',
+				answer: 'The page focuses on historical sites and famous landmarks rather than city geography or administrative counties.'
+			},
+			{
+				question: 'Is this page useful after UK cities practice?',
+				answer: 'Yes. Once you know major city locations, the landmark layer becomes easier to place and remember in the right part of the UK.'
+			},
+			{
+				question: 'Does this work for casual geography practice too?',
+				answer: 'Yes. Landmark-focused quizzes are often easier to revisit because the places feel more concrete and memorable.'
+			}
+		]
 	},
 	{
 		slug: 'england-counties-quiz',
@@ -799,7 +909,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'English counties and regional geography',
 		searchIntent: 'England counties geography practice',
 		description:
-			'Practice England counties and regional geography with an interactive map quiz focused on repeatable recall.'
+			'Practice England counties and regional geography with an interactive map quiz focused on repeatable recall.',
+		seoDescription:
+			'Learn England counties with an interactive map quiz designed for fast recall, instant answer checks, and repeat geography practice.',
+		benefits: [
+			'Practice English county geography in one tight loop instead of memorizing names in isolation',
+			'Improve recall of where each county sits relative to its neighbors',
+			'Use repeated runs to build the county framework before moving into cities or landmarks'
+		],
+		highlights: ['County-level geography', 'England focus', 'Good admin-geography drill'],
+		faq: [
+			{
+				question: 'Does this England counties quiz cover all historic counties?',
+				answer: 'The page is built around the major counties and regions of England to give you a practical country frame rather than an exhaustive administrative list.'
+			},
+			{
+				question: 'Is this better as a starting point than UK cities?',
+				answer: 'It depends on your goal. Counties give you a political-geography frame; cities give you a practical urban-geography frame. Both are useful.'
+			},
+			{
+				question: 'Can I use this for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for revision sessions and specific enough to reinforce county geography quickly.'
+			}
+		]
 	},
 	{
 		slug: 'italy-regions-quiz',
@@ -812,7 +944,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Italian regions and regional capital recall',
 		searchIntent: 'Italy regions geography practice',
 		description:
-			'Practice Italy regions and regional capitals on an interactive map with instant answer checks and repeat play.'
+			'Practice Italy regions and regional capitals on an interactive map with instant answer checks and repeat play.',
+		seoDescription:
+			'Learn Italy regions with an interactive map quiz covering regional capitals, instant feedback, and repeat geography practice on MapQuiz.pro.',
+		benefits: [
+			'Practice Italian regions in one map loop instead of memorizing a flat list',
+			'Build the national framework from the Alps to Sicily before drilling cities or landmarks',
+			'Use repeated runs to distinguish neighboring regions across the boot'
+		],
+		highlights: ['Regional capital focus', 'Full Italy coverage', 'Best first Italy drill'],
+		faq: [
+			{
+				question: 'Does this Italy regions quiz cover all 20 regions?',
+				answer: 'Yes. The page is built around all Italian regions so you can learn the full country frame before moving into city or landmark recall.'
+			},
+			{
+				question: 'Should I start here before Italy landmarks?',
+				answer: 'Usually yes. Learning the regional framework first makes landmark recall much easier in the next step.'
+			},
+			{
+				question: 'Is this page useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce regional geography efficiently.'
+			}
+		]
 	},
 	{
 		slug: 'italy-landmarks-quiz',
@@ -825,7 +979,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'UNESCO heritage sites and iconic places across Italy',
 		searchIntent: 'Italy landmarks geography practice',
 		description:
-			'Practice Italy landmarks and UNESCO heritage sites with an interactive map quiz built for repeat geography study.'
+			'Practice Italy landmarks and UNESCO heritage sites with an interactive map quiz built for repeat geography study.',
+		seoDescription:
+			'Test your knowledge of Italy landmarks with an interactive map quiz covering UNESCO heritage sites, famous places, and repeat review.',
+		benefits: [
+			'Switch from administrative regions into iconic site recognition across Italy',
+			'Build spatial memory around UNESCO-listed places instead of only memorizing names',
+			'Use a lighter, more visual loop for travel-style recall and cultural trivia'
+		],
+		highlights: ['UNESCO site focus', 'Culture-and-geography blend', 'Fast landmark replay'],
+		faq: [
+			{
+				question: 'What kind of places appear in this Italy landmarks quiz?',
+				answer: 'The quiz focuses on UNESCO heritage sites and famous landmarks rather than regional capitals or administrative units.'
+			},
+			{
+				question: 'Is this page better for travel-style geography practice?',
+				answer: 'Yes. It is especially useful when you want to recognize iconic Italian places on a map rather than only study political geography.'
+			},
+			{
+				question: 'Should I do landmarks before or after regions?',
+				answer: 'Most users should do regions first, then landmarks, because the landmark layer becomes easier once the country frame is already familiar.'
+			}
+		]
 	},
 	{
 		slug: 'spain-regions-quiz',
@@ -838,7 +1014,29 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Spain autonomous communities and capital-level recall',
 		searchIntent: 'Spain regions geography practice',
 		description:
-			'Practice Spain autonomous communities and capitals with an interactive map quiz designed for fast recall.'
+			'Practice Spain autonomous communities and capitals with an interactive map quiz designed for fast recall.',
+		seoDescription:
+			'Learn Spain regions with an interactive map quiz covering autonomous community capitals, instant feedback, and repeat practice on MapQuiz.pro.',
+		benefits: [
+			'Practice Spain\'s autonomous communities in one map loop instead of memorizing a flat list',
+			'Build the national framework from Galicia to Catalonia before drilling landmarks or cities',
+			'Use repeated runs to distinguish neighboring communities across the peninsula'
+		],
+		highlights: ['Autonomous community focus', 'Full Spain coverage', 'Best first Spain drill'],
+		faq: [
+			{
+				question: 'Does this Spain regions quiz cover all 17 autonomous communities?',
+				answer: 'Yes. The page is built around all autonomous communities so you can learn the full country frame before moving into city or landmark recall.'
+			},
+			{
+				question: 'Should I start here before Spain landmarks?',
+				answer: 'Usually yes. Learning the regional framework first makes landmark recall much easier in the next step.'
+			},
+			{
+				question: 'Is this page useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce regional geography efficiently.'
+			}
+		]
 	},
 	{
 		slug: 'spain-landmarks-quiz',
@@ -851,7 +1049,414 @@ const COUNTRY_SUBTOPIC_DEFS: CountrySubtopicDef[] = [
 		learningFocus: 'Famous landmarks and iconic places across Spain',
 		searchIntent: 'Spain landmarks geography practice',
 		description:
-			'Test yourself on Spain landmarks with an interactive map quiz covering famous sites and iconic destinations.'
+			'Test yourself on Spain landmarks with an interactive map quiz covering famous sites and iconic destinations.',
+		seoDescription:
+			'Test your knowledge of Spain landmarks with an interactive map quiz covering famous sites, iconic destinations, and repeat geography study.',
+		benefits: [
+			'Switch from regional geography into iconic site recognition across Spain',
+			'Build spatial memory around famous destinations instead of only memorizing names',
+			'Use a lighter, more visual loop for travel-style recall and cultural trivia'
+		],
+		highlights: ['Iconic place recall', 'Culture-and-geography blend', 'Fast landmark replay'],
+		faq: [
+			{
+				question: 'What kind of places appear in this Spain landmarks quiz?',
+				answer: 'The quiz focuses on famous landmarks and widely recognized locations rather than autonomous community capitals or administrative units.'
+			},
+			{
+				question: 'Is this page better for travel-style geography practice?',
+				answer: 'Yes. It is especially useful when you want to recognize iconic Spanish places on a map rather than only study political geography.'
+			},
+			{
+				question: 'Should I do landmarks before or after regions?',
+				answer: 'Most users should do regions first, then landmarks, because the landmark layer becomes easier once the country frame is already familiar.'
+			}
+		]
+	},
+	{
+		slug: 'brazil-states-quiz',
+		parentSlug: 'brazil-map-quiz',
+		countryCode: 'br',
+		title: 'Brazil States Quiz',
+		shortTitle: 'Brazil States',
+		primaryKeyword: 'brazil states quiz',
+		categories: ['State Capitals'],
+		learningFocus: 'Brazilian states and state capital recall',
+		searchIntent: 'Brazil states geography practice',
+		description:
+			'Practice Brazil states and state capitals on an interactive map with instant answer feedback and repeatable review.',
+		seoDescription:
+			'Learn Brazil states with an interactive map quiz covering state capitals, instant feedback, and repeat practice on MapQuiz.pro.',
+		benefits: [
+			'Practice all 26 Brazilian states and the Federal District in one replayable map loop',
+			'Build a spatial sense of Brazil\'s five major regions before drilling cities or landmarks',
+			'Use repeated runs to distinguish neighboring states across this large country'
+		],
+		highlights: ['State capital focus', 'Full Brazil coverage', 'Best first Brazil drill'],
+		faq: [
+			{
+				question: 'Does this Brazil states quiz include all 26 states?',
+				answer: 'Yes. The page is built around all Brazilian states so you can learn the full country frame before moving into landmarks or cities.'
+			},
+			{
+				question: 'Should I start here before Brazil landmarks?',
+				answer: 'Usually yes. Learning the state framework first makes landmark recall much easier in the next step.'
+			},
+			{
+				question: 'Is this page useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce state geography efficiently.'
+			}
+		]
+	},
+	{
+		slug: 'brazil-landmarks-quiz',
+		parentSlug: 'brazil-map-quiz',
+		countryCode: 'br',
+		title: 'Brazil Landmarks Quiz',
+		shortTitle: 'Brazil Landmarks',
+		primaryKeyword: 'brazil landmarks quiz',
+		categories: ['Famous Landmarks'],
+		learningFocus: 'Famous landmarks and iconic places across Brazil',
+		searchIntent: 'Brazil landmarks geography practice',
+		description:
+			'Practice Brazil landmarks and iconic places with an interactive map quiz built for repeat geography study.',
+		seoDescription:
+			'Test your knowledge of Brazil landmarks with an interactive map quiz covering famous sites, natural wonders, and repeat review.',
+		benefits: [
+			'Move beyond state geography into Brazil\'s most iconic natural and cultural landmarks',
+			'Practice famous places in a more memorable format than a plain landmark list',
+			'Use the same map loop to connect landmarks back to the larger country frame'
+		],
+		highlights: ['Natural wonder focus', 'Iconic-place recall', 'Travel-friendly geography'],
+		faq: [
+			{
+				question: 'What kinds of places appear in this Brazil landmarks quiz?',
+				answer: 'The page focuses on well-known natural wonders, cultural sites, and famous landmarks rather than state capitals or administrative units.'
+			},
+			{
+				question: 'Is this page useful after Brazil states practice?',
+				answer: 'Yes. Once you know the state frame, landmarks become easier to place and remember in the right part of the country.'
+			},
+			{
+				question: 'Does this work for casual geography practice too?',
+				answer: 'Yes. Landmark-focused quizzes are often easier to revisit because the places feel more concrete and memorable.'
+			}
+		]
+	},
+	{
+		slug: 'south-korea-cities-quiz',
+		parentSlug: 'south-korea-map-quiz',
+		countryCode: 'kr',
+		title: 'South Korea Cities Quiz',
+		shortTitle: 'South Korea Cities',
+		primaryKeyword: 'south korea cities quiz',
+		categories: ['Major Cities'],
+		learningFocus: 'Major cities across South Korea',
+		searchIntent: 'South Korea cities map quiz searches',
+		description:
+			'Test yourself on major South Korean cities with a focused interactive map quiz designed for fast recall.',
+		seoDescription:
+			'Practice South Korea cities on an interactive map quiz covering major urban centers, instant answer checks, and repeat study.',
+		benefits: [
+			'Focus on South Korea\'s main urban centers without mixing in province or landmark prompts',
+			'Build a practical mental map of Korean cities from Seoul to Busan',
+			'Replay missed cities quickly while staying inside the same country context'
+		],
+		highlights: ['Major-city coverage', 'Urban Korea focus', 'Good for general knowledge'],
+		faq: [
+			{
+				question: 'What kind of cities appear in this South Korea cities quiz?',
+				answer: 'The page focuses on major South Korean cities and metropolitan areas rather than only provincial capitals.'
+			},
+			{
+				question: 'Is this different from South Korea provinces practice?',
+				answer: 'Yes. The provinces page teaches the country framework, while this one is more about the urban geography layer.'
+			},
+			{
+				question: 'Who is this page most useful for?',
+				answer: 'It works for students, quiz players, and anyone who wants a city-focused South Korea map drill without extra setup.'
+			}
+		]
+	},
+	{
+		slug: 'south-korea-provinces-quiz',
+		parentSlug: 'south-korea-map-quiz',
+		countryCode: 'kr',
+		title: 'South Korea Provinces Quiz',
+		shortTitle: 'South Korea Provinces',
+		primaryKeyword: 'south korea provinces quiz',
+		categories: ['Provinces'],
+		learningFocus: 'South Korean provinces and administrative regions',
+		searchIntent: 'South Korea provinces geography practice',
+		description:
+			'Practice South Korea provinces and administrative regions on an interactive map with instant answer checks.',
+		seoDescription:
+			'Learn South Korea provinces with an interactive map quiz covering administrative regions, instant feedback, and repeat practice.',
+		benefits: [
+			'Practice South Korean provinces in one map loop instead of memorizing a flat list',
+			'Build the national administrative framework before drilling cities or landmarks separately',
+			'Use repeated runs to distinguish the relatively compact but diverse provincial geography'
+		],
+		highlights: ['Province-level geography', 'Full Korea coverage', 'Good admin-geography drill'],
+		faq: [
+			{
+				question: 'Does this South Korea provinces quiz include all provinces and special cities?',
+				answer: 'Yes. The page covers the major provinces and administrative regions so you can learn the full country structure.'
+			},
+			{
+				question: 'Should I start here before South Korea cities?',
+				answer: 'Either order works well. Provinces give you a political framework; cities give you a practical urban layer.'
+			},
+			{
+				question: 'Is this useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce provincial geography efficiently.'
+			}
+		]
+	},
+	{
+		slug: 'south-korea-landmarks-quiz',
+		parentSlug: 'south-korea-map-quiz',
+		countryCode: 'kr',
+		title: 'South Korea Landmarks Quiz',
+		shortTitle: 'South Korea Landmarks',
+		primaryKeyword: 'south korea landmarks quiz',
+		categories: ['Landmarks'],
+		learningFocus: 'Famous landmarks and iconic places across South Korea',
+		searchIntent: 'South Korea landmarks geography practice',
+		description:
+			'Practice South Korea landmarks and iconic places with an interactive map quiz built for repeat geography study.',
+		seoDescription:
+			'Test your knowledge of South Korea landmarks with an interactive map quiz covering famous sites and repeat geography practice.',
+		benefits: [
+			'Switch from administrative geography into iconic place recognition across South Korea',
+			'Build spatial memory around famous destinations instead of only memorizing names',
+			'Use a lighter, more visual loop for travel-style recall and cultural trivia'
+		],
+		highlights: ['Iconic place recall', 'Culture-and-geography blend', 'Fast landmark replay'],
+		faq: [
+			{
+				question: 'What kind of places appear in this South Korea landmarks quiz?',
+				answer: 'The quiz focuses on famous landmarks and widely recognized locations rather than provincial capitals or administrative units.'
+			},
+			{
+				question: 'Is this page better for travel-style geography practice?',
+				answer: 'Yes. It is especially useful when you want to recognize iconic Korean places on a map rather than only study political geography.'
+			},
+			{
+				question: 'Should I do landmarks before or after provinces?',
+				answer: 'Most users should do provinces or cities first, then landmarks, because the landmark layer becomes easier once the country frame is already familiar.'
+			}
+		]
+	},
+	{
+		slug: 'russia-cities-quiz',
+		parentSlug: 'russia-map-quiz',
+		countryCode: 'ru',
+		title: 'Russia Cities Quiz',
+		shortTitle: 'Russia Cities',
+		primaryKeyword: 'russia cities quiz',
+		categories: ['Major Cities'],
+		learningFocus: 'Major cities across Russia',
+		searchIntent: 'Russia cities map quiz searches',
+		description:
+			'Test yourself on major Russian cities with a focused interactive map quiz designed for fast recall across this vast country.',
+		seoDescription:
+			'Practice Russia cities on an interactive map quiz covering major urban centers, instant answer checks, and repeat geography study.',
+		benefits: [
+			'Focus on Russia\'s main urban centers spread from Kaliningrad to Vladivostok',
+			'Build a practical mental map of Russian cities without needing to memorize every region',
+			'Replay missed cities quickly to reinforce location recall across this large country'
+		],
+		highlights: ['Major-city coverage', 'Vast country frame', 'Good for general knowledge'],
+		faq: [
+			{
+				question: 'What kind of cities appear in this Russia cities quiz?',
+				answer: 'The page focuses on major Russian cities and regional centers rather than a full exhaustive list, so it stays practical for geography recall.'
+			},
+			{
+				question: 'Is Russia too large for a city-level quiz?',
+				answer: 'The quiz is designed around a curated set of major cities to make practice manageable and useful rather than overwhelming.'
+			},
+			{
+				question: 'Who is this page most useful for?',
+				answer: 'It works for students, quiz players, and anyone who wants a city-focused Russia map drill without extra setup.'
+			}
+		]
+	},
+	{
+		slug: 'russia-landmarks-quiz',
+		parentSlug: 'russia-map-quiz',
+		countryCode: 'ru',
+		title: 'Russia Landmarks Quiz',
+		shortTitle: 'Russia Landmarks',
+		primaryKeyword: 'russia landmarks quiz',
+		categories: ['Landmarks & Nature'],
+		learningFocus: 'Landmarks and natural wonders across Russia',
+		searchIntent: 'Russia landmarks geography practice',
+		description:
+			'Practice Russia landmarks and natural wonders with an interactive map quiz built for repeat geography study.',
+		seoDescription:
+			'Test your knowledge of Russia landmarks with an interactive map quiz covering natural wonders, famous sites, and repeat review.',
+		benefits: [
+			'Move beyond city geography into Russia\'s most iconic natural and cultural landmarks',
+			'Practice famous places in a more memorable format than a plain landmark list',
+			'Use the same map loop to connect landmarks back to the larger country frame'
+		],
+		highlights: ['Natural wonder focus', 'Iconic-place recall', 'Travel-friendly geography'],
+		faq: [
+			{
+				question: 'What kinds of places appear in this Russia landmarks quiz?',
+				answer: 'The page focuses on well-known natural wonders, UNESCO sites, and famous landmarks rather than major cities or administrative regions.'
+			},
+			{
+				question: 'Is this page useful after Russia cities practice?',
+				answer: 'Yes. Once you know major city locations, landmarks become easier to place and remember in the right part of the country.'
+			},
+			{
+				question: 'Does this work for casual geography practice too?',
+				answer: 'Yes. Landmark-focused quizzes are often easier to revisit because the places feel more concrete and memorable.'
+			}
+		]
+	},
+	{
+		slug: 'mexico-states-quiz',
+		parentSlug: 'mexico-map-quiz',
+		countryCode: 'mx',
+		title: 'Mexico States Quiz',
+		shortTitle: 'Mexico States',
+		primaryKeyword: 'mexico states quiz',
+		categories: ['State Capitals'],
+		learningFocus: 'Mexican states and state capital recall',
+		searchIntent: 'Mexico states geography practice',
+		description:
+			'Practice Mexico states and state capitals on an interactive map with instant answer feedback and repeatable review.',
+		seoDescription:
+			'Learn Mexico states with an interactive map quiz covering state capitals, instant feedback, and repeat practice on MapQuiz.pro.',
+		benefits: [
+			'Practice all 31 Mexican states and the Federal Entity in one replayable map loop',
+			'Build a spatial sense of Mexico\'s geography before drilling landmarks or historic sites',
+			'Use repeated runs to distinguish neighboring states from Baja California to the Yucatan'
+		],
+		highlights: ['State capital focus', 'Full Mexico coverage', 'Best first Mexico drill'],
+		faq: [
+			{
+				question: 'Does this Mexico states quiz include all 31 states?',
+				answer: 'Yes. The page is built around all Mexican states so you can learn the full country frame before moving into landmarks or cities.'
+			},
+			{
+				question: 'Should I start here before Mexico landmarks?',
+				answer: 'Usually yes. Learning the state framework first makes landmark recall much easier in the next step.'
+			},
+			{
+				question: 'Is this page useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce state geography efficiently.'
+			}
+		]
+	},
+	{
+		slug: 'mexico-landmarks-quiz',
+		parentSlug: 'mexico-map-quiz',
+		countryCode: 'mx',
+		title: 'Mexico Landmarks Quiz',
+		shortTitle: 'Mexico Landmarks',
+		primaryKeyword: 'mexico landmarks quiz',
+		categories: ['Historic Sites'],
+		learningFocus: 'Historic sites and iconic places across Mexico',
+		searchIntent: 'Mexico landmarks geography practice',
+		description:
+			'Practice Mexico historic sites and landmarks with an interactive map quiz built for repeat geography study.',
+		seoDescription:
+			'Test your knowledge of Mexico landmarks with an interactive map quiz covering historic sites, ancient ruins, and repeat review.',
+		benefits: [
+			'Move beyond state geography into Mexico\'s most iconic archaeological and cultural sites',
+			'Practice famous historic places in a more memorable format than a plain landmark list',
+			'Use the same map loop to connect landmarks back to the larger country frame'
+		],
+		highlights: ['Historic site focus', 'Ancient-ruins recall', 'Travel-friendly geography'],
+		faq: [
+			{
+				question: 'What kinds of places appear in this Mexico landmarks quiz?',
+				answer: 'The page focuses on historic sites, ancient ruins, and famous landmarks rather than state capitals or administrative units.'
+			},
+			{
+				question: 'Is this page useful after Mexico states practice?',
+				answer: 'Yes. Once you know the state frame, landmarks become easier to place and remember in the right part of the country.'
+			},
+			{
+				question: 'Does this work for casual geography practice too?',
+				answer: 'Yes. Landmark-focused quizzes are often easier to revisit because the places feel more concrete and memorable.'
+			}
+		]
+	},
+	{
+		slug: 'indonesia-provinces-quiz',
+		parentSlug: 'indonesia-map-quiz',
+		countryCode: 'id',
+		title: 'Indonesia Provinces Quiz',
+		shortTitle: 'Indonesia Provinces',
+		primaryKeyword: 'indonesia provinces quiz',
+		categories: ['Provincial Capitals'],
+		learningFocus: 'Indonesian provinces and provincial capital recall',
+		searchIntent: 'Indonesia provinces geography practice',
+		description:
+			'Practice Indonesia provinces and provincial capitals on an interactive map with instant answer checks.',
+		seoDescription:
+			'Learn Indonesia provinces with an interactive map quiz covering provincial capitals, instant feedback, and repeat practice on MapQuiz.pro.',
+		benefits: [
+			'Practice Indonesian provinces spread across the archipelago in one replayable map loop',
+			'Build a spatial sense of Indonesia\'s geography from Sumatra to Papua',
+			'Use repeated runs to distinguish the many provinces across this vast island nation'
+		],
+		highlights: ['Provincial capital focus', 'Full archipelago coverage', 'Best first Indonesia drill'],
+		faq: [
+			{
+				question: 'Does this Indonesia provinces quiz cover all provinces?',
+				answer: 'Yes. The page is built around the full set of Indonesian provinces so you can learn the country frame before moving into landmarks.'
+			},
+			{
+				question: 'Should I start here before Indonesia landmarks?',
+				answer: 'Usually yes. Learning the provincial framework first makes landmark recall much easier in the next step.'
+			},
+			{
+				question: 'Is this page useful for school-style geography review?',
+				answer: 'Yes. The loop is simple enough for quick revision and specific enough to reinforce provincial geography efficiently.'
+			}
+		]
+	},
+	{
+		slug: 'indonesia-landmarks-quiz',
+		parentSlug: 'indonesia-map-quiz',
+		countryCode: 'id',
+		title: 'Indonesia Landmarks Quiz',
+		shortTitle: 'Indonesia Landmarks',
+		primaryKeyword: 'indonesia landmarks quiz',
+		categories: ['Landmarks & Nature'],
+		learningFocus: 'Landmarks and natural wonders across Indonesia',
+		searchIntent: 'Indonesia landmarks geography practice',
+		description:
+			'Practice Indonesia landmarks and natural wonders with an interactive map quiz built for repeat geography study.',
+		seoDescription:
+			'Test your knowledge of Indonesia landmarks with an interactive map quiz covering natural wonders, famous sites, and repeat review.',
+		benefits: [
+			'Move beyond provincial geography into Indonesia\'s most iconic natural and cultural landmarks',
+			'Practice famous places in a more memorable format than a plain landmark list',
+			'Use the same map loop to connect landmarks back to the larger archipelago frame'
+		],
+		highlights: ['Natural wonder focus', 'Iconic-place recall', 'Travel-friendly geography'],
+		faq: [
+			{
+				question: 'What kinds of places appear in this Indonesia landmarks quiz?',
+				answer: 'The page focuses on well-known natural wonders and famous landmarks rather than provincial capitals or administrative units.'
+			},
+			{
+				question: 'Is this page useful after Indonesia provinces practice?',
+				answer: 'Yes. Once you know the provincial frame, landmarks become easier to place and remember across the right islands.'
+			},
+			{
+				question: 'Does this work for casual geography practice too?',
+				answer: 'Yes. Landmark-focused quizzes are often easier to revisit because the places feel more concrete and memorable.'
+			}
+		]
 	}
 ];
 

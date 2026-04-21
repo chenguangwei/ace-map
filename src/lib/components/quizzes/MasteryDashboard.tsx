@@ -8,14 +8,19 @@ import {
 	Sparkles,
 	Target
 } from 'lucide-react';
-import Link from 'next/link';
+import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { Link } from '@/i18n/navigation';
 import {
 	buildMistakeStats,
 	buildSessionStats,
 	isChallengeDoneToday
 } from '@/lib/analytics/metrics';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
+import {
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic
+} from '@/lib/data/quizTopicI18n';
 import { buildGameHref, getQuizTopicBySlug } from '@/lib/data/quizTopics';
 import { useIsMounted } from '@/lib/hooks/useIsMounted';
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
@@ -32,21 +37,26 @@ import {
 } from '@/lib/utils/progress';
 import { MISTAKE_STORAGE_KEY, type MistakeEntry } from '@/lib/utils/review';
 
-const formatDate = (value: string) =>
-	new Date(value).toLocaleDateString('en-US', {
+const formatDate = (value: string, locale: string) =>
+	new Intl.DateTimeFormat(locale, {
 		month: 'short',
 		day: 'numeric'
-	});
+	}).format(new Date(value));
 
 const MasteryDashboard = ({
-	title = 'Mastery dashboard',
-	description = 'Track your geography practice with one consistent metrics layer, then jump into the most useful next session.',
+	title,
+	description,
 	className = ''
 }: {
 	title?: string;
 	description?: string;
 	className?: string;
 }) => {
+	const t = useTranslations('MasteryDashboard');
+	const locale = useLocale();
+	const messages = useMessages() as {
+		QuizTopics?: Record<string, LocalizedQuizTopicMessages>;
+	};
 	const isMounted = useIsMounted();
 	const analytics = useAnalytics();
 	const [challengeState] = useLocalStorage<DailyChallengeState>(
@@ -81,15 +91,26 @@ const MasteryDashboard = ({
 		() => recentTopics.find((entry) => getQuizTopicBySlug(entry.slug)),
 		[recentTopics]
 	);
-	const strongestTopic = sessionStats.strongestTopic
-		? getQuizTopicBySlug(sessionStats.strongestTopic.topicSlug)
-		: null;
-	const reviewTopic = mistakeStats.reviewTopic
-		? getQuizTopicBySlug(mistakeStats.reviewTopic.topicSlug)
-		: null;
+	const strongestTopic = useMemo(() => {
+		if (!sessionStats.strongestTopic) return null;
+		const topic = getQuizTopicBySlug(sessionStats.strongestTopic.topicSlug);
+		return topic
+			? localizeQuizTopic(topic, messages.QuizTopics?.[topic.slug])
+			: null;
+	}, [messages.QuizTopics, sessionStats.strongestTopic]);
+	const reviewTopic = useMemo(() => {
+		if (!mistakeStats.reviewTopic) return null;
+		const topic = getQuizTopicBySlug(mistakeStats.reviewTopic.topicSlug);
+		return topic
+			? localizeQuizTopic(topic, messages.QuizTopics?.[topic.slug])
+			: null;
+	}, [messages.QuizTopics, mistakeStats.reviewTopic]);
 	const challengeDoneToday = isChallengeDoneToday(effectiveChallengeState);
 
 	if (!isMounted) return null;
+
+	const resolvedTitle = title ?? t('title');
+	const resolvedDescription = description ?? t('description');
 
 	return (
 		<section
@@ -98,61 +119,66 @@ const MasteryDashboard = ({
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 				<div className="max-w-2xl">
 					<p className="text-[11px] font-bold uppercase tracking-[0.24em] text-emerald-700">
-						Unified Metrics
+						{t('eyebrow')}
 					</p>
 					<h2 className="mt-2 text-3xl font-black tracking-tight text-slate-950">
-						{title}
+						{resolvedTitle}
 					</h2>
 					<p className="mt-3 text-sm leading-6 text-slate-600">
-						{description}
+						{resolvedDescription}
 					</p>
 				</div>
 				<Link
 					href="/quizzes"
 					className="inline-flex items-center justify-center rounded-full border border-emerald-300/80 bg-white/80 px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:border-emerald-400"
 				>
-					Browse more topics
+					{t('browseMoreTopics')}
 				</Link>
 			</div>
 
 			<div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
 				<StatCard
 					icon={<BarChart3 className="size-4" />}
-					label="Sessions logged"
+					label={t('stats.sessionsLogged')}
 					value={String(sessionStats.totalSessions)}
-					helper="Completed quiz sessions"
+					helper={t('stats.sessionsLoggedHelper')}
 				/>
 				<StatCard
 					icon={<Target className="size-4" />}
-					label="Topics explored"
+					label={t('stats.topicsExplored')}
 					value={String(sessionStats.uniqueTopics)}
-					helper="Unique topic slugs completed"
+					helper={t('stats.topicsExploredHelper')}
 				/>
 				<StatCard
 					icon={<Award className="size-4" />}
-					label="Average accuracy"
+					label={t('stats.averageAccuracy')}
 					value={
 						sessionStats.averageAccuracy !== null
 							? `${sessionStats.averageAccuracy}%`
-							: 'No data'
+							: t('stats.noData')
 					}
-					helper="Across all completed sessions"
+					helper={t('stats.averageAccuracyHelper')}
 				/>
 				<StatCard
 					icon={<RotateCcw className="size-4" />}
-					label="Open mistakes"
+					label={t('stats.openMistakes')}
 					value={String(mistakeStats.totalUniqueMistakes)}
-					helper="Unresolved missed locations"
+					helper={t('stats.openMistakesHelper')}
 				/>
 				<StatCard
 					icon={<Flame className="size-4" />}
-					label="Distance feedback"
+					label={t('stats.distanceFeedback')}
 					value={
 						mistakeStats.averageDistanceMeters !== null
-							? `${Math.round(mistakeStats.averageDistanceMeters / 1000)} km`
-							: 'No data'
+							? t('stats.distanceKm', {
+									value: Math.round(
+										mistakeStats.averageDistanceMeters /
+											1000
+									)
+								})
+							: t('stats.noData')
 					}
-					helper="Average distance on open mistakes"
+					helper={t('stats.distanceFeedbackHelper')}
 				/>
 			</div>
 
@@ -161,7 +187,7 @@ const MasteryDashboard = ({
 					<div className="flex items-center gap-2 text-emerald-800">
 						<Sparkles className="size-4" />
 						<p className="text-sm font-bold uppercase tracking-[0.18em]">
-							Best Momentum
+							{t('bestMomentum.eyebrow')}
 						</p>
 					</div>
 
@@ -171,25 +197,29 @@ const MasteryDashboard = ({
 								{strongestTopic.title}
 							</h3>
 							<p className="mt-2 text-sm leading-6 text-slate-600">
-								Your strongest topic so far with{' '}
-								{sessionStats.strongestTopic.averageAccuracy}%
-								average accuracy across{' '}
-								{sessionStats.strongestTopic.plays} session
-								{sessionStats.strongestTopic.plays === 1
-									? ''
-									: 's'}
-								.
+								{t('bestMomentum.summary', {
+									accuracy:
+										sessionStats.strongestTopic
+											.averageAccuracy,
+									plays: sessionStats.strongestTopic.plays
+								})}
 							</p>
 							<div className="mt-4 flex flex-wrap gap-2">
 								<span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-900">
-									Best{' '}
-									{sessionStats.strongestTopic.bestAccuracy}%
+									{t('bestMomentum.bestAccuracy', {
+										accuracy:
+											sessionStats.strongestTopic
+												.bestAccuracy
+									})}
 								</span>
 								<span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700">
-									Last played{' '}
-									{formatDate(
-										sessionStats.strongestTopic.lastPlayedAt
-									)}
+									{t('bestMomentum.lastPlayed', {
+										date: formatDate(
+											sessionStats.strongestTopic
+												.lastPlayedAt,
+											locale
+										)
+									})}
 								</span>
 							</div>
 							<div className="mt-4 flex flex-wrap gap-3">
@@ -197,18 +227,18 @@ const MasteryDashboard = ({
 									href={`/quiz/${strongestTopic.slug}`}
 									className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
 								>
-									Open topic
+									{t('openTopic')}
 								</Link>
 								<Link
 									href={`${buildGameHref(strongestTopic.gameConfig)}&topic=${strongestTopic.slug}`}
 									className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
 								>
-									Play again
+									{t('playAgain')}
 								</Link>
 							</div>
 						</div>
 					) : (
-						<EmptyState text="Finish a few quiz sessions and this panel will surface your strongest topic automatically." />
+						<EmptyState text={t('bestMomentum.empty')} />
 					)}
 				</div>
 
@@ -217,13 +247,13 @@ const MasteryDashboard = ({
 						<div className="flex items-center gap-2 text-amber-800">
 							<Flame className="size-4" />
 							<p className="text-sm font-bold uppercase tracking-[0.18em]">
-								Daily Habit
+								{t('dailyHabit.eyebrow')}
 							</p>
 						</div>
 						<div className="mt-4 grid gap-3 sm:grid-cols-2">
 							<div className="rounded-[22px] border border-amber-200/70 bg-white/85 p-4">
 								<p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
-									Current streak
+									{t('dailyHabit.currentStreak')}
 								</p>
 								<p className="mt-2 text-2xl font-black text-slate-950">
 									{effectiveChallengeState.currentStreak}
@@ -231,7 +261,7 @@ const MasteryDashboard = ({
 							</div>
 							<div className="rounded-[22px] border border-amber-200/70 bg-white/85 p-4">
 								<p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-700">
-									Best streak
+									{t('dailyHabit.bestStreak')}
 								</p>
 								<p className="mt-2 text-2xl font-black text-slate-950">
 									{effectiveChallengeState.bestStreak}
@@ -240,8 +270,8 @@ const MasteryDashboard = ({
 						</div>
 						<p className="mt-4 text-sm leading-6 text-slate-600">
 							{challengeDoneToday
-								? 'Today is already marked complete. Keep the loop going with another topic or review your misses.'
-								: 'You have not closed today’s challenge yet. A quick run here keeps the habit active.'}
+								? t('dailyHabit.doneToday')
+								: t('dailyHabit.notDoneToday')}
 						</p>
 					</div>
 
@@ -249,7 +279,7 @@ const MasteryDashboard = ({
 						<div className="flex items-center gap-2 text-rose-800">
 							<RotateCcw className="size-4" />
 							<p className="text-sm font-bold uppercase tracking-[0.18em]">
-								Needs Review
+								{t('needsReview.eyebrow')}
 							</p>
 						</div>
 
@@ -259,17 +289,20 @@ const MasteryDashboard = ({
 									{reviewTopic.title}
 								</h3>
 								<p className="mt-2 text-sm leading-6 text-slate-600">
-									You still have{' '}
-									{mistakeStats.reviewTopic.uniqueMisses}{' '}
-									unique missed locations waiting here.
+									{t('needsReview.uniqueMissesWaiting', {
+										count: mistakeStats.reviewTopic
+											.uniqueMisses
+									})}
 								</p>
 								{mistakeStats.reviewTopic.lastMissedAt && (
 									<p className="mt-2 text-xs font-semibold text-rose-700">
-										Last miss saved{' '}
-										{formatDate(
-											mistakeStats.reviewTopic
-												.lastMissedAt
-										)}
+										{t('needsReview.lastMissSaved', {
+											date: formatDate(
+												mistakeStats.reviewTopic
+													.lastMissedAt,
+												locale
+											)
+										})}
 									</p>
 								)}
 								<div className="mt-4 flex flex-wrap gap-3">
@@ -277,18 +310,18 @@ const MasteryDashboard = ({
 										href={`${buildGameHref(reviewTopic.gameConfig)}&topic=${reviewTopic.slug}&review=mistakes`}
 										className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
 									>
-										Review misses
+										{t('reviewMisses')}
 									</Link>
 									<Link
 										href={`/quiz/${reviewTopic.slug}`}
 										className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
 									>
-										Open topic
+										{t('openTopic')}
 									</Link>
 								</div>
 							</div>
 						) : (
-							<EmptyState text="Wrong answers will start filling this panel automatically once you miss a few locations." />
+							<EmptyState text={t('needsReview.empty')} />
 						)}
 					</div>
 				</div>
@@ -299,22 +332,25 @@ const MasteryDashboard = ({
 					<div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
 						<div>
 							<h3 className="text-xl font-bold text-slate-950">
-								Recent momentum
+								{t('recentMomentum.title')}
 							</h3>
 							<p className="mt-1 text-sm leading-6 text-slate-600">
-								Use your latest sessions to decide whether to
-								repeat a strong topic or clean up your misses.
+								{t('recentMomentum.description')}
 							</p>
 						</div>
 						{latestRecentTopic &&
 							getQuizTopicBySlug(latestRecentTopic.slug) && (
 								<p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-									Last opened{' '}
-									{
-										getQuizTopicBySlug(
-											latestRecentTopic.slug
-										)?.shortTitle
-									}
+									{t('recentMomentum.lastOpenedTopic', {
+										title: localizeQuizTopic(
+											getQuizTopicBySlug(
+												latestRecentTopic.slug
+											)!,
+											messages.QuizTopics?.[
+												latestRecentTopic.slug
+											]
+										).shortTitle
+									})}
 								</p>
 							)}
 					</div>
@@ -324,6 +360,12 @@ const MasteryDashboard = ({
 							const topic = session.topicSlug
 								? getQuizTopicBySlug(session.topicSlug)
 								: null;
+							const localizedTopic = topic
+								? localizeQuizTopic(
+										topic,
+										messages.QuizTopics?.[topic.slug]
+									)
+								: null;
 
 							return (
 								<div
@@ -332,19 +374,30 @@ const MasteryDashboard = ({
 								>
 									<p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sky-700">
 										{session.isDailyChallenge
-											? 'Daily challenge'
-											: (topic?.badge ?? 'Quiz session')}
+											? t('recentMomentum.dailyChallenge')
+											: (localizedTopic?.badge ??
+												t(
+													'recentMomentum.quizSession'
+												))}
 									</p>
 									<h4 className="mt-2 text-base font-bold text-slate-950">
-										{topic?.title ?? 'Free play session'}
+										{localizedTopic?.title ??
+											t('recentMomentum.freePlaySession')}
 									</h4>
 									<p className="mt-2 text-sm leading-6 text-slate-600">
-										{session.accuracy}% accuracy ·{' '}
-										{session.score}/{session.total} correct
+										{t('recentMomentum.sessionSummary', {
+											accuracy: session.accuracy,
+											score: session.score,
+											total: session.total
+										})}
 									</p>
 									<p className="mt-3 text-xs font-semibold text-slate-400">
-										Finished{' '}
-										{formatDate(session.completedAt)}
+										{t('recentMomentum.finished', {
+											date: formatDate(
+												session.completedAt,
+												locale
+											)
+										})}
 									</p>
 								</div>
 							);

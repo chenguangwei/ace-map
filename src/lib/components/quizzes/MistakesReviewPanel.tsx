@@ -1,8 +1,13 @@
 'use client';
 
 import { RotateCcw, Trash2 } from 'lucide-react';
-import Link from 'next/link';
+import { useMessages, useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
+import {
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic
+} from '@/lib/data/quizTopicI18n';
 import {
 	buildGameHref,
 	getQuizTopicBySlug,
@@ -18,13 +23,17 @@ import {
 
 const MistakesReviewPanel = ({
 	topicSlug,
-	title = 'Mistakes review',
-	description = 'Come back to the places you missed and replay them in a focused map session.'
+	title,
+	description
 }: {
 	topicSlug?: string;
 	title?: string;
 	description?: string;
 }) => {
+	const t = useTranslations('MistakesReviewPanel');
+	const messages = useMessages() as {
+		QuizTopics?: Record<string, LocalizedQuizTopicMessages>;
+	};
 	const isMounted = useIsMounted();
 	const analytics = useAnalytics();
 	const [mistakes, setMistakes] = useLocalStorage<MistakeEntry[]>(
@@ -41,9 +50,13 @@ const MistakesReviewPanel = ({
 
 			const topic = getQuizTopicBySlug(entry.topicSlug);
 			if (!topic) return groups;
+			const localizedTopic = localizeQuizTopic(
+				topic,
+				messages.QuizTopics?.[topic.slug]
+			);
 
 			const existing = groups.find(
-				(group) => group.topic.slug === topic.slug
+				(group) => group.topic.slug === localizedTopic.slug
 			);
 			if (existing) {
 				existing.entries.push(entry);
@@ -51,7 +64,7 @@ const MistakesReviewPanel = ({
 			}
 
 			groups.push({
-				topic,
+				topic: localizedTopic,
 				entries: [entry]
 			});
 			return groups;
@@ -61,13 +74,16 @@ const MistakesReviewPanel = ({
 
 	if (grouped.length === 0) return null;
 
+	const resolvedTitle = title ?? t('title');
+	const resolvedDescription = description ?? t('description');
+
 	return (
 		<section className="rounded-[28px] border border-rose-200/80 bg-[linear-gradient(180deg,rgba(255,241,242,0.92),rgba(255,255,255,0.96))] p-6 shadow-[0_16px_38px_rgba(225,29,72,0.08)]">
 			<h2 className="text-2xl font-bold tracking-tight text-slate-950">
-				{title}
+				{resolvedTitle}
 			</h2>
 			<p className="mt-2 text-sm leading-6 text-slate-600">
-				{description}
+				{resolvedDescription}
 			</p>
 
 			<div className="mt-5 grid gap-4">
@@ -93,12 +109,17 @@ const MistakesReviewPanel = ({
 										{topic.title}
 									</h3>
 									<p className="mt-2 text-sm leading-6 text-slate-600">
-										{uniqueCount} unique misses saved.
-										Latest:{' '}
-										{entries
-											.slice(0, 3)
-											.map((entry) => entry.place.name)
-											.join(', ')}
+										{t('uniqueMissesSaved', {
+											count: uniqueCount
+										})}{' '}
+										{t('latest', {
+											places: entries
+												.slice(0, 3)
+												.map(
+													(entry) => entry.place.name
+												)
+												.join(', ')
+										})}
 									</p>
 								</div>
 								<div className="flex flex-wrap gap-2">
@@ -107,7 +128,7 @@ const MistakesReviewPanel = ({
 										className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
 									>
 										<RotateCcw className="size-4" />
-										Review misses
+										{t('reviewMisses')}
 									</Link>
 									<button
 										type="button"
@@ -127,7 +148,7 @@ const MistakesReviewPanel = ({
 										className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
 									>
 										<Trash2 className="size-4" />
-										Clear
+										{t('clear')}
 									</button>
 								</div>
 							</div>

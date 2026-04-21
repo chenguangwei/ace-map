@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MasteryDashboard from '@/lib/components/quizzes/MasteryDashboard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
@@ -12,27 +13,72 @@ import {
 	QUIZ_SECTIONS
 } from '@/lib/data/quizTopics';
 
-export const metadata: Metadata = {
-	title: 'Quiz Library | MapQuiz.pro',
-	description:
-		'Browse world map quizzes, continent quizzes, and country-specific geography practice pages.',
-	alternates: {
-		canonical: 'https://mapquiz.pro/quizzes'
-	}
+const SITE_URL = 'https://mapquiz.pro';
+const buildLocalePath = (locale: string, path: string) =>
+	locale === routing.defaultLocale ? path : `/${locale}${path}`;
+
+export const generateMetadata = async ({
+	params
+}: {
+	params: Promise<{ locale: string }>;
+}): Promise<Metadata> => {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'QuizzesPage' });
+	const title = `${t('badge')} | MapQuiz.pro`;
+	const description = t('subheadline');
+
+	return {
+		title,
+		description,
+		alternates: {
+			canonical: `${SITE_URL}${buildLocalePath(locale, '/quizzes')}`
+		},
+		openGraph: {
+			title,
+			description,
+			url: `${SITE_URL}${buildLocalePath(locale, '/quizzes')}`,
+			type: 'website'
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title,
+			description
+		}
+	};
 };
 
-const QuizzesPage = async ({ params }: { params: Promise<{ locale: string }> }) => {
+const QuizzesPage = async ({
+	params
+}: {
+	params: Promise<{ locale: string }>;
+}) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations('QuizzesPage');
-	const featuredCountryCodes = ['jp', 'de', 'ca', 'au', 'fr', 'gb', 'it', 'es'];
+	const tSections = await getTranslations('QuizSections');
+	const featuredCountryCodes = [
+		'jp',
+		'de',
+		'ca',
+		'fr',
+		'gb',
+		'it',
+		'es',
+		'br',
+		'kr',
+		'ru',
+		'mx',
+		'id'
+	];
 	const rootCountryTopics = getQuizTopicsByKind('root').filter(
 		(topic) => topic.section === 'countries'
 	);
 	const focusedDrillTopics = getCountrySubtopics();
 	const featuredCountryDrills = featuredCountryCodes
 		.map((countryCode) =>
-			focusedDrillTopics.find((topic) => topic.countryCode === countryCode)
+			focusedDrillTopics.find(
+				(topic) => topic.countryCode === countryCode
+			)
 		)
 		.filter((topic) => topic !== undefined);
 
@@ -56,37 +102,37 @@ const QuizzesPage = async ({ params }: { params: Promise<{ locale: string }> }) 
 
 			<div className="mt-14 space-y-16">
 				<MasteryDashboard
-					title="Your progress"
-					description="Track which topics you've practiced, where you're making mistakes, and what to focus on next."
+					title={t('progressTitle')}
+					description={t('progressDescription')}
 				/>
 
-				{QUIZ_SECTIONS.filter((section) => section.id !== 'countries').map(
-					(section) => (
-						<QuizTopicSection
-							key={section.id}
-							title={section.title}
-							description={section.description}
-							topics={getQuizTopicsBySection(section.id)}
-						/>
-					)
-				)}
+				{QUIZ_SECTIONS.filter(
+					(section) => section.id !== 'countries'
+				).map((section) => (
+					<QuizTopicSection
+						key={section.id}
+						title={tSections(section.id)}
+						description={tSections(`${section.id}Desc`)}
+						topics={getQuizTopicsBySection(section.id)}
+					/>
+				))}
 
 				<QuizTopicSection
-					title="Country Map Quizzes"
-					description="Start with any country for a full quiz covering its regions, cities, and landmarks."
+					title={t('countryMapQuizzes')}
+					description={t('countryMapQuizzesDesc')}
 					topics={rootCountryTopics}
 				/>
 
 				<QuizTopicSection
-					title="Featured Country Deep-Dives"
-					description="Jump straight into focused practice for a specific country — states, prefectures, provinces, and more."
+					title={t('featuredCountryDeepDives')}
+					description={t('featuredCountryDeepDivesDesc')}
 					topics={featuredCountryDrills}
 					compact
 				/>
 
 				<QuizTopicSection
-					title="Focused Regional Practice"
-					description="Narrow your practice to specific regions, capitals, cities, or landmarks within a country."
+					title={t('focusedRegionalPractice')}
+					description={t('focusedRegionalPracticeDesc')}
 					topics={focusedDrillTopics}
 					compact
 				/>

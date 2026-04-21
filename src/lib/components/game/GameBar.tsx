@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@heroui/button';
-import { Link } from '@heroui/link';
 import { addToast } from '@heroui/toast';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
@@ -17,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from '@/i18n/navigation';
 import {
 	deductCredit,
 	getBalance,
@@ -131,30 +131,35 @@ const DistanceFeedback = ({
 	info
 }: {
 	info: NonNullable<InfoState['info']>;
-}) => (
-	<div
-		className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium shadow-[0_14px_28px_rgba(15,23,42,0.12)] backdrop-blur-md ${
-			info.isCorrect
-				? 'border border-green-300/80 bg-[rgba(240,253,244,0.88)] text-green-700'
-				: 'border border-red-300/80 bg-[rgba(254,242,242,0.88)] text-red-700'
-		}`}
-	>
-		{info.isCorrect ? (
-			<CheckCircle className="size-4 shrink-0" />
-		) : (
-			<XCircle className="size-4 shrink-0" />
-		)}
-		<span className="truncate max-w-[160px] sm:max-w-xs">
-			{info.categorical
-				? info.isCorrect
-					? 'Correct region ✓'
-					: `${formatDistance(info.distance)} away`
-				: info.isCorrect
-					? `${formatDistance(info.distance)} off ✓`
-					: `${formatDistance(info.distance)} away`}
-		</span>
-	</div>
-);
+}) => {
+	const t = useTranslations('GameBar');
+	const distance = formatDistance(info.distance);
+
+	return (
+		<div
+			className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium shadow-[0_14px_28px_rgba(15,23,42,0.12)] backdrop-blur-md ${
+				info.isCorrect
+					? 'border border-green-300/80 bg-[rgba(240,253,244,0.88)] text-green-700'
+					: 'border border-red-300/80 bg-[rgba(254,242,242,0.88)] text-red-700'
+			}`}
+		>
+			{info.isCorrect ? (
+				<CheckCircle className="size-4 shrink-0" />
+			) : (
+				<XCircle className="size-4 shrink-0" />
+			)}
+			<span className="truncate max-w-[160px] sm:max-w-xs">
+				{info.categorical
+					? info.isCorrect
+						? t('correctRegion')
+						: t('distanceAway', { distance })
+					: info.isCorrect
+						? t('distanceOff', { distance })
+						: t('distanceAway', { distance })}
+			</span>
+		</div>
+	);
+};
 
 const MotionLink = motion.create(Link);
 
@@ -166,7 +171,8 @@ const GameBar = (
 		placeNameMap?: Record<string, string> | null;
 	}
 ) => {
-	const { gameState, info, mapDisplayMode, onSatelliteHint, setInfo, placeNameMap } = props;
+	const { gameState, info, mapDisplayMode, onSatelliteHint, setInfo } = props;
+	const t = useTranslations('GameBar');
 	const prevToMarkRef = useRef(gameState.toMark);
 	const gameStateRef = useRef(gameState);
 	const [creditBalance, setCreditBalance] = useState(() => getBalance());
@@ -182,6 +188,7 @@ const GameBar = (
 	}, []);
 
 	useEffect(() => {
+		void gameState.toMark;
 		setHintUsedThisTurn(false);
 	}, [gameState.toMark]);
 
@@ -197,11 +204,11 @@ const GameBar = (
 
 			addToast({
 				color: 'success',
-				title: 'Game Over!',
+				title: t('gameOverTitle'),
 				description: (
 					<MotionLink
 						href={`/?code=${resultCode}`}
-						color="success"
+						className="font-semibold text-emerald-700 underline underline-offset-4"
 						initial={{ y: 0, rotate: 0 }}
 						animate={{
 							y: [0, -5, 0, -5, 0],
@@ -213,19 +220,19 @@ const GameBar = (
 							repeatDelay: 1.5
 						}}
 					>
-						View your result →
+						{t('viewResult')}
 					</MotionLink>
 				),
 				timeout: 20000
 			});
 		}
 		prevToMarkRef.current = gameState.toMark;
-	}, [gameState.toMark, gameState.status]);
+	}, [gameState.toMark, gameState.status, t]);
 
 	const actionLabel = useMemo(() => {
-		if (gameState.status === 'running') return 'Pause';
-		return 'Resume';
-	}, [gameState.status]);
+		if (gameState.status === 'running') return t('pause');
+		return t('resume');
+	}, [gameState.status, t]);
 	const actionIcon =
 		gameState.status === 'running' ? (
 			<Pause className="size-4" />
@@ -235,20 +242,18 @@ const GameBar = (
 
 	const showActionButton =
 		gameState.status === 'running' || gameState.status === 'paused';
-	const t = useTranslations('GameBar');
 	const sessionLabel =
 		gameState.score.total === 0
 			? mapDisplayMode === 'terrain'
 				? t('terrainWarmup')
-				: 'Opening run'
+				: t('openingRun')
 			: mapDisplayMode === 'terrain'
-				? 'Terrain chain'
-				: 'Flash chain';
-	const modeLabel = mapDisplayMode === 'terrain' ? 'Terrain' : 'Flash';
+				? t('terrainChain')
+				: t('flashChain');
+	const modeLabel =
+		mapDisplayMode === 'terrain' ? t('terrainMode') : t('flashMode');
 	const idleHint =
-		mapDisplayMode === 'terrain'
-			? 'Terrain rules: read the relief, lock the region, send fast.'
-			: 'Flash rules: hear the target, lock the spot, send fast.';
+		mapDisplayMode === 'terrain' ? t('terrainRules') : t('flashRules');
 
 	const handleSatelliteHint = () => {
 		if (!gameState.toMark || hintUsedThisTurn) return;
@@ -257,8 +262,8 @@ const GameBar = (
 		if (!didDeduct) {
 			addToast({
 				color: 'warning',
-				title: 'No satellite hints left today',
-				description: 'Refills automatically tomorrow, or purchase more credits'
+				title: t('noSatelliteHintsTitle'),
+				description: t('noSatelliteHintsDescription')
 			});
 			return;
 		}
@@ -284,7 +289,7 @@ const GameBar = (
 			<div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center gap-1.5 sm:gap-2 sm:left-5 sm:top-5">
 				<div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/14 bg-slate-950/72 px-2.5 py-1 sm:px-3 sm:py-1.5 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] backdrop-blur-md">
 					<span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.24em] text-sky-200/90">
-						Mode
+						{t('mode')}
 					</span>
 					<span className="text-xs sm:text-sm font-semibold text-white">
 						{modeLabel}
@@ -292,7 +297,7 @@ const GameBar = (
 				</div>
 				<div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/14 bg-slate-950/72 px-2.5 py-1 sm:px-3 sm:py-1.5 text-white shadow-[0_10px_24px_rgba(15,23,42,0.18)] backdrop-blur-md">
 					<span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.24em] text-slate-300/90">
-						Session
+						{t('session')}
 					</span>
 					<span className="text-xs sm:text-sm font-semibold text-white">
 						{sessionLabel}
@@ -349,7 +354,7 @@ const GameBar = (
 								onPress={handleSatelliteHint}
 								startContent={<Satellite className="size-4" />}
 							>
-								Satellite Hint · 🪙1
+								{t('satelliteHint')}
 							</Button>
 						)}
 						{showActionButton && (
@@ -403,7 +408,7 @@ const GameBar = (
 								)
 							}
 						>
-							{info ? 'Next Target' : 'Lock Guess'}
+							{info ? t('nextTarget') : t('lockGuess')}
 						</Button>
 					</div>
 				</div>

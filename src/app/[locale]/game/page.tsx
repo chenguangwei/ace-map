@@ -1,27 +1,61 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Skeleton } from '@heroui/skeleton';
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import {
+	getMessages,
+	getTranslations,
+	setRequestLocale
+} from 'next-intl/server';
 import React from 'react';
-import { setRequestLocale } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
 import Main from '@/lib/components/game/Main';
 import AdSlot from '@/lib/components/monetization/AdSlot';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
 import QuizTopicCard from '@/lib/components/quizzes/QuizTopicCard';
 import RecentPracticePanel from '@/lib/components/quizzes/RecentPracticePanel';
 import {
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic
+} from '@/lib/data/quizTopicI18n';
+import {
 	getQuizTopicBySlug,
 	getRecommendedQuizTopics
 } from '@/lib/data/quizTopics';
 import type { GameMode } from '@/lib/utils/places';
 
-export const metadata: Metadata = {
-	title: 'Play Geography Quiz | MapQuiz.pro',
-	description:
-		'Play interactive geography quizzes with instant map feedback and explore related map quiz topics.',
-	alternates: {
-		canonical: 'https://mapquiz.pro/game'
-	}
+const SITE_URL = 'https://mapquiz.pro';
+const buildLocalePath = (locale: string, path: string) =>
+	locale === routing.defaultLocale ? path : `/${locale}${path}`;
+
+export const generateMetadata = async ({
+	params
+}: {
+	params: Promise<{ locale: string }>;
+}): Promise<Metadata> => {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'GamePage' });
+	const title = `${t('nextGeographyQuizIdeas')} | MapQuiz.pro`;
+	const description = t('sessionFollowupDescription');
+
+	return {
+		title,
+		description,
+		alternates: {
+			canonical: `${SITE_URL}${buildLocalePath(locale, '/game')}`
+		},
+		openGraph: {
+			title,
+			description,
+			url: `${SITE_URL}${buildLocalePath(locale, '/game')}`,
+			type: 'website'
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title,
+			description
+		}
+	};
 };
 
 const page = async ({
@@ -33,10 +67,18 @@ const page = async ({
 }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
+	const t = await getTranslations({ locale, namespace: 'GamePage' });
+	const messages = (await getMessages()) as { QuizTopics?: unknown };
+	const quizTopicMessages = (messages.QuizTopics ?? {}) as Partial<
+		Record<string, LocalizedQuizTopicMessages | undefined>
+	>;
 	const resolved = await searchParams;
 	const topicParam =
 		typeof resolved.topic === 'string' ? resolved.topic : undefined;
 	const sourceTopic = topicParam ? getQuizTopicBySlug(topicParam) : null;
+	const localizedSourceTopic = sourceTopic
+		? localizeQuizTopic(sourceTopic, quizTopicMessages[sourceTopic.slug])
+		: null;
 	const modeParam =
 		typeof resolved.mode === 'string' &&
 		['india', 'world', 'country'].includes(resolved.mode)
@@ -82,24 +124,24 @@ const page = async ({
 					<div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 						<div className="max-w-2xl">
 							<p className="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">
-								Continue the session
+								{t('continueSessionEyebrow')}
 							</p>
 							<h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-								{sourceTopic
-									? `More like ${sourceTopic.title}`
-									: 'Next geography quiz ideas'}
+								{localizedSourceTopic
+									? t('moreLike', {
+											topic: localizedSourceTopic.title
+										})
+									: t('nextGeographyQuizIdeas')}
 							</h2>
 							<p className="mt-2 text-sm leading-6 text-slate-600">
-								Use these related quiz pages to stay inside the
-								topic network and build more internal depth per
-								visit.
+								{t('sessionFollowupDescription')}
 							</p>
 						</div>
 						<Link
 							href="/quizzes"
 							className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
 						>
-							Browse all quiz pages
+							{t('browseAllQuizPages')}
 						</Link>
 					</div>
 
@@ -118,15 +160,17 @@ const page = async ({
 					<div className="space-y-6">
 						<RecentPracticePanel
 							currentSlug={sourceTopic?.slug}
-							title="Resume practice"
-							description="Keep returning users close to the next relevant topic instead of ending the session at the game page."
+							title={t('resumePracticeTitle')}
+							description={t('resumePracticeDescription')}
 						/>
 						<MistakesReviewPanel
 							topicSlug={sourceTopic?.slug}
 							title={
-								sourceTopic
-									? `Missed locations in ${sourceTopic.shortTitle}`
-									: 'Mistakes review'
+								localizedSourceTopic
+									? t('mistakesInTopic', {
+											topic: localizedSourceTopic.shortTitle
+										})
+									: undefined
 							}
 						/>
 					</div>

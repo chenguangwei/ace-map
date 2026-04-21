@@ -14,16 +14,17 @@ import {
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import {
 	type Dispatch,
 	type SetStateAction,
+	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
 	useState
 } from 'react';
 import { useMapVoice } from '@/lib/audio/useMapVoice';
-import { useLocale } from 'next-intl';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
 import { getCountryByCode } from '@/lib/data/countries';
 import {
@@ -34,13 +35,23 @@ import {
 import { getCountryRegions, worldPlaces } from '@/lib/data/regions';
 import { getTerrainBasemapConfig } from '@/lib/maps/basemaps';
 import { saveLastSessionTopic } from '@/lib/utils/challenge';
+import {
+	encodeResult,
+	getHeatLevel,
+	type SubmitInfo,
+	useGame,
+	weightedShufflePlaces
+} from '@/lib/utils/game';
 import { localizePlace } from '@/lib/utils/localizePlace';
-import { encodeResult, getHeatLevel, type SubmitInfo, useGame, weightedShufflePlaces } from '@/lib/utils/game';
 import {
 	buildActivityHotspots,
 	type MapDisplayMode
 } from '@/lib/utils/mapActivity';
 import { type GameMode, Strictness, WorldStrictness } from '@/lib/utils/places';
+import {
+	createPracticeSessionId,
+	savePracticeSession
+} from '@/lib/utils/progress';
 import {
 	buildMistakePlaceSource,
 	getMistakesForTopic,
@@ -50,17 +61,17 @@ import {
 } from '@/lib/utils/review';
 import { getTerrainHintPack } from '@/lib/utils/terrainHints';
 import { recordTopicObservabilityEvent } from '@/lib/utils/topicObservability';
-import {
-	createPracticeSessionId,
-	savePracticeSession
-} from '@/lib/utils/progress';
 import GameBar from './GameBar';
+
+const GameLoadingFallback = () => {
+	const t = useTranslations('Common');
+
+	return <Spinner size="lg" color="secondary" aria-label={t('loading')} />;
+};
 
 const Game = dynamic(() => import('@/lib/components/game/Game'), {
 	ssr: false,
-	loading: () => (
-		<Spinner size="lg" color="secondary" aria-label="Map loading..." />
-	)
+	loading: () => <GameLoadingFallback />
 });
 
 export interface InfoState {
@@ -74,6 +85,7 @@ const Main = (props: {
 }) => {
 	const gameState = useGame();
 	const analytics = useAnalytics();
+	const gameT = useTranslations('GamePage');
 	const locale = useLocale();
 	const voice = useMapVoice();
 	const [infoState, setInfoState] = useState<SubmitInfo | null>(null);
@@ -91,24 +103,54 @@ const Main = (props: {
 	);
 	const [terrainHintLevel, setTerrainHintLevel] = useState<0 | 1 | 2>(0);
 	const terrainBasemap = useMemo(() => getTerrainBasemapConfig(), []);
+	const searchParams = useSearchParams();
+	const requestedCountryCode =
+		props.initialConfig?.countryCode ??
+		(typeof searchParams.get('country') === 'string'
+			? searchParams.get('country')
+			: undefined);
 
 	const placeNameMap = useMemo<Record<string, string> | null>(() => {
 		if (locale === 'en') return null;
-		const isWorld = !props.initialConfig?.countryCode;
-		const isJp = props.initialConfig?.countryCode === 'jp';
+		const isWorld = !requestedCountryCode;
+		const isJp = requestedCountryCode === 'jp';
+		const isCn = requestedCountryCode === 'cn';
 		if (locale === 'zh') {
-			if (isWorld) return require('@/lib/data/regions/locales/zh/world').zhWorldNames;
-			if (isJp) return require('@/lib/data/regions/locales/zh/jp').zhJpNames;
+			if (isWorld)
+				return require('@/lib/data/regions/locales/zh/world')
+					.zhWorldNames;
+			if (isJp)
+				return require('@/lib/data/regions/locales/zh/jp').zhJpNames;
+			if (isCn)
+				return require('@/lib/data/regions/locales/zh/cn').zhCnNames;
 		}
 		if (locale === 'ja') {
-			if (isWorld) return require('@/lib/data/regions/locales/ja/world').jaWorldNames;
-			if (isJp) return require('@/lib/data/regions/locales/ja/jp').jaJpNames;
+			if (isWorld)
+				return require('@/lib/data/regions/locales/ja/world')
+					.jaWorldNames;
+			if (isJp)
+				return require('@/lib/data/regions/locales/ja/jp').jaJpNames;
+			if (isCn)
+				return require('@/lib/data/regions/locales/ja/cn').jaCnNames;
 		}
 		return null;
-	}, [locale, props.initialConfig?.countryCode]);
+	}, [locale, requestedCountryCode]);
+	const speechLang = useMemo(() => {
+		switch (locale) {
+			case 'zh':
+				return 'zh-CN';
+			case 'ja':
+				return 'ja-JP';
+			default:
+				return 'en-US';
+		}
+	}, [locale]);
+	const localizeLabel = useCallback(
+		(label: string) => localizePlace(label, placeNameMap),
+		[placeNameMap]
+	);
 	const previousPromptRef = useRef<string | null>(null);
 	const previousInfoRef = useRef<SubmitInfo | null>(null);
-	const searchParams = useSearchParams();
 	const {
 		setCategory,
 		setCountryCode,
@@ -223,6 +265,7 @@ const Main = (props: {
 	}, [activeTopicSlug, infoState]);
 
 	useEffect(() => {
+		void gameState.toMark;
 		setSatelliteHintUrl(null);
 	}, [gameState.toMark]);
 
@@ -273,13 +316,16 @@ const Main = (props: {
 	const overlayLabel = useMemo(() => {
 		if (gameState.toMark === null && gameState.status === 'running') {
 			return mapDisplayMode === 'terrain'
-				? 'Run Terrain Again'
-				: 'Run Again';
+				? gameT('runTerrainAgain')
+				: gameT('runAgain');
 		}
 		return mapDisplayMode === 'terrain'
-			? 'Start Terrain Run'
-			: 'Start Flash Run';
-	}, [gameState.status, gameState.toMark, mapDisplayMode]);
+			? gameT('startTerrainRun')
+			: gameT('startFlashRun');
+	}, [gameState.status, gameState.toMark, gameT, mapDisplayMode]);
+
+	const isReplayStart =
+		gameState.toMark === null && gameState.status === 'running';
 
 	const heatLevel = useMemo(
 		() => getHeatLevel(gameState.streak),
@@ -290,7 +336,11 @@ const Main = (props: {
 		() => buildActivityHotspots(analytics.snapshot),
 		[analytics.snapshot]
 	);
-	const handleSatelliteHint = (lat: number, lng: number, zoom: number): void => {
+	const handleSatelliteHint = (
+		lat: number,
+		lng: number,
+		zoom: number
+	): void => {
 		const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN?.trim();
 		if (!token) return;
 
@@ -318,7 +368,7 @@ const Main = (props: {
 	useEffect(() => {
 		const nextPrompt =
 			gameState.status === 'running' && gameState.toMark
-				? gameState.toMark.name
+				? localizeLabel(gameState.toMark.name)
 				: null;
 
 		if (!nextPrompt) {
@@ -333,10 +383,11 @@ const Main = (props: {
 		voice.speak(nextPrompt, {
 			priority: 'prompt',
 			rate: 0.96,
-			pitch: 0.98
+			pitch: 0.98,
+			lang: speechLang
 		});
 		previousPromptRef.current = nextPrompt;
-	}, [gameState.status, gameState.toMark, voice]);
+	}, [gameState.status, gameState.toMark, localizeLabel, speechLang, voice]);
 
 	useEffect(() => {
 		if (!infoState || previousInfoRef.current === infoState) return;
@@ -344,23 +395,25 @@ const Main = (props: {
 		if (infoState.isCorrect) {
 			const streakCallout =
 				gameState.streak >= 3
-					? `Streak ${gameState.streak}`
-					: 'Correct';
+					? gameT('streakCallout', { count: gameState.streak })
+					: gameT('correctCallout');
 			voice.speak(streakCallout, {
 				priority: gameState.streak >= 3 ? 'hype' : 'feedback',
 				rate: 1.04,
-				pitch: gameState.streak >= 3 ? 1.14 : 1.02
+				pitch: gameState.streak >= 3 ? 1.14 : 1.02,
+				lang: speechLang
 			});
 		} else {
-			voice.speak(infoState.toMark.name, {
+			voice.speak(localizeLabel(infoState.toMark.name), {
 				priority: 'feedback',
 				rate: 0.94,
-				pitch: 0.92
+				pitch: 0.92,
+				lang: speechLang
 			});
 		}
 
 		previousInfoRef.current = infoState;
-	}, [gameState.streak, infoState, voice]);
+	}, [gameState.streak, gameT, infoState, localizeLabel, speechLang, voice]);
 
 	useEffect(() => {
 		if (infoState === null) {
@@ -371,7 +424,9 @@ const Main = (props: {
 	// Save session when the game ends (all places marked, status still 'running')
 	useEffect(() => {
 		const gameOver =
-			gameState.toMark === null && gameState.status === 'running' && gameState.score.total > 0;
+			gameState.toMark === null &&
+			gameState.status === 'running' &&
+			gameState.score.total > 0;
 		if (!gameOver || sessionSavedRef.current) return;
 		sessionSavedRef.current = true;
 		savePracticeSession({
@@ -470,12 +525,16 @@ const Main = (props: {
 								setSatelliteHintUrl(null)
 							}
 							onRegionLabelSelect={(label) => {
-								setSelectedRegionLabel(label);
-								if (!label) return;
-								voice.speak(label, {
+								const localizedLabel = label
+									? localizeLabel(label)
+									: null;
+								setSelectedRegionLabel(localizedLabel);
+								if (!localizedLabel) return;
+								voice.speak(localizedLabel, {
 									priority: 'feedback',
 									rate: 0.98,
-									pitch: 1
+									pitch: 1,
+									lang: speechLang
 								});
 							}}
 						/>
@@ -484,7 +543,7 @@ const Main = (props: {
 							<Spinner
 								size="lg"
 								color="primary"
-								aria-label="Preparing map..."
+								aria-label={gameT('preparingMap')}
 							/>
 						</div>
 					)}
@@ -497,13 +556,13 @@ const Main = (props: {
 										<div className="mb-2 sm:mb-3 flex items-center justify-between gap-3">
 											<span className="rounded-full border border-white/16 bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.24em] text-sky-100">
 												{mapDisplayMode === 'terrain'
-													? 'Terrain Sense'
-													: 'Flash Run'}
+													? gameT('terrainSense')
+													: gameT('flashRun')}
 											</span>
 											<div className="flex items-center gap-2">
 												<span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/8 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-200">
 													<Radio className="size-3" />
-													Live
+													{gameT('live')}
 												</span>
 												{voice.isSupported && (
 													<button
@@ -516,17 +575,30 @@ const Main = (props: {
 																return;
 
 															voice.speak(
-																targetName,
+																localizeLabel(
+																	targetName
+																),
 																{
 																	priority:
 																		'prompt',
 																	rate: 0.96,
-																	pitch: 0.98
+																	pitch: 0.98,
+																	lang: speechLang
 																}
 															);
 														}}
 														className="inline-flex size-9 items-center justify-center rounded-full border border-white/12 bg-white/8 text-slate-100 transition hover:bg-white/14 cursor-pointer"
-														aria-label={`Replay prompt for ${localizePlace(gameState.toMark.name, placeNameMap)}`}
+														aria-label={gameT(
+															'replayPromptAria',
+															{
+																name: localizePlace(
+																	gameState
+																		.toMark
+																		.name,
+																	placeNameMap
+																)
+															}
+														)}
 													>
 														<Volume2 className="size-4" />
 													</button>
@@ -558,17 +630,23 @@ const Main = (props: {
 												<p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-sky-100/80">
 													{mapDisplayMode ===
 													'terrain'
-														? 'Terrain read'
-														: 'Lock target'}
+														? gameT('terrainRead')
+														: gameT('lockTarget')}
 												</p>
 												<p className="truncate text-base sm:text-xl font-black leading-tight text-white">
-													{localizePlace(gameState.toMark.name, placeNameMap)}
+													{localizeLabel(
+														gameState.toMark.name
+													)}
 												</p>
 												<p className="hidden sm:block mt-1 text-xs font-medium text-slate-300">
 													{mapDisplayMode ===
 													'terrain'
-														? 'Read the land first, then trust the terrain and send the guess.'
-														: 'Tap fast, trust your map read, then send the guess.'}
+														? gameT(
+																'terrainInstruction'
+															)
+														: gameT(
+																'flashInstruction'
+															)}
 												</p>
 												{terrainHintPack && (
 													<div className="mt-1.5 sm:mt-2 space-y-1.5 sm:space-y-2">
@@ -616,8 +694,12 @@ const Main = (props: {
 																	<span>
 																		{terrainHintLevel ===
 																		0
-																			? 'Reveal clue'
-																			: 'Deepen read'}
+																			? gameT(
+																					'revealClue'
+																				)
+																			: gameT(
+																					'deepenRead'
+																				)}
 																	</span>
 																</button>
 															)}
@@ -625,12 +707,9 @@ const Main = (props: {
 														{terrainHintLevel ===
 															0 && (
 															<p className="hidden sm:block text-[11px] font-medium text-slate-300">
-																Start with the
-																cue only. Reveal
-																more terrain
-																context if the
-																read is still
-																fuzzy.
+																{gameT(
+																	'terrainHintHelper'
+																)}
 															</p>
 														)}
 														{terrainHintLevel >=
@@ -673,7 +752,7 @@ const Main = (props: {
 												)}
 												{selectedRegionLabel && (
 													<p className="mt-2 inline-flex items-center rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[11px] font-semibold text-cyan-100">
-														Selected:{' '}
+														{gameT('selected')}{' '}
 														<span className="ml-1 font-black text-white">
 															{
 																selectedRegionLabel
@@ -697,16 +776,20 @@ const Main = (props: {
 									className="size-4 text-sky-700"
 									strokeWidth={2}
 								/>
-								<span className="hidden sm:inline">Re-center</span>
+								<span className="hidden sm:inline">
+									{gameT('recenter')}
+								</span>
 							</button>
 
 							<div className="w-full rounded-[22px] border border-slate-900/10 bg-white/88 p-1.5 sm:p-2 shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur-md">
 								<div className="hidden sm:flex mb-2 items-center justify-between gap-3 px-1">
 									<p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
-										Map Layer
+										{gameT('mapLayer')}
 									</p>
 									<p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-sky-700">
-										{activityHotspots.length} signals
+										{gameT('signalsCount', {
+											count: activityHotspots.length
+										})}
 									</p>
 								</div>
 								<div
@@ -719,19 +802,21 @@ const Main = (props: {
 									{[
 										{
 											id: 'play' as const,
-											label: 'Play',
+											label: gameT('playLayer'),
 											icon: MapIcon
 										},
 										{
 											id: 'pulse' as const,
-											label: 'Pulse',
+											label: gameT('pulseLayer'),
 											icon: BarChart3
 										},
 										...(terrainBasemap
 											? [
 													{
 														id: 'terrain' as const,
-														label: terrainBasemap.label,
+														label: gameT(
+															'terrainLayer'
+														),
 														icon: Mountain
 													}
 												]
@@ -754,7 +839,9 @@ const Main = (props: {
 												}`}
 											>
 												<Icon className="size-4" />
-												<span className="hidden sm:inline">{option.label}</span>
+												<span className="hidden sm:inline">
+													{option.label}
+												</span>
 											</button>
 										);
 									})}
@@ -769,7 +856,7 @@ const Main = (props: {
 									onClick={handlePrimaryStart}
 									className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-[linear-gradient(145deg,rgba(15,23,42,0.92),rgba(30,41,59,0.88))] px-7 py-4 text-base font-semibold text-white shadow-[0_26px_70px_rgba(15,23,42,0.34)] backdrop-blur-md transition hover:-translate-y-0.5 hover:border-sky-300/60 hover:shadow-[0_34px_80px_rgba(14,116,144,0.26)] cursor-pointer sm:px-8"
 								>
-									{overlayLabel === 'Run Again' ? (
+									{isReplayStart ? (
 										<RotateCcw
 											className="size-5 text-sky-300"
 											strokeWidth={2.2}

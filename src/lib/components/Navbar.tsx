@@ -1,7 +1,7 @@
 'use client';
 import * as Navbar from '@heroui/navbar';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import Logo from '@/lib/assets/Logo';
 import CreditBadge from '@/lib/components/CreditBadge';
 import LocaleSwitcher from '@/lib/components/LocaleSwitcher';

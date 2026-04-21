@@ -1,5 +1,5 @@
-import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
 import { BackgroundBeams } from '@/lib/components/BgBeams';
 import { Show } from '@/lib/components/Flow';
 import AdSlot from '@/lib/components/monetization/AdSlot';
@@ -29,7 +29,16 @@ const Page = async ({
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations('HomePage');
-	const featuredCountryCodes = ['jp', 'de', 'ca', 'au', 'fr', 'gb', 'it', 'es'];
+	const featuredCountryCodes = [
+		'jp',
+		'de',
+		'ca',
+		'au',
+		'fr',
+		'gb',
+		'it',
+		'es'
+	];
 	const resultCode = (await searchParams).code;
 	const popularTopics = getQuizTopicsBySection('popular');
 	const continentTopics = getQuizTopicsBySection('continents');
