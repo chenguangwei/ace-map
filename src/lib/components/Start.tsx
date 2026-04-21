@@ -2,8 +2,9 @@
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Check, Globe, Map as MapIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
+import { useRouter } from '@/i18n/navigation';
 import type { CountryDef } from '@/lib/data/countries';
 import { FEATURED_COUNTRIES } from '@/lib/data/countries';
 import { startViewTransition } from '../utils/dom';
@@ -12,20 +13,6 @@ import { Strictness, WorldStrictness } from '../utils/places';
 // ─── types ────────────────────────────────────────────────────────────────────
 
 type Step = 'mode' | 'country' | 'world-config';
-
-// ─── precision options ────────────────────────────────────────────────────────
-
-const COUNTRY_PRECISION = [
-	{ value: Strictness.Low, label: 'Easy' },
-	{ value: Strictness.Medium, label: 'Normal' },
-	{ value: Strictness.High, label: 'Hard' }
-];
-
-const WORLD_PRECISION = [
-	{ value: WorldStrictness.Low, label: 'Easy' },
-	{ value: WorldStrictness.Medium, label: 'Normal' },
-	{ value: WorldStrictness.High, label: 'Hard' }
-];
 
 // ─── motion variants ──────────────────────────────────────────────────────────
 
@@ -164,6 +151,20 @@ const CountryCard = ({
 // ─── main component ───────────────────────────────────────────────────────────
 
 const Start = () => {
+	const t = useTranslations('Start');
+
+	const COUNTRY_PRECISION = [
+		{ value: Strictness.Low, label: t('easy') },
+		{ value: Strictness.Medium, label: t('normal') },
+		{ value: Strictness.High, label: t('hard') }
+	];
+
+	const WORLD_PRECISION = [
+		{ value: WorldStrictness.Low, label: t('easy') },
+		{ value: WorldStrictness.Medium, label: t('normal') },
+		{ value: WorldStrictness.High, label: t('hard') }
+	];
+
 	const [step, setStep] = useState<Step>('mode');
 	const [selectedCountry, setSelectedCountry] = useState<CountryDef | null>(
 		null
@@ -176,7 +177,16 @@ const Start = () => {
 
 	const router = useRouter();
 
-	const worldCategories = ['Asia', 'Europe', 'Americas', 'Africa', 'Oceania'];
+	const worldCategories = useMemo(
+		() => [
+			{ value: 'Asia', label: t('continentAsia') },
+			{ value: 'Europe', label: t('continentEurope') },
+			{ value: 'Americas', label: t('continentAmericas') },
+			{ value: 'Africa', label: t('continentAfrica') },
+			{ value: 'Oceania', label: t('continentOceania') }
+		],
+		[t]
+	);
 
 	const urlCats = useMemo(() => {
 		const arr = Array.from(selectedCats);
@@ -215,7 +225,7 @@ const Start = () => {
 						className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md rounded-3xl p-6 shadow-xl shadow-black/8 border border-zinc-200/60 dark:border-zinc-800"
 					>
 						<p className="text-xs font-semibold tracking-widest uppercase text-zinc-400 dark:text-zinc-500 mb-5">
-							Select Mode
+							{t('selectMode')}
 						</p>
 
 						<div className="flex flex-col gap-3">
@@ -233,10 +243,10 @@ const Start = () => {
 								</span>
 								<span className="flex-1 min-w-0">
 									<span className="block font-semibold text-zinc-900 dark:text-zinc-100 text-[15px]">
-										World Countries
+										{t('worldModeTitle')}
 									</span>
 									<span className="block text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
-										Guess countries on a world map
+										{t('worldModeDescription')}
 									</span>
 								</span>
 								<ArrowLeft
@@ -259,10 +269,10 @@ const Start = () => {
 								</span>
 								<span className="flex-1 min-w-0">
 									<span className="block font-semibold text-zinc-900 dark:text-zinc-100 text-[15px]">
-										Explore a Country
+										{t('countryModeTitle')}
 									</span>
 									<span className="block text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
-										Pick a country and guess its regions
+										{t('countryModeDescription')}
 									</span>
 								</span>
 								<ArrowLeft
@@ -290,7 +300,7 @@ const Start = () => {
 								type="button"
 								onClick={() => setStep('mode')}
 								className="p-2 -ml-1 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-								aria-label="Back"
+								aria-label={t('backAria')}
 							>
 								<ArrowLeft
 									className="size-4 text-zinc-600 dark:text-zinc-400"
@@ -299,10 +309,10 @@ const Start = () => {
 							</button>
 							<div className="flex-1 min-w-0">
 								<p className="font-semibold text-zinc-900 dark:text-zinc-100 text-[15px]">
-									Choose a Country
+									{t('chooseCountryTitle')}
 								</p>
 								<p className="text-xs text-zinc-400 mt-0.5">
-									Tap any country to start instantly
+									{t('chooseCountryDescription')}
 								</p>
 							</div>
 						</div>
@@ -337,7 +347,9 @@ const Start = () => {
 						</div>
 
 						<p className="text-xs text-zinc-400 dark:text-zinc-500 text-center mt-3">
-							{FEATURED_COUNTRIES.length} countries available
+							{t('countriesAvailable', {
+								count: FEATURED_COUNTRIES.length
+							})}
 						</p>
 					</motion.div>
 				)}
@@ -358,7 +370,7 @@ const Start = () => {
 								type="button"
 								onClick={() => setStep('mode')}
 								className="p-2 -ml-1 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-								aria-label="Back"
+								aria-label={t('backAria')}
 							>
 								<ArrowLeft
 									className="size-4 text-zinc-600 dark:text-zinc-400"
@@ -367,10 +379,10 @@ const Start = () => {
 							</button>
 							<div className="flex-1">
 								<p className="font-semibold text-zinc-900 dark:text-zinc-100 text-[15px]">
-									World Countries
+									{t('worldModeTitle')}
 								</p>
 								<p className="text-xs text-zinc-400 mt-0.5">
-									Configure your game
+									{t('configureWorldDescription')}
 								</p>
 							</div>
 						</div>
@@ -378,18 +390,18 @@ const Start = () => {
 						{/* Continent filter */}
 						<div className="mb-5">
 							<p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2 uppercase tracking-wider">
-								Continents{' '}
+								{t('continents')}{' '}
 								<span className="font-normal normal-case text-zinc-400">
-									— none = all
+									- {t('continentsHelper')}
 								</span>
 							</p>
 							<div className="flex flex-wrap gap-1.5">
 								{worldCategories.map((cat) => (
 									<CatChip
-										key={cat}
-										label={cat}
-										active={selectedCats.has(cat)}
-										onToggle={() => toggleCat(cat)}
+										key={cat.value}
+										label={cat.label}
+										active={selectedCats.has(cat.value)}
+										onToggle={() => toggleCat(cat.value)}
 									/>
 								))}
 							</div>
@@ -413,7 +425,7 @@ const Start = () => {
 							onClick={goToWorld}
 							className="w-full py-3 rounded-2xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-semibold text-[15px] active:scale-[0.98] transition-transform cursor-pointer hover:bg-zinc-800 dark:hover:bg-zinc-200"
 						>
-							Start Game
+							{t('startGame')}
 						</button>
 					</motion.div>
 				)}

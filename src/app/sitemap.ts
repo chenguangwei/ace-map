@@ -1,38 +1,23 @@
-import type { MetadataRoute } from 'next';
+import { routing } from '@/i18n/routing';
 import { quizTopics } from '@/lib/data/quizTopics';
+import type { MetadataRoute } from 'next';
 
 const SITE_URL = 'https://mapquiz.pro';
 
-const sitemap = (): MetadataRoute.Sitemap => [
-	{
-		url: SITE_URL,
-		lastModified: new Date(),
-		changeFrequency: 'weekly',
-		priority: 1
-	},
-	{
-		url: `${SITE_URL}/quizzes`,
-		lastModified: new Date(),
-		changeFrequency: 'weekly',
-		priority: 0.9
-	},
-	{
-		url: `${SITE_URL}/game`,
-		lastModified: new Date(),
-		changeFrequency: 'weekly',
-		priority: 0.7
-	},
-	...quizTopics.map((topic) => ({
-		url: `${SITE_URL}/quiz/${topic.slug}`,
-		lastModified: new Date(),
-		changeFrequency: 'weekly' as const,
-		priority:
-			topic.section === 'popular'
-				? 0.95
-				: topic.kind === 'root'
-					? 0.85
-					: 0.75
-	}))
-];
+export default function sitemap(): MetadataRoute.Sitemap {
+  const staticRoutes = ['', '/quizzes'];
+  const slugRoutes = quizTopics.map((t) => `/quiz/${t.slug}`);
+  const allRoutes = [...staticRoutes, ...slugRoutes];
 
-export default sitemap;
+  return allRoutes.flatMap((route) =>
+    routing.locales.map((locale) => ({
+      url:
+        locale === routing.defaultLocale
+          ? `${SITE_URL}${route}`
+          : `${SITE_URL}/${locale}${route}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: route === '' ? 1 : 0.8
+    }))
+  );
+}

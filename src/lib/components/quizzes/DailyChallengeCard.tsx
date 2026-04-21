@@ -1,14 +1,15 @@
 'use client';
 
 import { CheckCircle2, Flame } from 'lucide-react';
-import Link from 'next/link';
+import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useMemo } from 'react';
+import { Link } from '@/i18n/navigation';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
 import {
-	buildGameHref,
-	formatChallengeDate,
-	getDailyChallengeTopic
-} from '@/lib/data/quizTopics';
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic
+} from '@/lib/data/quizTopicI18n';
+import { buildGameHref, getDailyChallengeTopic } from '@/lib/data/quizTopics';
 import { useIsMounted } from '@/lib/hooks/useIsMounted';
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
 import {
@@ -19,9 +20,18 @@ import {
 } from '@/lib/utils/challenge';
 
 const DailyChallengeCard = ({ className = '' }: { className?: string }) => {
+	const t = useTranslations('DailyChallengeCard');
+	const locale = useLocale();
+	const messages = useMessages() as {
+		QuizTopics?: Record<string, LocalizedQuizTopicMessages>;
+	};
 	const isMounted = useIsMounted();
 	const analytics = useAnalytics();
-	const topic = getDailyChallengeTopic();
+	const baseTopic = getDailyChallengeTopic();
+	const topic = localizeQuizTopic(
+		baseTopic,
+		messages.QuizTopics?.[baseTopic.slug]
+	);
 	const [challengeState] = useLocalStorage<DailyChallengeState>(
 		DAILY_CHALLENGE_STORAGE_KEY,
 		initialDailyChallengeState
@@ -35,9 +45,16 @@ const DailyChallengeCard = ({ className = '' }: { className?: string }) => {
 	const completionLabel = useMemo(() => {
 		if (!isCompletedToday) return null;
 		return effectiveChallengeState.lastAccuracy !== null
-			? `Completed today · ${effectiveChallengeState.lastAccuracy}%`
-			: 'Completed today';
-	}, [effectiveChallengeState.lastAccuracy, isCompletedToday]);
+			? t('completedTodayWithAccuracy', {
+					accuracy: effectiveChallengeState.lastAccuracy
+				})
+			: t('completedToday');
+	}, [effectiveChallengeState.lastAccuracy, isCompletedToday, t]);
+	const challengeDate = new Intl.DateTimeFormat(locale, {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric'
+	}).format(new Date());
 
 	return (
 		<section
@@ -46,7 +63,7 @@ const DailyChallengeCard = ({ className = '' }: { className?: string }) => {
 			<div className="flex flex-wrap items-center justify-between gap-4">
 				<div className="max-w-2xl">
 					<span className="rounded-full border border-amber-300/80 bg-white/70 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-amber-800">
-						Daily Challenge
+						{t('badge')}
 					</span>
 					{isCompletedToday && (
 						<div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-300/80 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-800">
@@ -61,13 +78,16 @@ const DailyChallengeCard = ({ className = '' }: { className?: string }) => {
 						{topic.description}
 					</p>
 					<div className="mt-3 flex flex-wrap items-center gap-3 text-sm font-semibold text-amber-900">
-						<span>Challenge date: {formatChallengeDate()}</span>
+						<span>
+							{t('challengeDate', { date: challengeDate })}
+						</span>
 						{isMounted &&
 							effectiveChallengeState.currentStreak > 0 && (
 								<span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/80 bg-white/70 px-3 py-1">
 									<Flame className="size-4" />
-									{effectiveChallengeState.currentStreak} day
-									streak
+									{t('dayStreak', {
+										count: effectiveChallengeState.currentStreak
+									})}
 								</span>
 							)}
 					</div>
@@ -78,13 +98,13 @@ const DailyChallengeCard = ({ className = '' }: { className?: string }) => {
 						href={`/quiz/${topic.slug}`}
 						className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
 					>
-						Open challenge page
+						{t('openChallengePage')}
 					</Link>
 					<Link
 						href={`${buildGameHref(topic.gameConfig)}&topic=${topic.slug}`}
 						className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
 					>
-						Play challenge now
+						{t('playChallengeNow')}
 					</Link>
 				</div>
 			</div>

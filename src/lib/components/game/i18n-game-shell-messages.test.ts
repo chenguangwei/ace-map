@@ -1,0 +1,166 @@
+import { describe, expect, it } from 'vitest';
+import enMessages from '../../../../messages/en.json';
+import jaMessages from '../../../../messages/ja.json';
+import zhMessages from '../../../../messages/zh.json';
+
+const locales = {
+	en: enMessages,
+	zh: zhMessages,
+	ja: jaMessages
+} as const;
+
+const REQUIRED_MESSAGE_PATHS = [
+	'Start.selectMode',
+	'Start.worldModeTitle',
+	'Start.worldModeDescription',
+	'Start.countryModeTitle',
+	'Start.countryModeDescription',
+	'Start.chooseCountryTitle',
+	'Start.chooseCountryDescription',
+	'Start.countriesAvailable',
+	'Start.configureWorldDescription',
+	'Start.continents',
+	'Start.continentsHelper',
+	'Start.startGame',
+	'Start.continentAsia',
+	'Start.continentEurope',
+	'Start.continentAmericas',
+	'Start.continentAfrica',
+	'Start.continentOceania',
+	'GameBar.openingRun',
+	'GameBar.terrainChain',
+	'GameBar.flashChain',
+	'GameBar.terrainMode',
+	'GameBar.flashMode',
+	'GameBar.terrainRules',
+	'GameBar.flashRules',
+	'GameBar.gameOverTitle',
+	'GameBar.viewResult',
+	'GameBar.pause',
+	'GameBar.resume',
+	'GameBar.mode',
+	'GameBar.session',
+	'GameBar.satelliteHint',
+	'GameBar.nextTarget',
+	'GameBar.lockGuess',
+	'GameBar.noSatelliteHintsTitle',
+	'GameBar.noSatelliteHintsDescription',
+	'GameBar.correctRegion',
+	'GameBar.distanceAway',
+	'GameBar.distanceOff',
+	'Result.precisionHigh',
+	'Result.precisionMedium',
+	'Result.precisionLow',
+	'Result.worldCountries',
+	'Result.countryFallback',
+	'Result.indiaMode',
+	'Result.invalidCode',
+	'Result.allCategories',
+	'Result.shareTitleDaily',
+	'Result.shareTitleTopic',
+	'Result.shareTextDaily',
+	'Result.shareTextDailyWithStreak',
+	'Result.shareTextTopic',
+	'Result.shareCopyTitle',
+	'Result.shareCopyDescription',
+	'Result.shareCopyFailedTitle',
+	'Result.shareCopyFailedDescription',
+	'Result.yourResult',
+	'Result.summary',
+	'Result.changeMode',
+	'Result.playAgain',
+	'Result.shareableResultEyebrow',
+	'Result.shareableResultTitle',
+	'Result.shareableResultDescription',
+	'Result.copied',
+	'Result.nextQuizIdeas',
+	'Result.nextQuizIdeasDescription',
+	'Result.accuracyChip',
+	'Result.streakChip',
+	'Result.openTopic',
+	'Result.playNow',
+	'Result.bestStreakInline',
+	'GamePage.runTerrainAgain',
+	'GamePage.runAgain',
+	'GamePage.startTerrainRun',
+	'GamePage.startFlashRun',
+	'GamePage.preparingMap',
+	'GamePage.terrainSense',
+	'GamePage.flashRun',
+	'GamePage.live',
+	'GamePage.replayPromptAria',
+	'GamePage.terrainRead',
+	'GamePage.lockTarget',
+	'GamePage.terrainInstruction',
+	'GamePage.flashInstruction',
+	'GamePage.revealClue',
+	'GamePage.deepenRead',
+	'GamePage.terrainHintHelper',
+	'GamePage.selected',
+	'GamePage.recenter',
+	'GamePage.mapLayer',
+	'GamePage.signalsCount',
+	'GamePage.playLayer',
+	'GamePage.pulseLayer',
+	'GamePage.terrainLayer',
+	'GamePage.streakCallout',
+	'GamePage.correctCallout',
+	'GamePage.continueSessionEyebrow',
+	'GamePage.moreLike',
+	'GamePage.nextGeographyQuizIdeas',
+	'GamePage.sessionFollowupDescription',
+	'GamePage.browseAllQuizPages',
+	'GamePage.resumePracticeTitle',
+	'GamePage.resumePracticeDescription',
+	'GamePage.mistakesInTopic',
+	'GameOverlay.correct',
+	'GameOverlay.wrong',
+	'GameOverlay.correctLocation',
+	'QuizTopicPage.home',
+	'QuizTopicPage.quizLibrary',
+	'QuizTopicPage.focusedPractice',
+	'QuizTopicPage.fullCountryQuiz',
+	'QuizTopicPage.playOnThisPage',
+	'QuizTopicPage.openFullScreenMode',
+	'QuizTopicPage.locationsToPractice',
+	'QuizTopicPage.howThisPageWorks',
+	'QuizTopicPage.partOf',
+	'QuizTopicPage.partOfDescription',
+	'QuizTopicPage.openParentTopic',
+	'QuizTopicPage.playNowTitle',
+	'QuizTopicPage.playDescription',
+	'QuizTopicPage.playDescriptionWithCategories',
+	'QuizTopicPage.keepExploring',
+	'QuizTopicPage.keepExploringDescription',
+	'QuizTopicPage.openQuizLibrary',
+	'QuizTopicPage.playFullScreen',
+	'QuizTopicPage.relatedQuizTopics',
+	'QuizzesPage.progressTitle',
+	'QuizzesPage.progressDescription',
+	'QuizzesPage.countryMapQuizzes',
+	'QuizzesPage.countryMapQuizzesDesc',
+	'QuizzesPage.featuredCountryDeepDives',
+	'QuizzesPage.featuredCountryDeepDivesDesc',
+	'QuizzesPage.focusedRegionalPractice',
+	'QuizzesPage.focusedRegionalPracticeDesc'
+] as const;
+
+const getPath = (value: unknown, path: string): unknown =>
+	path.split('.').reduce<unknown>((current, segment) => {
+		if (current && typeof current === 'object' && segment in current) {
+			return (current as Record<string, unknown>)[segment];
+		}
+		return undefined;
+	}, value);
+
+describe('game shell i18n message coverage', () => {
+	for (const [locale, messages] of Object.entries(locales)) {
+		it(`keeps required game shell messages populated for ${locale}`, () => {
+			for (const path of REQUIRED_MESSAGE_PATHS) {
+				const value = getPath(messages, path);
+				expect(typeof value).toBe('string');
+				expect((value as string).trim().length).toBeGreaterThan(0);
+			}
+		});
+	}
+});

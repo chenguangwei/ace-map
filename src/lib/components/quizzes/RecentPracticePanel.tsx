@@ -1,7 +1,12 @@
 'use client';
 
-import Link from 'next/link';
+import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useEffect } from 'react';
+import { Link } from '@/i18n/navigation';
+import {
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic
+} from '@/lib/data/quizTopicI18n';
 import { getQuizTopicBySlug, type QuizTopic } from '@/lib/data/quizTopics';
 import { useIsMounted } from '@/lib/hooks/useIsMounted';
 import { useLocalStorage } from '@/lib/hooks/useLocalStorage';
@@ -14,13 +19,18 @@ const MAX_RECENT_TOPICS = 4;
 
 const RecentPracticePanel = ({
 	currentSlug,
-	title = 'Recent practice',
-	description = 'Pick up where you left off with your latest topic pages.'
+	title,
+	description
 }: {
 	currentSlug?: string;
 	title?: string;
 	description?: string;
 }) => {
+	const t = useTranslations('RecentPracticePanel');
+	const locale = useLocale();
+	const messages = useMessages() as {
+		QuizTopics?: Record<string, LocalizedQuizTopicMessages>;
+	};
 	const isMounted = useIsMounted();
 	const [recentTopics, setRecentTopics] = useLocalStorage<RecentTopicEntry[]>(
 		RECENT_TOPICS_STORAGE_KEY,
@@ -65,17 +75,24 @@ const RecentPracticePanel = ({
 		.filter(
 			(item): item is { entry: RecentTopicEntry; topic: QuizTopic } =>
 				item.topic !== null
-		);
+		)
+		.map(({ entry, topic }) => ({
+			entry,
+			topic: localizeQuizTopic(topic, messages.QuizTopics?.[topic.slug])
+		}));
 
 	if (resolvedTopics.length === 0) return null;
+
+	const resolvedTitle = title ?? t('title');
+	const resolvedDescription = description ?? t('description');
 
 	return (
 		<section className="rounded-[28px] border border-slate-200 bg-white/88 p-6 shadow-[0_14px_34px_rgba(15,23,42,0.06)]">
 			<h2 className="text-2xl font-bold tracking-tight text-slate-950">
-				{title}
+				{resolvedTitle}
 			</h2>
 			<p className="mt-2 text-sm leading-6 text-slate-600">
-				{description}
+				{resolvedDescription}
 			</p>
 
 			<div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -95,8 +112,11 @@ const RecentPracticePanel = ({
 							{topic.description}
 						</p>
 						<p className="mt-3 text-xs font-semibold text-slate-400">
-							Last opened{' '}
-							{new Date(entry.lastVisitedAt).toLocaleDateString()}
+							{t('lastOpened', {
+								date: new Intl.DateTimeFormat(locale).format(
+									new Date(entry.lastVisitedAt)
+								)
+							})}
 						</p>
 					</Link>
 				))}

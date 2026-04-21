@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
+import { Link } from '@/i18n/navigation';
 import type { QuizTopicKind } from '@/lib/data/quizTopics';
 import { recordTopicObservabilityEvent } from '@/lib/utils/topicObservability';
 

@@ -14,14 +14,19 @@ import {
 	Trophy,
 	Zap
 } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useRouter } from '@/i18n/navigation';
 import AdSlot from '@/lib/components/monetization/AdSlot';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MasteryDashboard from '@/lib/components/quizzes/MasteryDashboard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
 import { FEATURED_COUNTRIES } from '@/lib/data/countries';
+import {
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic,
+	localizeQuizTopics
+} from '@/lib/data/quizTopicI18n';
 import {
 	buildGameHref,
 	getDailyChallengeTopic,
@@ -60,14 +65,6 @@ const shadows = {
 	50: 'sm:shadow-yellow-500/50',
 	75: 'sm:shadow-emerald-500/50'
 };
-const messages = {
-	0: {
-		title: 'Keep Practising!',
-		message: 'Geography is a skill — keep at it!'
-	},
-	50: { title: 'Good Job!', message: "You're getting the hang of it." },
-	75: { title: 'Outstanding!', message: 'You really know your geography!' }
-};
 
 const fire = (particleRatio: number, opts: Record<string, unknown>) => {
 	confetti({
@@ -79,6 +76,19 @@ const fire = (particleRatio: number, opts: Record<string, unknown>) => {
 
 const Result = (props: { code: string }) => {
 	const router = useRouter();
+	const locale = useLocale();
+	const t = useTranslations('Result');
+	const commonT = useTranslations('Common');
+	const startT = useTranslations('Start');
+	const messages = useMessages() as { QuizTopics?: unknown };
+	const quizTopicMessages = (messages.QuizTopics ?? {}) as Partial<
+		Record<string, LocalizedQuizTopicMessages | undefined>
+	>;
+	const gradeMessages = {
+		0: { title: t('grade0Title'), message: t('grade0Message') },
+		50: { title: t('grade50Title'), message: t('grade50Message') },
+		75: { title: t('grade75Title'), message: t('grade75Message') }
+	} as const;
 	const result = useMemo(() => decodeResult(props.code), [props.code]);
 	const sessionIdRef = useRef(createPracticeSessionId());
 	const persistedRef = useRef(false);
@@ -141,7 +151,9 @@ const Result = (props: { code: string }) => {
 	}, [props.code, result, setChallengeState]);
 
 	const accuracy = result
-		? Math.round(result.total === 0 ? 0 : (result.score / result.total) * 100)
+		? Math.round(
+				result.total === 0 ? 0 : (result.score / result.total) * 100
+			)
 		: 0;
 
 	const formattedTime = useMemo(() => {
@@ -155,21 +167,21 @@ const Result = (props: { code: string }) => {
 		const mode = result?.mode ?? 'india';
 		const v = result?.strictness;
 		if (mode === 'world') {
-			if (v !== undefined && v <= 300000) return 'High';
-			if (v !== undefined && v <= 800000) return 'Medium';
-			return 'Low';
+			if (v !== undefined && v <= 300000) return t('precisionHigh');
+			if (v !== undefined && v <= 800000) return t('precisionMedium');
+			return t('precisionLow');
 		}
-		if (v !== undefined && v <= 50000) return 'High';
-		if (v !== undefined && v <= 150000) return 'Medium';
-		return 'Low';
-	}, [result]);
+		if (v !== undefined && v <= 50000) return t('precisionHigh');
+		if (v !== undefined && v <= 150000) return t('precisionMedium');
+		return t('precisionLow');
+	}, [result, t]);
 
 	const modeLabel = useMemo(() => {
 		const mode = result?.mode ?? 'india';
 		if (mode === 'world')
 			return {
 				icon: <Globe className="size-4" />,
-				text: 'World Countries'
+				text: t('worldCountries')
 			};
 		if (mode === 'country') {
 			const country = FEATURED_COUNTRIES.find(
@@ -177,47 +189,68 @@ const Result = (props: { code: string }) => {
 			);
 			return {
 				icon: <span>{country?.flag ?? '🌍'}</span>,
-				text: country?.name ?? 'Country'
+				text: country?.name ?? t('countryFallback')
 			};
 		}
-		return { icon: <span>🇮🇳</span>, text: 'India — CBSE' };
-	}, [result]);
-
-	if (!result) {
-		return (
-			<div className="flex h-full items-center justify-center text-sm text-default-500">
-				Invalid result code.
-			</div>
-		);
-	}
+		return { icon: <span>🇮🇳</span>, text: t('indiaMode') };
+	}, [result, t]);
 
 	const tier = accuracy >= 75 ? 75 : accuracy >= 50 ? 50 : 0;
 	const gradient = gradients[tier];
 	const textColor = txtColors[tier];
 	const shadow = shadows[tier];
-	const messageData = messages[tier];
+	const messageData = gradeMessages[tier];
 
 	const categoryText = useMemo(() => {
-		if (result.category === 'all') return 'All Categories';
-		if (Array.isArray(result.category)) return result.category.join(', ');
-		return String(result.category);
-	}, [result.category]);
+		if (!result) return '';
+		const localizeCategoryValue = (value: string) => {
+			switch (value) {
+				case 'Asia':
+					return startT('continentAsia');
+				case 'Europe':
+					return startT('continentEurope');
+				case 'Americas':
+					return startT('continentAmericas');
+				case 'Africa':
+					return startT('continentAfrica');
+				case 'Oceania':
+					return startT('continentOceania');
+				default:
+					return value;
+			}
+		};
+		if (result.category === 'all') return t('allCategories');
+		if (Array.isArray(result.category))
+			return result.category.map(localizeCategoryValue).join(', ');
+		return localizeCategoryValue(String(result.category));
+	}, [result, startT, t]);
 
 	const recommendedTopics = useMemo(
 		() =>
-			getRecommendedQuizTopics({
-				mode: result.mode,
-				countryCode: result.countryCode,
-				category: result.category,
-				limit: 3
-			}),
-		[result.category, result.countryCode, result.mode]
+			result
+				? localizeQuizTopics(
+						getRecommendedQuizTopics({
+							mode: result.mode,
+							countryCode: result.countryCode,
+							category: result.category,
+							limit: 3
+						}),
+						quizTopicMessages
+					)
+				: [],
+		[result, quizTopicMessages]
 	);
-	const currentTopic = useMemo(
-		() => (sessionTopicSlug ? getQuizTopicBySlug(sessionTopicSlug) : null),
-		[sessionTopicSlug]
-	);
-	const dailyChallengeTopic = useMemo(() => getDailyChallengeTopic(), []);
+	const currentTopic = useMemo(() => {
+		if (!sessionTopicSlug) return null;
+		const topic = getQuizTopicBySlug(sessionTopicSlug);
+		return topic
+			? localizeQuizTopic(topic, quizTopicMessages[sessionTopicSlug])
+			: null;
+	}, [quizTopicMessages, sessionTopicSlug]);
+	const dailyChallengeTopic = useMemo(() => {
+		const topic = getDailyChallengeTopic();
+		return localizeQuizTopic(topic, quizTopicMessages?.[topic.slug]);
+	}, [quizTopicMessages]);
 	const isDailyChallengeResult =
 		sessionTopicSlug !== null &&
 		sessionTopicSlug === dailyChallengeTopic.slug;
@@ -226,14 +259,34 @@ const Result = (props: { code: string }) => {
 			typeof window !== 'undefined'
 				? window.location.origin
 				: 'https://mapquiz.pro';
-		return `${origin}/?code=${props.code}`;
-	}, [props.code]);
+		const url = new URL(locale === 'en' ? '/' : `/${locale}`, origin);
+		url.searchParams.set('code', props.code);
+		return url.toString();
+	}, [locale, props.code]);
 	const shareTitle = isDailyChallengeResult
-		? `I finished today's MapQuiz.pro challenge`
-		: `I just played ${currentTopic?.title ?? 'MapQuiz.pro'}`;
+		? t('shareTitleDaily')
+		: t('shareTitleTopic', {
+				topic: currentTopic?.title ?? 'MapQuiz.pro'
+			});
 	const shareText = isDailyChallengeResult
-		? `I scored ${accuracy}% on today's MapQuiz.pro daily challenge${challengeState.currentStreak > 0 ? ` and kept a ${challengeState.currentStreak}-day streak alive` : ''}. Can you beat it?`
-		: `I scored ${accuracy}% on ${currentTopic?.title ?? modeLabel.text} in MapQuiz.pro. See if you can beat my result.`;
+		? challengeState.currentStreak > 0
+			? t('shareTextDailyWithStreak', {
+					accuracy,
+					streak: challengeState.currentStreak
+				})
+			: t('shareTextDaily', { accuracy })
+		: t('shareTextTopic', {
+				accuracy,
+				topic: currentTopic?.title ?? modeLabel.text
+			});
+
+	if (!result) {
+		return (
+			<div className="flex h-full items-center justify-center text-sm text-default-500">
+				{t('invalidCode')}
+			</div>
+		);
+	}
 
 	const handleCopy = async () => {
 		try {
@@ -241,15 +294,15 @@ const Result = (props: { code: string }) => {
 			setCopied(true);
 			addToast({
 				color: 'success',
-				title: 'Share text copied',
-				description: 'Result link and message copied to clipboard.'
+				title: t('shareCopyTitle'),
+				description: t('shareCopyDescription')
 			});
 			window.setTimeout(() => setCopied(false), 1800);
 		} catch {
 			addToast({
 				color: 'danger',
-				title: 'Copy failed',
-				description: 'Clipboard permission was not available.'
+				title: t('shareCopyFailedTitle'),
+				description: t('shareCopyFailedDescription')
 			});
 		}
 	};
@@ -280,7 +333,7 @@ const Result = (props: { code: string }) => {
 				<div
 					className={`grid content-start items-center justify-center gap-4 rounded-b-3xl bg-linear-to-b px-10 py-8 text-center sm:rounded-3xl ${gradient} ${textColor}`}
 				>
-					<h1 className="text-xl font-semibold">Your Result</h1>
+					<h1 className="text-xl font-semibold">{t('yourResult')}</h1>
 
 					<div
 						className={`mx-auto grid aspect-square w-36 place-content-center rounded-full bg-linear-to-b shadow-inner ${gradient}`}
@@ -298,7 +351,9 @@ const Result = (props: { code: string }) => {
 						<div className="mt-1 flex items-center justify-center gap-1.5">
 							<Flame className="size-4 text-orange-400" />
 							<span className="text-sm font-medium">
-								Best streak: {result.bestStreak}×
+								{t('bestStreakInline', {
+									count: result.bestStreak
+								})}
 							</span>
 						</div>
 					)}
@@ -306,32 +361,32 @@ const Result = (props: { code: string }) => {
 
 				{/* Summary panel */}
 				<div className="flex flex-col gap-5 bg-zinc-50/90 p-6 dark:bg-zinc-950/90">
-					<h1 className="text-xl font-bold">Summary</h1>
+					<h1 className="text-xl font-bold">{t('summary')}</h1>
 
 					<div className="flex flex-col gap-3">
 						<SummaryRow
 							icon={<Target className="size-5" />}
-							label="Accuracy"
+							label={t('accuracy')}
 							value={`${accuracy}% (${result.score}/${result.total})`}
 						/>
 						<SummaryRow
 							icon={<Clock className="size-5" />}
-							label="Time"
+							label={t('time')}
 							value={formattedTime}
 						/>
 						<SummaryRow
 							icon={<Flame className="size-5" />}
-							label="Precision"
+							label={t('precision')}
 							value={strictnessLabel}
 						/>
 						<SummaryRow
 							icon={modeLabel.icon}
-							label="Mode"
+							label={t('mode')}
 							value={modeLabel.text}
 						/>
 						<SummaryRow
 							icon={<ChartBarStacked className="size-5" />}
-							label="Categories"
+							label={t('categories')}
 							value={
 								<span className="max-w-[160px] line-clamp-2 text-right text-sm text-default-600 dark:text-default-400">
 									{categoryText}
@@ -341,7 +396,7 @@ const Result = (props: { code: string }) => {
 						{(result.bestStreak ?? 0) > 0 && (
 							<SummaryRow
 								icon={<Zap className="size-5" />}
-								label="Best Streak"
+								label={t('bestStreak')}
 								value={`${result.bestStreak}×`}
 							/>
 						)}
@@ -354,7 +409,7 @@ const Result = (props: { code: string }) => {
 							variant="flat"
 							onPress={() => router.push('/')}
 						>
-							Change Mode
+							{t('changeMode')}
 						</Button>
 						<Button
 							radius="full"
@@ -378,7 +433,7 @@ const Result = (props: { code: string }) => {
 								router.push(url);
 							}}
 						>
-							Play Again
+							{t('playAgain')}
 						</Button>
 					</div>
 				</div>
@@ -388,12 +443,12 @@ const Result = (props: { code: string }) => {
 				<div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
 					<div className="max-w-2xl">
 						<p className="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">
-							Shareable Result
+							{t('shareableResultEyebrow')}
 						</p>
 						<h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-950">
 							{isDailyChallengeResult
-								? "Today's challenge is done. Share your score."
-								: 'Turn this result into a challenge link.'}
+								? t('shareScore')
+								: t('shareableResultTitle')}
 						</h2>
 						<p className="mt-2 text-sm leading-6 text-slate-600">
 							{shareText}
@@ -403,14 +458,15 @@ const Result = (props: { code: string }) => {
 								{currentTopic?.title ?? modeLabel.text}
 							</span>
 							<span className="rounded-full border border-sky-200 bg-white/80 px-3 py-1 text-xs font-semibold text-slate-700">
-								{accuracy}% accuracy
+								{t('accuracyChip', { accuracy })}
 							</span>
 							{isDailyChallengeResult &&
 								challengeState.currentStreak > 0 && (
 									<span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/80 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">
 										<Flame className="size-3.5" />
-										{challengeState.currentStreak} day
-										streak
+										{t('streakChip', {
+											days: challengeState.currentStreak
+										})}
 									</span>
 								)}
 						</div>
@@ -430,7 +486,7 @@ const Result = (props: { code: string }) => {
 									{shareTitle}
 								</p>
 								<p className="text-xs text-slate-500">
-									Share link keeps the result reproducible.
+									{t('shareableResultDescription')}
 								</p>
 							</div>
 						</div>
@@ -451,7 +507,7 @@ const Result = (props: { code: string }) => {
 								onPress={handleShare}
 								startContent={<Share2 className="size-4" />}
 							>
-								Share
+								{commonT('share')}
 							</Button>
 							<Button
 								radius="full"
@@ -460,7 +516,7 @@ const Result = (props: { code: string }) => {
 								onPress={handleCopy}
 								startContent={<Copy className="size-4" />}
 							>
-								{copied ? 'Copied' : 'Copy'}
+								{copied ? t('copied') : commonT('copy')}
 							</Button>
 						</div>
 					</div>
@@ -471,11 +527,10 @@ const Result = (props: { code: string }) => {
 				<section className="mt-8">
 					<div className="max-w-2xl">
 						<h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-slate-50">
-							Next quiz ideas
+							{t('nextQuizIdeas')}
 						</h2>
 						<p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-							Keep the session going with closely related map
-							quizzes.
+							{t('nextQuizIdeasDescription')}
 						</p>
 					</div>
 
@@ -499,13 +554,13 @@ const Result = (props: { code: string }) => {
 										href={`/quiz/${topic.slug}`}
 										className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white dark:bg-slate-100 dark:text-slate-950"
 									>
-										Open topic
+										{t('openTopic')}
 									</Link>
 									<Link
 										href={buildGameHref(topic.gameConfig)}
 										className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-600 dark:text-slate-100"
 									>
-										Play now
+										{t('playNow')}
 									</Link>
 								</div>
 							</article>
@@ -527,13 +582,13 @@ const Result = (props: { code: string }) => {
 
 			<div className="mt-8">
 				<MasteryDashboard
-					title="How your map practice is trending"
-					description="This local summary now updates after every finished run, so you can decide whether to push your strongest topic or clean up missed locations."
+					title={t('masteryTitle')}
+					description={t('masteryDesc')}
 				/>
 			</div>
 
 			<div className="mt-8">
-				<MistakesReviewPanel title="Retry your missed locations" />
+				<MistakesReviewPanel title={t('retryMissed')} />
 			</div>
 		</div>
 	);

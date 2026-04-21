@@ -1,8 +1,8 @@
 'use client';
 
 import { BarChart3, MousePointerClick, PlayCircle, Trophy } from 'lucide-react';
-import Link from 'next/link';
 import { type ReactNode, useMemo } from 'react';
+import { Link } from '@/i18n/navigation';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
 import { getQuizTopicBySlug } from '@/lib/data/quizTopics';
 
@@ -36,9 +36,9 @@ const TopicObservabilityPanel = ({
 					Topic funnel signals
 				</h2>
 				<p className="mt-3 text-sm leading-6 text-slate-600">
-					No topic-level activity has been recorded yet. Open a few topic
-					pages and start some runs to seed local funnel data for views,
-					clicks, starts, and completions.
+					No topic-level activity has been recorded yet. Open a few
+					topic pages and start some runs to seed local funnel data
+					for views, clicks, starts, and completions.
 				</p>
 			</section>
 		);
@@ -58,8 +58,8 @@ const TopicObservabilityPanel = ({
 					</h2>
 					<p className="mt-3 text-sm leading-6 text-slate-600">
 						This local panel approximates early search and discovery
-						signals by tracking topic page views, CTA clicks, play starts,
-						and completions per country hub or drill page.
+						signals by tracking topic page views, CTA clicks, play
+						starts, and completions per country hub or drill page.
 					</p>
 				</div>
 			</div>
@@ -93,22 +93,36 @@ const TopicObservabilityPanel = ({
 									</Link>
 									<div className="mt-1 flex flex-wrap gap-2 text-xs text-slate-500">
 										<span>{stat.topicKind ?? 'topic'}</span>
-										{stat.countryCode && <span>{stat.countryCode.toUpperCase()}</span>}
+										{stat.countryCode && (
+											<span>
+												{stat.countryCode.toUpperCase()}
+											</span>
+										)}
 										{stat.startRate !== null && (
-											<span>{stat.startRate}% start rate</span>
+											<span>
+												{stat.startRate}% start rate
+											</span>
 										)}
 									</div>
 								</div>
-								<MetricCell icon={<BarChart3 className="size-4" />} value={stat.pageViews} />
 								<MetricCell
-									icon={<MousePointerClick className="size-4" />}
+									icon={<BarChart3 className="size-4" />}
+									value={stat.pageViews}
+								/>
+								<MetricCell
+									icon={
+										<MousePointerClick className="size-4" />
+									}
 									value={stat.ctaClicks}
 								/>
 								<MetricCell
 									icon={<PlayCircle className="size-4" />}
 									value={stat.playStarts}
 								/>
-								<MetricCell icon={<Trophy className="size-4" />} value={stat.completions} />
+								<MetricCell
+									icon={<Trophy className="size-4" />}
+									value={stat.completions}
+								/>
 								<div className="text-sm font-medium text-slate-600">
 									{formatDate(stat.lastEventAt)}
 								</div>
@@ -121,13 +135,7 @@ const TopicObservabilityPanel = ({
 	);
 };
 
-const MetricCell = ({
-	icon,
-	value
-}: {
-	icon: ReactNode;
-	value: number;
-}) => (
+const MetricCell = ({ icon, value }: { icon: ReactNode; value: number }) => (
 	<div className="flex items-center gap-2 font-semibold text-slate-900">
 		<span className="text-violet-700">{icon}</span>
 		<span>{value}</span>

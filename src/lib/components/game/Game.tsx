@@ -1,6 +1,7 @@
 'use client';
 import type { Map as MapLibreMap } from 'maplibre-gl';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import _Map, {
 	Marker as _Marker,
@@ -67,7 +68,6 @@ const hideSymbolLayers = (map: MapLibreMap) => {
 		}
 	}
 };
-
 
 const isWithinBounds = (
 	hotspot: Pick<ActivityHotspot, 'latitude' | 'longitude'>,
@@ -152,6 +152,7 @@ const Marker = (
 		gameState: GameState;
 	}
 ) => {
+	const t = useTranslations('GameOverlay');
 	const submittedInfo = props.info;
 
 	return (
@@ -188,7 +189,7 @@ const Marker = (
 					<div className="flex flex-col items-center gap-2">
 						<MarkerTag
 							tone="guess"
-							label={`${submittedInfo?.isCorrect ? 'Correct' : 'Wrong'} • ${formatDistance(
+							label={`${submittedInfo?.isCorrect ? t('correct') : t('wrong')} • ${formatDistance(
 								submittedInfo?.distance as number
 							)}`}
 						/>
@@ -203,7 +204,10 @@ const Marker = (
 					anchor="bottom"
 				>
 					<div className="flex flex-col items-center gap-2">
-						<MarkerTag tone="correct" label="Correct location" />
+						<MarkerTag
+							tone="correct"
+							label={t('correctLocation')}
+						/>
 						<div className="drop-shadow-[0_10px_18px_rgba(22,163,74,0.26)]">
 							<Pin size={26} style={{ fill: '#16a34a' }} />
 						</div>
@@ -266,7 +270,10 @@ const Game = (
 		[countryCode, props.gameState.toMark]
 	);
 	const staticCountryRegionSource = useMemo(
-		() => (mode === 'country' ? getCountryRegionStaticSource(countryCode) : null),
+		() =>
+			mode === 'country'
+				? getCountryRegionStaticSource(countryCode)
+				: null,
 		[mode, countryCode]
 	);
 	const isWorldRegionClickMode = mode === 'world';
@@ -350,9 +357,7 @@ const Game = (
 	);
 
 	useEffect(() => {
-		if (
-			props.mapDisplayMode !== 'pulse'
-		) {
+		if (props.mapDisplayMode !== 'pulse') {
 			return;
 		}
 
@@ -404,10 +409,14 @@ const Game = (
 			if (mode === 'world') {
 				const toMark = toMarkRef.current;
 				if (toMark) {
-					const continentScope = getContinentScopeForWorldPlace(toMark.name);
+					const continentScope = getContinentScopeForWorldPlace(
+						toMark.name
+					);
 					// Larger continents (Asia, Americas) get a slightly wider zoom
 					const zoom = continentScope
-						? (['Asia', 'Americas'].includes(continentScope.label) ? 2.4 : 2.8)
+						? ['Asia', 'Americas'].includes(continentScope.label)
+							? 2.4
+							: 2.8
 						: 2.4;
 					map.easeTo({
 						center: [toMark.longitude, toMark.latitude],
@@ -441,11 +450,14 @@ const Game = (
 		if (mode === 'world' && props.gameState.toMark) {
 			focusGameArea(1200);
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.gameState.toMark?.name]);
+	}, [focusGameArea, mode, props.gameState.toMark]);
 
 	useEffect(() => {
-		if (previousInfoRef.current !== null && props.info === null && mode !== 'world') {
+		if (
+			previousInfoRef.current !== null &&
+			props.info === null &&
+			mode !== 'world'
+		) {
 			focusGameArea(900);
 		}
 
@@ -623,10 +635,10 @@ const Game = (
 			initialViewState={initialView}
 			mapStyle={getMapStyleForMode(props.mapDisplayMode, terrainBasemap)}
 			style={{
-					width: '100%',
-					height: '100%',
-					filter: undefined
-				}}
+				width: '100%',
+				height: '100%',
+				filter: undefined
+			}}
 			attributionControl={false}
 			reuseMaps
 			onLoad={() => {
@@ -637,7 +649,8 @@ const Game = (
 						map.setProjection({ type: 'globe' });
 						map.setSky(GLOBE_SKY_CONFIG);
 						if (!isTerrainModeRef.current) applyGlobeTerrain(map);
-						if (mapDisplayModeRef.current === 'pulse') applyPulseStyleOverrides(map);
+						if (mapDisplayModeRef.current === 'pulse')
+							applyPulseStyleOverrides(map);
 					};
 					applyGlobeEffects();
 					// Re-apply after each subsequent style switch
@@ -651,7 +664,8 @@ const Game = (
 					hideSymbolLayers(map);
 					map.setProjection({ type: 'globe' });
 					map.setSky(GLOBE_SKY_CONFIG);
-					if (mapDisplayModeRef.current === 'pulse') applyPulseStyleOverrides(map);
+					if (mapDisplayModeRef.current === 'pulse')
+						applyPulseStyleOverrides(map);
 					// Terrain is handled by the style.load listener — skip here
 					// to avoid triggering styledata loops from addSource/setTerrain
 				}
@@ -728,7 +742,8 @@ const Game = (
 					: undefined
 			}
 			cursor={
-				hoveredWorldFeatureName || hoveredCountryFeatureName
+				hoveredWorldFeatureName ||
+				(isCountryRegionClickMode && hoveredCountryFeatureName)
 					? 'pointer'
 					: 'grab'
 			}
@@ -780,7 +795,6 @@ const Game = (
 						/>
 					</Source>
 				)}
-
 
 			{isWorldRegionClickMode && (
 				<Source
@@ -941,10 +955,20 @@ const Game = (
 							hoveredCountryFeatureName
 								? [
 										'==',
-										['get', staticCountryRegionSource.featureNameProperty],
+										[
+											'get',
+											staticCountryRegionSource.featureNameProperty
+										],
 										hoveredCountryFeatureName
 									]
-								: ['==', ['get', staticCountryRegionSource.featureNameProperty], '']
+								: [
+										'==',
+										[
+											'get',
+											staticCountryRegionSource.featureNameProperty
+										],
+										''
+									]
 						}
 						paint={{
 							'line-color': isTerrainMode ? '#f8fafc' : '#38bdf8',
@@ -956,9 +980,11 @@ const Game = (
 						<>
 							<Layer
 								id={`${activeCountryRegionSource.sourceId}-terrain-reveal-fill`}
+								source={staticCountryRegionSource.sourceId}
 								type="fill"
 								filter={
-									props.info && countryTargetSelection?.featureName
+									props.info &&
+									countryTargetSelection?.featureName
 										? [
 												'==',
 												[
@@ -983,9 +1009,11 @@ const Game = (
 							/>
 							<Layer
 								id={`${activeCountryRegionSource.sourceId}-terrain-reveal-outline`}
+								source={staticCountryRegionSource.sourceId}
 								type="line"
 								filter={
-									props.info && countryTargetSelection?.featureName
+									props.info &&
+									countryTargetSelection?.featureName
 										? [
 												'==',
 												[
@@ -1011,7 +1039,10 @@ const Game = (
 								}}
 							/>
 							<Layer
-								id={activeCountryRegionSource.selectedFillLayerId}
+								id={
+									activeCountryRegionSource.selectedFillLayerId
+								}
+								source={staticCountryRegionSource.sourceId}
 								type="fill"
 								filter={
 									selectedCountryFeatureName
@@ -1033,12 +1064,17 @@ const Game = (
 											]
 								}
 								paint={{
-									'fill-color': isTerrainMode ? '#f8fafc' : '#22d3ee',
+									'fill-color': isTerrainMode
+										? '#f8fafc'
+										: '#22d3ee',
 									'fill-opacity': isTerrainMode ? 0.08 : 0.18
 								}}
 							/>
 							<Layer
-								id={activeCountryRegionSource.selectedOutlineLayerId}
+								id={
+									activeCountryRegionSource.selectedOutlineLayerId
+								}
+								source={staticCountryRegionSource.sourceId}
 								type="line"
 								filter={
 									selectedCountryFeatureName
@@ -1060,7 +1096,9 @@ const Game = (
 											]
 								}
 								paint={{
-									'line-color': isTerrainMode ? '#f8fafc' : '#06b6d4',
+									'line-color': isTerrainMode
+										? '#f8fafc'
+										: '#06b6d4',
 									'line-width': isTerrainMode ? 2.1 : 2.8,
 									'line-opacity': isTerrainMode ? 0.78 : 0.95,
 									'line-dasharray': isTerrainMode

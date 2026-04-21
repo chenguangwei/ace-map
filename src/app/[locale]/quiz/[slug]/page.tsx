@@ -1,8 +1,14 @@
 import { Skeleton } from '@heroui/skeleton';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import {
+	getMessages,
+	getTranslations,
+	setRequestLocale
+} from 'next-intl/server';
 import { Suspense } from 'react';
+import { Link } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
 import TopicPageTracker from '@/lib/components/analytics/TopicPageTracker';
 import TrackedTopicLink from '@/lib/components/analytics/TrackedTopicLink';
 import Main from '@/lib/components/game/Main';
@@ -11,6 +17,11 @@ import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
 import QuizTopicCard from '@/lib/components/quizzes/QuizTopicCard';
 import RecentPracticePanel from '@/lib/components/quizzes/RecentPracticePanel';
 import {
+	type LocalizedQuizTopicMessages,
+	localizeQuizTopic,
+	localizeQuizTopics
+} from '@/lib/data/quizTopicI18n';
+import {
 	buildGameHref,
 	getQuizTopicBySlug,
 	getRelatedQuizTopics,
@@ -18,25 +29,45 @@ import {
 } from '@/lib/data/quizTopics';
 
 const SITE_URL = 'https://mapquiz.pro';
+const buildLocalePath = (locale: string, path: string) =>
+	locale === routing.defaultLocale ? path : `/${locale}${path}`;
+const buildAbsoluteUrl = (locale: string, path: string) =>
+	`${SITE_URL}${buildLocalePath(locale, path)}`;
 
 export const generateStaticParams = () =>
-	quizTopics.map((topic) => ({ slug: topic.slug }));
+	routing.locales.flatMap((locale) =>
+		quizTopics.map((topic) => ({ locale, slug: topic.slug }))
+	);
 
 export const generateMetadata = async ({
 	params
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> => {
-	const { slug } = await params;
+	const { slug, locale } = await params;
 	const topic = getQuizTopicBySlug(slug);
 	const parentTopic = topic?.parentSlug
 		? getQuizTopicBySlug(topic.parentSlug)
 		: null;
 
 	if (!topic) {
+		const tPage = await getTranslations({
+			locale,
+			namespace: 'QuizTopicPage'
+		});
 		return {
-			title: 'Quiz Topic Not Found | MapQuiz.pro'
+			title: `${tPage('notFoundTitle')} | MapQuiz.pro`
 		};
+	}
+
+	const tTopics = await getTranslations({ locale, namespace: 'QuizTopics' });
+	let seoTitle = topic.seoTitle;
+	let seoDescription = topic.seoDescription;
+	try {
+		seoTitle = tTopics(`${slug}.seoTitle`);
+		seoDescription = tTopics(`${slug}.seoDescription`);
+	} catch {
+		// key not found, use English fallback
 	}
 
 	const keywordSet = new Set([
@@ -50,22 +81,22 @@ export const generateMetadata = async ({
 	]);
 
 	return {
-		title: topic.seoTitle,
-		description: topic.seoDescription,
+		title: seoTitle,
+		description: seoDescription,
 		alternates: {
-			canonical: `${SITE_URL}/quiz/${topic.slug}`
+			canonical: buildAbsoluteUrl(locale, `/quiz/${topic.slug}`)
 		},
 		keywords: [...keywordSet],
 		openGraph: {
-			url: `${SITE_URL}/quiz/${topic.slug}`,
-			title: topic.seoTitle,
-			description: topic.seoDescription,
+			url: buildAbsoluteUrl(locale, `/quiz/${topic.slug}`),
+			title: seoTitle,
+			description: seoDescription,
 			type: 'article'
 		},
 		twitter: {
 			card: 'summary_large_image',
-			title: topic.seoTitle,
-			description: topic.seoDescription
+			title: seoTitle,
+			description: seoDescription
 		}
 	};
 };
@@ -73,33 +104,55 @@ export const generateMetadata = async ({
 const QuizTopicPage = async ({
 	params
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 }) => {
-	const { slug } = await params;
+	const { slug, locale } = await params;
+	setRequestLocale(locale);
 	const topic = getQuizTopicBySlug(slug);
 	if (!topic) notFound();
 
+	const tPage = await getTranslations({
+		locale,
+		namespace: 'QuizTopicPage'
+	});
+	const messages = (await getMessages()) as { QuizTopics?: unknown };
+	const quizTopicMessages = (messages.QuizTopics ?? {}) as Partial<
+		Record<string, LocalizedQuizTopicMessages | undefined>
+	>;
+	const localizedTopic = localizeQuizTopic(
+		topic,
+		quizTopicMessages[topic.slug]
+	);
 	const parentTopic = topic.parentSlug
 		? getQuizTopicBySlug(topic.parentSlug)
 		: null;
-	const relatedTopics = getRelatedQuizTopics(topic.slug, 3);
+	const localizedParentTopic = parentTopic
+		? localizeQuizTopic(parentTopic, quizTopicMessages[parentTopic.slug])
+		: null;
+	const relatedTopics = localizeQuizTopics(
+		getRelatedQuizTopics(topic.slug, 3),
+		quizTopicMessages
+	);
 	const fullScreenHref = `${buildGameHref(topic.gameConfig)}&topic=${topic.slug}`;
 	const pageJsonLd = {
 		'@context': 'https://schema.org',
 		'@type': topic.kind === 'subtopic' ? 'CollectionPage' : 'WebPage',
-		name: topic.title,
-		url: `${SITE_URL}/quiz/${topic.slug}`,
-		description: topic.seoDescription,
+		name: localizedTopic.title,
+		url: buildAbsoluteUrl(locale, `/quiz/${topic.slug}`),
+		description: localizedTopic.seoDescription,
 		keywords: [
 			topic.primaryKeyword,
 			...(topic.categoryLabels ?? []),
-			topic.learningFocus
+			localizedTopic.learningFocus
 		],
-		isPartOf: parentTopic
+		isPartOf: localizedParentTopic
 			? {
 					'@type': 'WebPage',
-					name: parentTopic.title,
-					url: `${SITE_URL}/quiz/${parentTopic.slug}`
+					name: localizedParentTopic.title,
+					url: buildAbsoluteUrl(
+						locale,
+						`/quiz/${localizedParentTopic.slug}`
+					)
 				}
 			: {
 					'@type': 'WebSite',
@@ -108,7 +161,7 @@ const QuizTopicPage = async ({
 				},
 		about: {
 			'@type': 'Thing',
-			name: topic.learningFocus
+			name: localizedTopic.learningFocus
 		}
 	};
 	const breadcrumbJsonLd = {
@@ -118,36 +171,45 @@ const QuizTopicPage = async ({
 			{
 				'@type': 'ListItem',
 				position: 1,
-				name: 'Ace Map',
-				item: 'https://mapquiz.pro'
+				name: tPage('home'),
+				item: buildAbsoluteUrl(locale, '/')
 			},
 			{
 				'@type': 'ListItem',
 				position: 2,
-				name: 'Quiz Library',
-				item: 'https://mapquiz.pro/quizzes'
+				name: tPage('quizLibrary'),
+				item: buildAbsoluteUrl(locale, '/quizzes')
 			},
-			...(parentTopic
+			...(localizedParentTopic
 				? [
 						{
 							'@type': 'ListItem',
 							position: 3,
-							name: parentTopic.title,
-							item: `https://mapquiz.pro/quiz/${parentTopic.slug}`
+							name: localizedParentTopic.title,
+							item: buildAbsoluteUrl(
+								locale,
+								`/quiz/${localizedParentTopic.slug}`
+							)
 						},
 						{
 							'@type': 'ListItem',
 							position: 4,
-							name: topic.title,
-							item: `https://mapquiz.pro/quiz/${topic.slug}`
+							name: localizedTopic.title,
+							item: buildAbsoluteUrl(
+								locale,
+								`/quiz/${topic.slug}`
+							)
 						}
 					]
 				: [
 						{
 							'@type': 'ListItem',
 							position: 3,
-							name: topic.title,
-							item: `https://mapquiz.pro/quiz/${topic.slug}`
+							name: localizedTopic.title,
+							item: buildAbsoluteUrl(
+								locale,
+								`/quiz/${topic.slug}`
+							)
 						}
 					])
 		]
@@ -155,7 +217,7 @@ const QuizTopicPage = async ({
 	const faqJsonLd = {
 		'@context': 'https://schema.org',
 		'@type': 'FAQPage',
-		mainEntity: topic.faq.map((item) => ({
+		mainEntity: localizedTopic.faq.map((item) => ({
 			'@type': 'Question',
 			name: item.question,
 			acceptedAnswer: {
@@ -184,29 +246,29 @@ const QuizTopicPage = async ({
 
 			<nav className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
 				<Link href="/" className="transition hover:text-slate-900">
-					Home
+					{tPage('home')}
 				</Link>
 				<span>/</span>
 				<Link
 					href="/quizzes"
 					className="transition hover:text-slate-900"
 				>
-					Quiz Library
+					{tPage('quizLibrary')}
 				</Link>
-				{parentTopic && (
+				{localizedParentTopic && (
 					<>
 						<span>/</span>
 						<Link
-							href={`/quiz/${parentTopic.slug}`}
+							href={`/quiz/${localizedParentTopic.slug}`}
 							className="transition hover:text-slate-900"
 						>
-							{parentTopic.shortTitle}
+							{localizedParentTopic.shortTitle}
 						</Link>
 					</>
 				)}
 				<span>/</span>
 				<span className="font-semibold text-slate-900">
-					{topic.title}
+					{localizedTopic.title}
 				</span>
 			</nav>
 
@@ -214,32 +276,33 @@ const QuizTopicPage = async ({
 				<div className="max-w-3xl">
 					<div className="flex flex-wrap gap-2">
 						<span className="rounded-full border border-sky-200 bg-sky-50 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-sky-800">
-							{topic.badge}
+							{localizedTopic.badge}
 						</span>
 						<span className="rounded-full border border-slate-200 bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-600">
 							{topic.kind === 'subtopic'
-								? 'Focused Practice'
-								: 'Full Country Quiz'}
+								? tPage('focusedPractice')
+								: tPage('fullCountryQuiz')}
 						</span>
 					</div>
 					<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-						{topic.title}
+						{localizedTopic.title}
 					</h1>
 					<p className="mt-5 text-lg leading-8 text-slate-600">
-						{topic.description}
+						{localizedTopic.description}
 					</p>
-					{topic.categoryLabels && topic.categoryLabels.length > 0 && (
-						<div className="mt-5 flex flex-wrap gap-2">
-							{topic.categoryLabels.map((label) => (
-								<span
-									key={label}
-									className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900"
-								>
-									{label}
-								</span>
-							))}
-						</div>
-					)}
+					{topic.categoryLabels &&
+						topic.categoryLabels.length > 0 && (
+							<div className="mt-5 flex flex-wrap gap-2">
+								{topic.categoryLabels.map((label) => (
+									<span
+										key={label}
+										className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-900"
+									>
+										{label}
+									</span>
+								))}
+							</div>
+						)}
 
 					<div className="mt-8 flex flex-wrap gap-3">
 						<TrackedTopicLink
@@ -251,7 +314,7 @@ const QuizTopicPage = async ({
 							target="jump-to-play"
 							className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
 						>
-							Play on this page
+							{tPage('playOnThisPage')}
 						</TrackedTopicLink>
 						<TrackedTopicLink
 							href={fullScreenHref}
@@ -262,14 +325,20 @@ const QuizTopicPage = async ({
 							target="open-full-screen"
 							className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
 						>
-							Open full-screen mode
+							{tPage('openFullScreenMode')}
 						</TrackedTopicLink>
 					</div>
 
 					<div className="mt-8 grid gap-4 sm:grid-cols-2">
 						{[
-							[`${topic.questionCount}`, 'Locations to practice'],
-							[topic.learningFocus, 'What you\'ll learn']
+							[
+								`${topic.questionCount}`,
+								tPage('locationsToPractice')
+							],
+							[
+								localizedTopic.learningFocus,
+								tPage('whatYouWillLearn')
+							]
 						].map(([value, label]) => (
 							<div
 								key={label}
@@ -288,49 +357,51 @@ const QuizTopicPage = async ({
 
 				<aside className="rounded-[30px] border border-sky-200/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(240,249,255,0.95))] p-6 shadow-[0_18px_44px_rgba(15,23,42,0.08)]">
 					<p className="text-[11px] font-bold uppercase tracking-[0.24em] text-sky-700">
-						How this page works
+						{tPage('howThisPageWorks')}
 					</p>
 					<ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-						{topic.benefits.map((benefit) => (
+						{localizedTopic.benefits.map((benefit) => (
 							<li key={benefit} className="flex gap-3">
 								<span className="mt-2 size-2 rounded-full bg-sky-500" />
 								<span>{benefit}</span>
 							</li>
 						))}
 					</ul>
-					{parentTopic && (
+					{localizedParentTopic && (
 						<div className="mt-6 rounded-[22px] border border-slate-200/80 bg-white/80 p-4">
 							<p className="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">
-								Part Of
+								{tPage('partOf')}
 							</p>
 							<p className="mt-2 text-base font-semibold text-slate-900">
-								{parentTopic.title}
+								{localizedParentTopic.title}
 							</p>
 							<p className="mt-2 text-sm leading-6 text-slate-600">
-								This is a focused drill within a broader country quiz — go back for the full set.
+								{tPage('partOfDescription')}
 							</p>
 							<Link
-								href={`/quiz/${parentTopic.slug}`}
+								href={`/quiz/${localizedParentTopic.slug}`}
 								className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
 							>
-								Open parent topic
+								{tPage('openParentTopic')}
 							</Link>
 						</div>
 					)}
-
 				</aside>
 			</section>
 
 			<section id="play" className="mt-16">
 				<div className="max-w-3xl">
 					<h2 className="text-3xl font-bold tracking-tight text-slate-950">
-						Play {topic.shortTitle} now
+						{tPage('playNowTitle', {
+							title: localizedTopic.shortTitle
+						})}
 					</h2>
 					<p className="mt-3 text-base leading-7 text-slate-600">
-						Click a location on the map when prompted — or type your answer. Your score updates as you go.
 						{topic.categoryLabels && topic.categoryLabels.length > 0
-							? ` This set focuses on ${topic.categoryLabels.join(', ').toLowerCase()}.`
-							: ''}
+							? tPage('playDescriptionWithCategories', {
+									categories: topic.categoryLabels.join(', ')
+								})
+							: tPage('playDescription')}
 					</p>
 				</div>
 
@@ -354,10 +425,10 @@ const QuizTopicPage = async ({
 			<section className="mt-16 grid gap-8 lg:grid-cols-[1fr_360px]">
 				<div>
 					<h2 className="text-3xl font-bold tracking-tight text-slate-950">
-						What you'll practice
+						{tPage('highlightsTitle')}
 					</h2>
 					<div className="mt-6 grid gap-4 sm:grid-cols-2">
-						{topic.highlights.map((highlight) => (
+						{localizedTopic.highlights.map((highlight) => (
 							<div
 								key={highlight}
 								className="rounded-[24px] border border-slate-200 bg-slate-50 p-5"
@@ -371,10 +442,10 @@ const QuizTopicPage = async ({
 
 					<div className="mt-10">
 						<h3 className="text-2xl font-bold tracking-tight text-slate-950">
-							FAQ
+							{tPage('faqTitle')}
 						</h3>
 						<div className="mt-5 space-y-4">
-							{topic.faq.map((item) => (
+							{localizedTopic.faq.map((item) => (
 								<details
 									key={item.question}
 									className="rounded-[24px] border border-slate-200 bg-white p-5"
@@ -392,23 +463,23 @@ const QuizTopicPage = async ({
 
 					<div className="mt-10 rounded-[28px] border border-sky-200/70 bg-sky-50/80 p-6">
 						<h3 className="text-2xl font-bold tracking-tight text-slate-950">
-							Keep exploring
+							{tPage('keepExploring')}
 						</h3>
 						<p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-							Try related quizzes to broaden your geography knowledge and build on what you've already practiced.
+							{tPage('keepExploringDescription')}
 						</p>
 						<div className="mt-5 flex flex-wrap gap-3">
 							<Link
 								href="/quizzes"
 								className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
 							>
-								Open quiz library
+								{tPage('openQuizLibrary')}
 							</Link>
 							<Link
 								href={fullScreenHref}
 								className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
 							>
-								Play full-screen
+								{tPage('playFullScreen')}
 							</Link>
 						</div>
 					</div>
@@ -420,7 +491,7 @@ const QuizTopicPage = async ({
 
 				<aside>
 					<h2 className="text-2xl font-bold tracking-tight text-slate-950">
-						Related quiz topics
+						{tPage('relatedQuizTopics')}
 					</h2>
 					<div className="mt-5 space-y-4">
 						{relatedTopics.map((relatedTopic) => (

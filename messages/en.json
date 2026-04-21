@@ -1,0 +1,1797 @@
+{
+	"Common": {
+		"back": "Back",
+		"next": "Next",
+		"play": "Play",
+		"submit": "Submit",
+		"retry": "Retry",
+		"share": "Share",
+		"copy": "Copy",
+		"loading": "Loading..."
+	},
+	"Navbar": {
+		"quizLibrary": "Quiz Library"
+	},
+	"HomePage": {
+		"badge": "Interactive Geography Quiz Network",
+		"headline": "Build geography memory with topic-based map quizzes.",
+		"subheadline": "MapQuiz.pro covers broad map quiz intent with focused landing pages, instant answer feedback, and fast replay loops for world regions, countries, and classroom-style practice.",
+		"browseLibrary": "Browse quiz library",
+		"playNow": "Play world quiz now",
+		"quizTopicPages": "quiz topic pages",
+		"countryDataPacks": "country data packs",
+		"focusedDrillPages": "focused drill pages",
+		"startWithBiggest": "Start with the biggest search intents",
+		"startWithBiggestDesc": "These landing pages capture the broadest geography and map quiz queries while still leading users into the same replayable interaction loop.",
+		"chooseContinents": "Choose a continent and drill it fast",
+		"chooseContinentsDesc": "Each continent page narrows the country pool, increases replay value, and gives searchers a clearer page match.",
+		"goDeeper": "Go deeper with country-specific map quizzes",
+		"goDeeperDesc": "Country pages turn the same engine into narrower study products for state capitals, province capitals, major cities, and landmarks.",
+		"jumpStraight": "Jump straight into focused country drills",
+		"jumpStraightDesc": "These subtopic pages surface the most rankable long-tail intents across Japan, Germany, Canada, Australia, France, the UK, Italy, and Spain."
+	},
+	"QuizzesPage": {
+		"badge": "Quiz Library",
+		"headline": "Explore every map quiz in one place.",
+		"subheadline": "World quizzes, continent drills, country hubs, and focused regional practice — all in one library.",
+		"progressTitle": "Your progress",
+		"progressDescription": "Track which topics you've practiced, where you're making mistakes, and what to focus on next.",
+		"countryMapQuizzes": "Country Map Quizzes",
+		"countryMapQuizzesDesc": "Start with any country for a full quiz covering its regions, cities, and landmarks.",
+		"featuredCountryDeepDives": "Featured Country Deep-Dives",
+		"featuredCountryDeepDivesDesc": "Jump straight into focused practice for a specific country — states, prefectures, provinces, and more.",
+		"focusedRegionalPractice": "Focused Regional Practice",
+		"focusedRegionalPracticeDesc": "Narrow your practice to specific regions, capitals, cities, or landmarks within a country."
+	},
+	"Start": {
+		"easy": "Easy",
+		"normal": "Normal",
+		"hard": "Hard",
+		"worldMode": "World Mode",
+		"countryMode": "Country Mode",
+		"selectCountry": "Select a country",
+		"precision": "Precision",
+		"startQuiz": "Start Quiz",
+		"categories": "Categories",
+		"selectMode": "Select Mode",
+		"worldModeTitle": "World Countries",
+		"worldModeDescription": "Guess countries on a world map",
+		"countryModeTitle": "Explore a Country",
+		"countryModeDescription": "Pick a country and guess its regions",
+		"backAria": "Back",
+		"chooseCountryTitle": "Choose a Country",
+		"chooseCountryDescription": "Tap any country to start instantly",
+		"countriesAvailable": "{count} countries available",
+		"configureWorldDescription": "Configure your game",
+		"continents": "Continents",
+		"continentsHelper": "none = all",
+		"startGame": "Start Game",
+		"continentAsia": "Asia",
+		"continentEurope": "Europe",
+		"continentAmericas": "Americas",
+		"continentAfrica": "Africa",
+		"continentOceania": "Oceania"
+	},
+	"GameBar": {
+		"time": "Time",
+		"score": "Score",
+		"overdrive": "Overdrive",
+		"heated": "Heated",
+		"warming": "Warming",
+		"terrainWarmup": "Terrain warm-up",
+		"satellite": "Satellite",
+		"next": "Next",
+		"submit": "Submit",
+		"openingRun": "Opening run",
+		"terrainChain": "Terrain chain",
+		"flashChain": "Flash chain",
+		"terrainMode": "Terrain",
+		"flashMode": "Flash",
+		"terrainRules": "Terrain rules: read the relief, lock the region, send fast.",
+		"flashRules": "Flash rules: hear the target, lock the spot, send fast.",
+		"gameOverTitle": "Game Over!",
+		"viewResult": "View your result →",
+		"pause": "Pause",
+		"resume": "Resume",
+		"mode": "Mode",
+		"session": "Session",
+		"satelliteHint": "Satellite Hint · 🪙1",
+		"nextTarget": "Next Target",
+		"lockGuess": "Lock Guess",
+		"noSatelliteHintsTitle": "No satellite hints left today",
+		"noSatelliteHintsDescription": "Refills automatically tomorrow, or purchase more credits",
+		"correctRegion": "Correct region ✓",
+		"distanceAway": "{distance} away",
+		"distanceOff": "{distance} off ✓"
+	},
+	"Result": {
+		"accuracy": "Accuracy",
+		"time": "Time",
+		"precision": "Precision",
+		"mode": "Mode",
+		"categories": "Categories",
+		"bestStreak": "Best Streak",
+		"shareScore": "Today's challenge is done. Share your score.",
+		"masteryTitle": "How your map practice is trending",
+		"masteryDesc": "This local summary now updates after every finished run, so you can decide whether to push your strongest topic or clean up missed locations.",
+		"retryMissed": "Retry your missed locations",
+		"grade0Title": "Keep Practicing",
+		"grade0Message": "Every attempt builds your mental map.",
+		"grade50Title": "Good Job!",
+		"grade50Message": "You're getting the hang of it.",
+		"grade75Title": "Excellent!",
+		"grade75Message": "Your geography skills are sharp.",
+		"precisionHigh": "High",
+		"precisionMedium": "Medium",
+		"precisionLow": "Low",
+		"worldCountries": "World Countries",
+		"countryFallback": "Country",
+		"indiaMode": "India — CBSE",
+		"invalidCode": "Invalid result code.",
+		"allCategories": "All Categories",
+		"shareTitleDaily": "I finished today's MapQuiz.pro challenge",
+		"shareTitleTopic": "I just played {topic}",
+		"shareTextDaily": "I scored {accuracy}% on today's MapQuiz.pro daily challenge. Can you beat it?",
+		"shareTextDailyWithStreak": "I scored {accuracy}% on today's MapQuiz.pro daily challenge and kept a {streak}-day streak alive. Can you beat it?",
+		"shareTextTopic": "I scored {accuracy}% on {topic} in MapQuiz.pro. See if you can beat my result.",
+		"shareCopyTitle": "Share text copied",
+		"shareCopyDescription": "Result link and message copied to clipboard.",
+		"shareCopyFailedTitle": "Copy failed",
+		"shareCopyFailedDescription": "Clipboard permission was not available.",
+		"yourResult": "Your Result",
+		"summary": "Summary",
+		"changeMode": "Change Mode",
+		"playAgain": "Play Again",
+		"shareableResultEyebrow": "Shareable Result",
+		"shareableResultTitle": "Turn this result into a challenge link.",
+		"shareableResultDescription": "Share link keeps the result reproducible.",
+		"copied": "Copied",
+		"nextQuizIdeas": "Next quiz ideas",
+		"nextQuizIdeasDescription": "Keep the session going with closely related map quizzes.",
+		"accuracyChip": "{accuracy}% accuracy",
+		"streakChip": "{days}-day streak",
+		"openTopic": "Open topic",
+		"playNow": "Play now",
+		"bestStreakInline": "Best streak: {count}×"
+	},
+	"QuizSections": {
+		"popular": "Popular Geography Quizzes",
+		"popularDesc": "The broadest geography and map quiz landing pages.",
+		"continents": "Continent Map Quizzes",
+		"continentsDesc": "Drill each continent's countries.",
+		"countries": "Country-Focused Map Quizzes",
+		"countriesDesc": "Deep dives into specific countries."
+	},
+	"QuizTopics": {
+		"world-map-quiz": {
+			"title": "World Map Quiz",
+			"shortTitle": "World Map",
+			"badge": "Popular",
+			"description": "Practice locating countries on a clean world map with instant distance feedback and fast replay loops.",
+			"seoTitle": "World Map Quiz — Interactive Geography Game",
+			"seoDescription": "Test your world geography knowledge. Guess countries on an interactive map with instant feedback.",
+			"learningFocus": "Countries across every continent",
+			"searchIntent": "Broad geography quiz and map quiz searches",
+			"benefits": [
+				"Immediate submit feedback with visible correct-vs-guessed positions",
+				"Distance-based grading that rewards close answers",
+				"Fast restart loop for repeated map memory practice"
+			],
+			"highlights": [
+				"197 map targets",
+				"All continents",
+				"Mobile-friendly tap input"
+			],
+			"faq": [
+				{
+					"question": "Who is this quiz for?",
+					"answer": "Students, trivia players, and anyone training geography recall."
+				}
+			]
+		},
+		"asia-countries-quiz": {
+			"title": "Asia Countries Quiz",
+			"shortTitle": "Asia",
+			"badge": "Continent",
+			"description": "Train on Asian countries only, with an interactive map flow optimized for repeat practice.",
+			"seoTitle": "Asia Countries Quiz — Interactive Map Game",
+			"seoDescription": "Identify all Asian countries on an interactive map. Instant feedback and fast replay.",
+			"learningFocus": "Asian countries and regional recall",
+			"searchIntent": "Continent-specific geography practice",
+			"benefits": [
+				"Smaller country pool that supports faster repetition",
+				"Immediate correction after every guess",
+				"Useful practice before moving into country-specific quizzes"
+			],
+			"highlights": [
+				"Asia-only target set",
+				"Replay-friendly pacing",
+				"Strong regional map memory builder"
+			],
+			"faq": [
+				{
+					"question": "Is this good for school geography practice?",
+					"answer": "Yes. It focuses on one continent, so it works well for classroom drills and memorization."
+				}
+			]
+		},
+		"europe-countries-quiz": {
+			"title": "Europe Countries Quiz",
+			"shortTitle": "Europe",
+			"badge": "Continent",
+			"seoTitle": "Europe Countries Quiz — Interactive Map Game",
+			"seoDescription": "Identify all European countries on an interactive map. Instant feedback and fast replay.",
+			"description": "Practice Europe Countries Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Europe.",
+			"searchIntent": "Interactive practice for Europe Countries Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Europe focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Europe Countries Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Europe Countries Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"americas-countries-quiz": {
+			"title": "Americas Countries Quiz",
+			"shortTitle": "Americas",
+			"badge": "Continent",
+			"seoTitle": "Americas Countries Quiz — Interactive Map Game",
+			"seoDescription": "Identify all countries in North and South America on an interactive map.",
+			"description": "Practice Americas Countries Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Americas.",
+			"searchIntent": "Interactive practice for Americas Countries Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Americas focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Americas Countries Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Americas Countries Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"africa-countries-quiz": {
+			"title": "Africa Countries Quiz",
+			"shortTitle": "Africa",
+			"badge": "Continent",
+			"seoTitle": "Africa Countries Quiz — Interactive Map Game",
+			"seoDescription": "Identify all African countries on an interactive map. Instant feedback and fast replay.",
+			"description": "Practice Africa Countries Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Africa.",
+			"searchIntent": "Interactive practice for Africa Countries Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Africa focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Africa Countries Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Africa Countries Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"oceania-countries-quiz": {
+			"title": "Oceania Countries Quiz",
+			"shortTitle": "Oceania",
+			"badge": "Continent",
+			"seoTitle": "Oceania Countries Quiz — Interactive Map Game",
+			"seoDescription": "Identify all Oceanian countries on an interactive map. Instant feedback and fast replay.",
+			"description": "Practice Oceania Countries Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Oceania.",
+			"searchIntent": "Interactive practice for Oceania Countries Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Oceania focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Oceania Countries Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Oceania Countries Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"japan-prefectures-quiz": {
+			"title": "Japan Prefectures Quiz",
+			"shortTitle": "Japan Prefectures",
+			"badge": "Country",
+			"seoTitle": "Japan Prefectures Quiz — Learn All 47 Prefectures",
+			"seoDescription": "Learn all 47 Japanese prefectures on an interactive map. Instant feedback.",
+			"description": "Practice Japan Prefectures Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Japan Prefectures.",
+			"searchIntent": "Interactive practice for Japan Prefectures Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Japan Prefectures focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Japan Prefectures Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Japan Prefectures Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"japan-capitals-quiz": {
+			"title": "Japan Capitals Quiz",
+			"shortTitle": "Japan Capitals",
+			"badge": "Country",
+			"seoTitle": "Japan Prefecture Capitals Quiz — Interactive Map",
+			"seoDescription": "Learn all Japanese prefecture capital cities on an interactive map.",
+			"description": "Practice Japan Capitals Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Japan Capitals.",
+			"searchIntent": "Interactive practice for Japan Capitals Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Japan Capitals focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Japan Capitals Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Japan Capitals Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"japan-landmarks-quiz": {
+			"title": "Japan Landmarks Quiz",
+			"shortTitle": "Japan Landmarks",
+			"badge": "Country",
+			"seoTitle": "Japan Landmarks Quiz — Famous Sites on the Map",
+			"seoDescription": "Identify famous Japanese landmarks and tourist sites on an interactive map.",
+			"description": "Practice Japan Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Japan Landmarks.",
+			"searchIntent": "Interactive practice for Japan Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Japan Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Japan Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Japan Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"germany-states-quiz": {
+			"title": "Germany States Quiz",
+			"shortTitle": "Germany States",
+			"badge": "Country",
+			"seoTitle": "Germany States Quiz — All 16 Bundesländer",
+			"seoDescription": "Learn all 16 German federal states on an interactive map.",
+			"description": "Practice Germany States Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Germany States.",
+			"searchIntent": "Interactive practice for Germany States Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Germany States focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Germany States Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Germany States Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"germany-state-capitals-quiz": {
+			"title": "Germany State Capitals Quiz",
+			"shortTitle": "Germany Capitals",
+			"badge": "Country",
+			"seoTitle": "Germany State Capitals Quiz — Interactive Map",
+			"seoDescription": "Learn the capitals of all 16 German states on an interactive map.",
+			"description": "Practice Germany State Capitals Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Germany Capitals.",
+			"searchIntent": "Interactive practice for Germany State Capitals Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Germany Capitals focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Germany State Capitals Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Germany State Capitals Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"germany-cities-quiz": {
+			"title": "Germany Cities Quiz",
+			"shortTitle": "Germany Cities",
+			"badge": "Country",
+			"seoTitle": "Germany Cities Quiz — Major Cities on the Map",
+			"seoDescription": "Identify major German cities on an interactive map.",
+			"description": "Practice Germany Cities Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Germany Cities.",
+			"searchIntent": "Interactive practice for Germany Cities Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Germany Cities focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Germany Cities Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Germany Cities Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"canada-provinces-quiz": {
+			"title": "Canada Provinces Quiz",
+			"shortTitle": "Canada Provinces",
+			"badge": "Country",
+			"seoTitle": "Canada Provinces and Territories Quiz",
+			"seoDescription": "Learn all Canadian provinces and territories on an interactive map.",
+			"description": "Practice Canada Provinces Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Canada Provinces.",
+			"searchIntent": "Interactive practice for Canada Provinces Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Canada Provinces focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Canada Provinces Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Canada Provinces Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"canada-cities-quiz": {
+			"title": "Canada Cities Quiz",
+			"shortTitle": "Canada Cities",
+			"badge": "Country",
+			"seoTitle": "Canada Cities Quiz — Major Cities on the Map",
+			"seoDescription": "Identify major Canadian cities on an interactive map.",
+			"description": "Practice Canada Cities Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Canada Cities.",
+			"searchIntent": "Interactive practice for Canada Cities Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Canada Cities focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Canada Cities Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Canada Cities Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"canada-landmarks-quiz": {
+			"title": "Canada Landmarks Quiz",
+			"shortTitle": "Canada Landmarks",
+			"badge": "Country",
+			"seoTitle": "Canada Landmarks Quiz — Famous Sites on the Map",
+			"seoDescription": "Identify famous Canadian landmarks on an interactive map.",
+			"description": "Practice Canada Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Canada Landmarks.",
+			"searchIntent": "Interactive practice for Canada Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Canada Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Canada Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Canada Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"australia-states-quiz": {
+			"title": "Australia States Quiz",
+			"shortTitle": "Australia States",
+			"badge": "Country",
+			"seoTitle": "Australia States and Territories Quiz",
+			"seoDescription": "Learn all Australian states and territories on an interactive map.",
+			"description": "Practice Australia States Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Australia States.",
+			"searchIntent": "Interactive practice for Australia States Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Australia States focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Australia States Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Australia States Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"australia-cities-quiz": {
+			"title": "Australia Cities Quiz",
+			"shortTitle": "Australia Cities",
+			"badge": "Country",
+			"seoTitle": "Australia Cities Quiz — Major Cities on the Map",
+			"seoDescription": "Identify major Australian cities on an interactive map.",
+			"description": "Practice Australia Cities Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Australia Cities.",
+			"searchIntent": "Interactive practice for Australia Cities Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Australia Cities focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Australia Cities Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Australia Cities Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"australia-landmarks-quiz": {
+			"title": "Australia Landmarks Quiz",
+			"shortTitle": "Australia Landmarks",
+			"badge": "Country",
+			"seoTitle": "Australia Landmarks Quiz — Famous Sites on the Map",
+			"seoDescription": "Identify famous Australian landmarks on an interactive map.",
+			"description": "Practice Australia Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Australia Landmarks.",
+			"searchIntent": "Interactive practice for Australia Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Australia Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Australia Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Australia Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"france-regions-quiz": {
+			"title": "France Regions Quiz",
+			"shortTitle": "France Regions",
+			"badge": "Country",
+			"seoTitle": "France Regions Quiz — All 18 Regions on the Map",
+			"seoDescription": "Learn all French regions on an interactive map.",
+			"description": "Practice France Regions Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for France Regions.",
+			"searchIntent": "Interactive practice for France Regions Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"France Regions focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use France Regions Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with France Regions Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"france-cities-quiz": {
+			"title": "France Cities Quiz",
+			"shortTitle": "France Cities",
+			"badge": "Country",
+			"seoTitle": "France Cities Quiz — Major Cities on the Map",
+			"seoDescription": "Identify major French cities on an interactive map.",
+			"description": "Practice France Cities Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for France Cities.",
+			"searchIntent": "Interactive practice for France Cities Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"France Cities focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use France Cities Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with France Cities Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"france-landmarks-quiz": {
+			"title": "France Landmarks Quiz",
+			"shortTitle": "France Landmarks",
+			"badge": "Country",
+			"seoTitle": "France Landmarks Quiz — Famous Sites on the Map",
+			"seoDescription": "Identify famous French landmarks on an interactive map.",
+			"description": "Practice France Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for France Landmarks.",
+			"searchIntent": "Interactive practice for France Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"France Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use France Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with France Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"uk-cities-quiz": {
+			"title": "UK Cities Quiz",
+			"shortTitle": "UK Cities",
+			"badge": "Country",
+			"seoTitle": "UK Cities Quiz — Major British Cities on the Map",
+			"seoDescription": "Identify major UK cities on an interactive map.",
+			"description": "Practice UK Cities Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for UK Cities.",
+			"searchIntent": "Interactive practice for UK Cities Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"UK Cities focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use UK Cities Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with UK Cities Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"uk-landmarks-quiz": {
+			"title": "UK Landmarks Quiz",
+			"shortTitle": "UK Landmarks",
+			"badge": "Country",
+			"seoTitle": "UK Landmarks Quiz — Famous British Sites on the Map",
+			"seoDescription": "Identify famous UK landmarks on an interactive map.",
+			"description": "Practice UK Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for UK Landmarks.",
+			"searchIntent": "Interactive practice for UK Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"UK Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use UK Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with UK Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"england-counties-quiz": {
+			"title": "England Counties Quiz",
+			"shortTitle": "England Counties",
+			"badge": "Country",
+			"seoTitle": "England Counties Quiz — All Counties on the Map",
+			"seoDescription": "Learn all English counties on an interactive map.",
+			"description": "Practice England Counties Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for England Counties.",
+			"searchIntent": "Interactive practice for England Counties Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"England Counties focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use England Counties Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with England Counties Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"italy-regions-quiz": {
+			"title": "Italy Regions Quiz",
+			"shortTitle": "Italy Regions",
+			"badge": "Country",
+			"seoTitle": "Italy Regions Quiz — All 20 Regions on the Map",
+			"seoDescription": "Learn all Italian regions on an interactive map.",
+			"description": "Practice Italy Regions Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Italy Regions.",
+			"searchIntent": "Interactive practice for Italy Regions Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Italy Regions focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Italy Regions Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Italy Regions Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"italy-landmarks-quiz": {
+			"title": "Italy Landmarks Quiz",
+			"shortTitle": "Italy Landmarks",
+			"badge": "Country",
+			"seoTitle": "Italy Landmarks Quiz — Famous Sites on the Map",
+			"seoDescription": "Identify famous Italian landmarks on an interactive map.",
+			"description": "Practice Italy Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Italy Landmarks.",
+			"searchIntent": "Interactive practice for Italy Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Italy Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Italy Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Italy Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"spain-regions-quiz": {
+			"title": "Spain Regions Quiz",
+			"shortTitle": "Spain Regions",
+			"badge": "Country",
+			"seoTitle": "Spain Regions Quiz — All Autonomous Communities",
+			"seoDescription": "Learn all Spanish autonomous communities on an interactive map.",
+			"description": "Practice Spain Regions Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Spain Regions.",
+			"searchIntent": "Interactive practice for Spain Regions Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Spain Regions focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Spain Regions Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Spain Regions Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"spain-landmarks-quiz": {
+			"title": "Spain Landmarks Quiz",
+			"shortTitle": "Spain Landmarks",
+			"badge": "Country",
+			"seoTitle": "Spain Landmarks Quiz — Famous Sites on the Map",
+			"seoDescription": "Identify famous Spanish landmarks on an interactive map.",
+			"description": "Practice Spain Landmarks Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Spain Landmarks.",
+			"searchIntent": "Interactive practice for Spain Landmarks Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Spain Landmarks focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Spain Landmarks Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Spain Landmarks Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"japan-map-quiz": {
+			"title": "Japan Map Quiz",
+			"shortTitle": "Japan",
+			"badge": "Country",
+			"seoTitle": "Japan Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Japan's geography on an interactive map.",
+			"description": "Practice Japan Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Japan.",
+			"searchIntent": "Interactive practice for Japan Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Japan focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Japan Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Japan Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"germany-map-quiz": {
+			"title": "Germany Map Quiz",
+			"shortTitle": "Germany",
+			"badge": "Country",
+			"seoTitle": "Germany Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Germany's geography on an interactive map.",
+			"description": "Practice Germany Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Germany.",
+			"searchIntent": "Interactive practice for Germany Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Germany focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Germany Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Germany Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"canada-map-quiz": {
+			"title": "Canada Map Quiz",
+			"shortTitle": "Canada",
+			"badge": "Country",
+			"seoTitle": "Canada Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Canada's geography on an interactive map.",
+			"description": "Practice Canada Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Canada.",
+			"searchIntent": "Interactive practice for Canada Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Canada focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Canada Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Canada Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"australia-map-quiz": {
+			"title": "Australia Map Quiz",
+			"shortTitle": "Australia",
+			"badge": "Country",
+			"seoTitle": "Australia Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Australia's geography on an interactive map.",
+			"description": "Practice Australia Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Australia.",
+			"searchIntent": "Interactive practice for Australia Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Australia focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Australia Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Australia Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"france-map-quiz": {
+			"title": "France Map Quiz",
+			"shortTitle": "France",
+			"badge": "Country",
+			"seoTitle": "France Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of France's geography on an interactive map.",
+			"description": "Practice France Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for France.",
+			"searchIntent": "Interactive practice for France Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"France focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use France Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with France Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"united-kingdom-map-quiz": {
+			"title": "United Kingdom Map Quiz",
+			"shortTitle": "UK",
+			"badge": "Country",
+			"seoTitle": "United Kingdom Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of the United Kingdom's geography on an interactive map.",
+			"description": "Practice United Kingdom Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for UK.",
+			"searchIntent": "Interactive practice for United Kingdom Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"UK focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use United Kingdom Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with United Kingdom Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"italy-map-quiz": {
+			"title": "Italy Map Quiz",
+			"shortTitle": "Italy",
+			"badge": "Country",
+			"seoTitle": "Italy Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Italy's geography on an interactive map.",
+			"description": "Practice Italy Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Italy.",
+			"searchIntent": "Interactive practice for Italy Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Italy focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Italy Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Italy Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"spain-map-quiz": {
+			"title": "Spain Map Quiz",
+			"shortTitle": "Spain",
+			"badge": "Country",
+			"seoTitle": "Spain Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Spain's geography on an interactive map.",
+			"description": "Practice Spain Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Spain.",
+			"searchIntent": "Interactive practice for Spain Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Spain focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Spain Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Spain Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"india-map-quiz": {
+			"title": "India Map Quiz",
+			"shortTitle": "India",
+			"badge": "Country",
+			"seoTitle": "India Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of India's geography on an interactive map.",
+			"description": "Practice India Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for India.",
+			"searchIntent": "Interactive practice for India Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"India focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use India Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with India Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"united-states-map-quiz": {
+			"title": "United States Map Quiz",
+			"shortTitle": "USA",
+			"badge": "Country",
+			"seoTitle": "United States Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of the United States' geography on an interactive map.",
+			"description": "Practice United States Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for USA.",
+			"searchIntent": "Interactive practice for United States Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"USA focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use United States Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with United States Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"china-map-quiz": {
+			"title": "China Map Quiz",
+			"shortTitle": "China",
+			"badge": "Country",
+			"seoTitle": "China Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of China's geography on an interactive map.",
+			"description": "Practice China Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for China.",
+			"searchIntent": "Interactive practice for China Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"China focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use China Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with China Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"brazil-map-quiz": {
+			"title": "Brazil Map Quiz",
+			"shortTitle": "Brazil",
+			"badge": "Country",
+			"seoTitle": "Brazil Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Brazil's geography on an interactive map.",
+			"description": "Practice Brazil Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Brazil.",
+			"searchIntent": "Interactive practice for Brazil Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Brazil focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Brazil Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Brazil Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"south-korea-map-quiz": {
+			"title": "South Korea Map Quiz",
+			"shortTitle": "South Korea",
+			"badge": "Country",
+			"seoTitle": "South Korea Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of South Korea's geography on an interactive map.",
+			"description": "Practice South Korea Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for South Korea.",
+			"searchIntent": "Interactive practice for South Korea Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"South Korea focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use South Korea Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with South Korea Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"russia-map-quiz": {
+			"title": "Russia Map Quiz",
+			"shortTitle": "Russia",
+			"badge": "Country",
+			"seoTitle": "Russia Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Russia's geography on an interactive map.",
+			"description": "Practice Russia Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Russia.",
+			"searchIntent": "Interactive practice for Russia Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Russia focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Russia Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Russia Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"mexico-map-quiz": {
+			"title": "Mexico Map Quiz",
+			"shortTitle": "Mexico",
+			"badge": "Country",
+			"seoTitle": "Mexico Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Mexico's geography on an interactive map.",
+			"description": "Practice Mexico Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Mexico.",
+			"searchIntent": "Interactive practice for Mexico Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Mexico focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Mexico Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Mexico Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		},
+		"indonesia-map-quiz": {
+			"title": "Indonesia Map Quiz",
+			"shortTitle": "Indonesia",
+			"badge": "Country",
+			"seoTitle": "Indonesia Map Quiz — Interactive Geography",
+			"seoDescription": "Test your knowledge of Indonesia's geography on an interactive map.",
+			"description": "Practice Indonesia Map Quiz on an interactive map with instant feedback and repeatable study loops.",
+			"learningFocus": "Map recall for Indonesia.",
+			"searchIntent": "Interactive practice for Indonesia Map Quiz.",
+			"benefits": [
+				"Instant feedback after each answer",
+				"Fast repeat runs for stronger recall",
+				"Clean map interactions on desktop and mobile"
+			],
+			"highlights": [
+				"Indonesia focus",
+				"Interactive map practice",
+				"Replay-friendly sessions"
+			],
+			"faq": [
+				{
+					"question": "Who should use Indonesia Map Quiz?",
+					"answer": "Anyone who wants a faster way to build confidence with Indonesia Map Quiz on a map."
+				},
+				{
+					"question": "How does the quiz work?",
+					"answer": "You answer on the map, get instant feedback, and can replay the same topic immediately."
+				},
+				{
+					"question": "Can I repeat the same topic?",
+					"answer": "Yes. The quiz is designed for short repeated runs so recall improves over time."
+				}
+			]
+		}
+	},
+	"DailyChallengeCard": {
+		"badge": "Daily Challenge",
+		"completedToday": "Completed today",
+		"completedTodayWithAccuracy": "Completed today · {accuracy}%",
+		"challengeDate": "Challenge date: {date}",
+		"dayStreak": "{count} day streak",
+		"openChallengePage": "Open challenge page",
+		"playChallengeNow": "Play challenge now"
+	},
+	"MasteryDashboard": {
+		"eyebrow": "Unified Metrics",
+		"browseMoreTopics": "Browse more topics",
+		"title": "Mastery dashboard",
+		"description": "Track your geography practice with one consistent metrics layer, then jump into the most useful next session.",
+		"openTopic": "Open topic",
+		"playAgain": "Play again",
+		"reviewMisses": "Review misses",
+		"stats": {
+			"sessionsLogged": "Sessions logged",
+			"sessionsLoggedHelper": "Completed quiz sessions",
+			"topicsExplored": "Topics explored",
+			"topicsExploredHelper": "Unique topic slugs completed",
+			"averageAccuracy": "Average accuracy",
+			"averageAccuracyHelper": "Across all completed sessions",
+			"openMistakes": "Open mistakes",
+			"openMistakesHelper": "Unresolved missed locations",
+			"distanceFeedback": "Distance feedback",
+			"distanceFeedbackHelper": "Average distance on open mistakes",
+			"noData": "No data",
+			"distanceKm": "{value} km"
+		},
+		"bestMomentum": {
+			"eyebrow": "Best Momentum",
+			"summary": "Your strongest topic so far with {accuracy}% average accuracy across {plays, plural, one {# session} other {# sessions}}.",
+			"bestAccuracy": "Best {accuracy}%",
+			"lastPlayed": "Last played {date}",
+			"empty": "Finish a few quiz sessions and this panel will surface your strongest topic automatically."
+		},
+		"dailyHabit": {
+			"eyebrow": "Daily Habit",
+			"currentStreak": "Current streak",
+			"bestStreak": "Best streak",
+			"doneToday": "Today is already marked complete. Keep the loop going with another topic or review your misses.",
+			"notDoneToday": "You have not closed today's challenge yet. A quick run here keeps the habit active."
+		},
+		"needsReview": {
+			"eyebrow": "Needs Review",
+			"uniqueMissesWaiting": "You still have {count} unique missed locations waiting here.",
+			"lastMissSaved": "Last miss saved {date}",
+			"empty": "Wrong answers will start filling this panel automatically once you miss a few locations."
+		},
+		"recentMomentum": {
+			"title": "Recent momentum",
+			"description": "Use your latest sessions to decide whether to repeat a strong topic or clean up your misses.",
+			"lastOpenedTopic": "Last opened {title}",
+			"dailyChallenge": "Daily challenge",
+			"quizSession": "Quiz session",
+			"freePlaySession": "Free play session",
+			"sessionSummary": "{accuracy}% accuracy · {score}/{total} correct",
+			"finished": "Finished {date}"
+		}
+	},
+	"RecentPracticePanel": {
+		"title": "Recent practice",
+		"description": "Pick up where you left off with your latest topic pages.",
+		"lastOpened": "Last opened {date}"
+	},
+	"MistakesReviewPanel": {
+		"title": "Mistakes review",
+		"description": "Come back to the places you missed and replay them in a focused map session.",
+		"uniqueMissesSaved": "{count} unique misses saved.",
+		"latest": "Latest: {places}",
+		"reviewMisses": "Review misses",
+		"clear": "Clear"
+	},
+	"GamePage": {
+		"title": "Game session",
+		"description": "Play the current map quiz session.",
+		"runTerrainAgain": "Run Terrain Again",
+		"runAgain": "Run Again",
+		"startTerrainRun": "Start Terrain Run",
+		"startFlashRun": "Start Flash Run",
+		"preparingMap": "Preparing map...",
+		"terrainSense": "Terrain Sense",
+		"flashRun": "Flash Run",
+		"live": "Live",
+		"replayPromptAria": "Replay prompt for {name}",
+		"terrainRead": "Terrain read",
+		"lockTarget": "Lock target",
+		"terrainInstruction": "Read the land first, then trust the terrain and send the guess.",
+		"flashInstruction": "Tap fast, trust your map read, then send the guess.",
+		"revealClue": "Reveal clue",
+		"deepenRead": "Deepen read",
+		"terrainHintHelper": "Start with the cue only. Reveal more terrain context if the read is still fuzzy.",
+		"selected": "Selected:",
+		"recenter": "Re-center",
+		"mapLayer": "Map Layer",
+		"signalsCount": "{count} signals",
+		"playLayer": "Play",
+		"pulseLayer": "Pulse",
+		"terrainLayer": "Terrain",
+		"streakCallout": "Streak {count}",
+		"correctCallout": "Correct",
+		"continueSessionEyebrow": "Continue the session",
+		"moreLike": "More like {topic}",
+		"nextGeographyQuizIdeas": "Next geography quiz ideas",
+		"sessionFollowupDescription": "Use these related quiz pages to stay inside the topic network and build more internal depth per visit.",
+		"browseAllQuizPages": "Browse all quiz pages",
+		"resumePracticeTitle": "Resume practice",
+		"resumePracticeDescription": "Keep returning users close to the next relevant topic instead of ending the session at the game page.",
+		"mistakesInTopic": "Missed locations in {topic}"
+	},
+	"QuizTopicPage": {
+		"whatYouWillLearn": "What you'll learn",
+		"benefitsTitle": "Why this quiz helps",
+		"highlightsTitle": "Highlights",
+		"faqTitle": "FAQ",
+		"home": "Home",
+		"quizLibrary": "Quiz Library",
+		"focusedPractice": "Focused Practice",
+		"fullCountryQuiz": "Full Country Quiz",
+		"playOnThisPage": "Play on this page",
+		"openFullScreenMode": "Open full-screen mode",
+		"locationsToPractice": "Locations to practice",
+		"howThisPageWorks": "How this page works",
+		"partOf": "Part Of",
+		"partOfDescription": "This is a focused drill within a broader country quiz. Go back for the full set.",
+		"openParentTopic": "Open parent topic",
+		"playNowTitle": "Play {title} now",
+		"playDescription": "Click a location on the map when prompted. Your score updates as you go.",
+		"playDescriptionWithCategories": "Click a location on the map when prompted. Your score updates as you go. This set focuses on {categories}.",
+		"keepExploring": "Keep exploring",
+		"keepExploringDescription": "Try related quizzes to broaden your geography knowledge and build on what you've already practiced.",
+		"openQuizLibrary": "Open quiz library",
+		"playFullScreen": "Play full-screen",
+		"relatedQuizTopics": "Related quiz topics",
+		"notFoundTitle": "Quiz topic not found"
+	},
+	"GameOverlay": {
+		"correct": "Correct",
+		"wrong": "Wrong",
+		"correctLocation": "Correct location"
+	},
+	"QuizTopicCard": {
+		"locations": "{count} locations",
+		"openTopic": "Open {title}",
+		"playNow": "Play {title}",
+		"openTopicAria": "Open {title}",
+		"playTopicAria": "Play {title}"
+	}
+}

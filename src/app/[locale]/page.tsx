@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
 import { BackgroundBeams } from '@/lib/components/BgBeams';
 import { Show } from '@/lib/components/Flow';
 import AdSlot from '@/lib/components/monetization/AdSlot';
@@ -19,11 +20,25 @@ import {
 } from '@/lib/data/quizTopics';
 
 const Page = async ({
-	searchParams
+	searchParams,
+	params
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+	params: Promise<{ locale: string }>;
 }) => {
-	const featuredCountryCodes = ['jp', 'de', 'ca', 'au', 'fr', 'gb', 'it', 'es'];
+	const { locale } = await params;
+	setRequestLocale(locale);
+	const t = await getTranslations('HomePage');
+	const featuredCountryCodes = [
+		'jp',
+		'de',
+		'ca',
+		'au',
+		'fr',
+		'gb',
+		'it',
+		'es'
+	];
 	const resultCode = (await searchParams).code;
 	const popularTopics = getQuizTopicsBySection('popular');
 	const continentTopics = getQuizTopicsBySection('continents');
@@ -45,24 +60,20 @@ const Page = async ({
 					<section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
 						<div className="max-w-2xl">
 							<span className="rounded-full border border-sky-200 bg-white/80 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-sky-800 shadow-sm backdrop-blur-sm">
-								Interactive Geography Quiz Network
+								{t('badge')}
 							</span>
 							<h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-								Build geography memory with topic-based map
-								quizzes.
+								{t('headline')}
 							</h1>
 							<p className="mt-5 max-w-xl text-lg leading-8 text-slate-600">
-								MapQuiz.pro covers broad map quiz intent with
-								focused landing pages, instant answer feedback,
-								and fast replay loops for world regions,
-								countries, and classroom-style practice.
+								{t('subheadline')}
 							</p>
 							<div className="mt-8 flex flex-wrap gap-3">
 								<Link
 									href="/quizzes"
 									className="inline-flex items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
 								>
-									Browse quiz library
+									{t('browseLibrary')}
 								</Link>
 								<Link
 									href={buildGameHref(
@@ -70,22 +81,22 @@ const Page = async ({
 									)}
 									className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
 								>
-									Play world quiz now
+									{t('playNow')}
 								</Link>
 							</div>
 							<div className="mt-8 grid gap-4 sm:grid-cols-3">
 								{[
 									[
 										String(quizTopics.length),
-										'quiz topic pages'
+										t('quizTopicPages')
 									],
 									[
 										`${FEATURED_COUNTRIES.length}+`,
-										'country data packs'
+										t('countryDataPacks')
 									],
 									[
 										String(countrySubtopics.length),
-										'focused drill pages'
+										t('focusedDrillPages')
 									]
 								].map(([value, label]) => (
 									<div
@@ -109,8 +120,8 @@ const Page = async ({
 					</section>
 
 					<QuizTopicSection
-						title="Start with the biggest search intents"
-						description="These landing pages capture the broadest geography and map quiz queries while still leading users into the same replayable interaction loop."
+						title={t('startWithBiggest')}
+						description={t('startWithBiggestDesc')}
 						topics={popularTopics}
 					/>
 
@@ -119,22 +130,22 @@ const Page = async ({
 					<MasteryDashboard />
 
 					<QuizTopicSection
-						title="Choose a continent and drill it fast"
-						description="Each continent page narrows the country pool, increases replay value, and gives searchers a clearer page match."
+						title={t('chooseContinents')}
+						description={t('chooseContinentsDesc')}
 						topics={continentTopics}
 						compact
 					/>
 
 					<QuizTopicSection
-						title="Go deeper with country-specific map quizzes"
-						description="Country pages turn the same engine into narrower study products for state capitals, province capitals, major cities, and landmarks."
+						title={t('goDeeper')}
+						description={t('goDeeperDesc')}
 						topics={countryTopics}
 						compact
 					/>
 
 					<QuizTopicSection
-						title="Jump straight into focused country drills"
-						description="These subtopic pages surface the most rankable long-tail intents across Japan, Germany, Canada, Australia, France, the UK, Italy, and Spain."
+						title={t('jumpStraight')}
+						description={t('jumpStraightDesc')}
 						topics={focusedDrillTopics}
 						compact
 					/>
