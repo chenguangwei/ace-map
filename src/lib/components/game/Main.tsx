@@ -25,7 +25,9 @@ import {
 	useState
 } from 'react';
 import { useMapVoice } from '@/lib/audio/useMapVoice';
+import { deriveCampaignRunState } from '@/lib/campaigns/runtime';
 import { useAnalytics } from '@/lib/components/AnalyticsProvider';
+import { type AppLocale, getCampaignBySlug } from '@/lib/data/campaigns';
 import { getCountryByCode } from '@/lib/data/countries';
 import {
 	getQuizTopicBySlug,
@@ -61,6 +63,7 @@ import {
 } from '@/lib/utils/review';
 import { getTerrainHintPack } from '@/lib/utils/terrainHints';
 import { recordTopicObservabilityEvent } from '@/lib/utils/topicObservability';
+import { isWorldMicroRegionPlace } from '@/lib/utils/worldRegions';
 import GameBar from './GameBar';
 
 const GameLoadingFallback = () => {
@@ -82,6 +85,8 @@ export interface InfoState {
 const Main = (props: {
 	initialConfig?: QuizGameConfig;
 	topicSlug?: string;
+	campaignSlug?: string;
+	remixPrompt?: string;
 }) => {
 	const gameState = useGame();
 	const analytics = useAnalytics();
@@ -162,6 +167,14 @@ const Main = (props: {
 		typeof searchParams.get('topic') === 'string'
 			? searchParams.get('topic')
 			: undefined;
+	const campaignSlugFromQuery =
+		typeof searchParams.get('campaign') === 'string'
+			? searchParams.get('campaign')
+			: undefined;
+	const remixPromptFromQuery =
+		typeof searchParams.get('remix') === 'string'
+			? searchParams.get('remix')
+			: undefined;
 	const activeTopicSlug = useMemo(() => {
 		if (props.topicSlug) return props.topicSlug;
 		if (topicSlugFromQuery) return topicSlugFromQuery;
@@ -169,6 +182,51 @@ const Main = (props: {
 			return inferTopicSlugFromGameConfig(props.initialConfig);
 		return null;
 	}, [props.initialConfig, props.topicSlug, topicSlugFromQuery]);
+	const activeCampaignSlug =
+		props.campaignSlug ?? campaignSlugFromQuery ?? null;
+	const activeRemixPrompt = props.remixPrompt ?? remixPromptFromQuery ?? null;
+	const activeCampaign = useMemo(
+		() =>
+			activeCampaignSlug
+				? getCampaignBySlug(locale as AppLocale, activeCampaignSlug)
+				: null,
+		[activeCampaignSlug, locale]
+	);
+	const campaignRunState = useMemo(() => {
+		if (!activeCampaign) return null;
+
+		return deriveCampaignRunState({
+			campaign: activeCampaign,
+			answeredQuestions: gameState.score.total,
+			totalQuestions: gameState.availablePlaces.length,
+			correctAnswers: gameState.score.current
+		});
+	}, [
+		activeCampaign,
+		gameState.availablePlaces.length,
+		gameState.score.current,
+		gameState.score.total
+	]);
+	const campaignMission = useMemo(() => {
+		if (!activeCampaign || !campaignRunState) return null;
+		const missionIndex = Math.max(0, campaignRunState.currentMission - 1);
+
+		return (
+			activeCampaign.missionPreviews[missionIndex] ??
+			activeCampaign.missionPreviews.at(-1) ??
+			null
+		);
+	}, [activeCampaign, campaignRunState]);
+	const resultHref = useMemo(() => {
+		const params = new URLSearchParams();
+		params.set('code', encodeResult(gameState));
+		if (activeCampaignSlug) params.set('campaign', activeCampaignSlug);
+		if (activeRemixPrompt?.trim()) {
+			params.set('remix', activeRemixPrompt.trim());
+		}
+		if (activeTopicSlug) params.set('topic', activeTopicSlug);
+		return `/?${params.toString()}`;
+	}, [activeCampaignSlug, activeRemixPrompt, activeTopicSlug, gameState]);
 
 	useEffect(() => {
 		saveLastSessionTopic(activeTopicSlug);
@@ -364,6 +422,8 @@ const Main = (props: {
 		gameState.toMark,
 		mapDisplayMode
 	]);
+	const activeWorldMicroTarget =
+		gameState.mode === 'world' && isWorldMicroRegionPlace(gameState.toMark);
 
 	useEffect(() => {
 		const nextPrompt =
@@ -433,6 +493,8 @@ const Main = (props: {
 			id: sessionIdRef.current,
 			resultCode: encodeResult(gameState),
 			topicSlug: activeTopicSlug,
+			campaignSlug: activeCampaignSlug,
+			campaignRemixPrompt: activeRemixPrompt,
 			score: gameState.score.current,
 			total: gameState.score.total,
 			accuracy: Math.round(
@@ -445,7 +507,7 @@ const Main = (props: {
 			isDailyChallenge: false,
 			completedAt: new Date().toISOString()
 		});
-	}, [activeTopicSlug, gameState]);
+	}, [activeCampaignSlug, activeRemixPrompt, activeTopicSlug, gameState]);
 
 	useEffect(() => {
 		if (mapDisplayMode === 'terrain' && !terrainBasemap) {
@@ -648,6 +710,13 @@ const Main = (props: {
 																'flashInstruction'
 															)}
 												</p>
+												{activeWorldMicroTarget && (
+													<p className="mt-2 inline-flex max-w-full items-center rounded-full border border-amber-200/20 bg-amber-50/10 px-2.5 py-1 text-[11px] font-semibold text-amber-100">
+														{gameT(
+															'microRegionInstruction'
+														)}
+													</p>
+												)}
 												{terrainHintPack && (
 													<div className="mt-1.5 sm:mt-2 space-y-1.5 sm:space-y-2">
 														<div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
@@ -878,6 +947,11 @@ const Main = (props: {
 					info={infoState}
 					mapDisplayMode={mapDisplayMode}
 					onSatelliteHint={handleSatelliteHint}
+					resultHref={resultHref}
+					campaign={activeCampaign}
+					campaignRunState={campaignRunState}
+					campaignMission={campaignMission}
+					campaignSelectedRegionLabel={selectedRegionLabel}
 					setInfo={setInfoState}
 					placeNameMap={placeNameMap}
 				/>
