@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+	getLocalizedQuizTopicMessageMap,
 	LOCALIZED_QUIZ_TOPIC_KEYS,
 	localizeQuizTopic,
 	localizeQuizTopics
@@ -59,6 +60,10 @@ describe('localizeQuizTopic', () => {
 		expect(localizedTopics[0]?.title).toBe('世界地图测验');
 		expect(localizedTopics[1]?.title).toBe(asiaTopic.title);
 		expect(localizedTopics[1]?.description).toBe(asiaTopic.description);
+	});
+
+	it('keeps English quiz topics on the richer source copy', () => {
+		expect(getLocalizedQuizTopicMessageMap('en')).toEqual({});
 	});
 
 	it('keeps the locale message contract constrained to translatable quiz-topic fields', () => {
