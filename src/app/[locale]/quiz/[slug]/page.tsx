@@ -11,12 +11,15 @@ import { Link } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import TopicPageTracker from '@/lib/components/analytics/TopicPageTracker';
 import TrackedTopicLink from '@/lib/components/analytics/TrackedTopicLink';
+import BlogPostCard from '@/lib/components/content/BlogPostCard';
 import Main from '@/lib/components/game/Main';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
 import QuizTopicCard from '@/lib/components/quizzes/QuizTopicCard';
 import RecentPracticePanel from '@/lib/components/quizzes/RecentPracticePanel';
+import { type AppLocale, getRelatedBlogPostsForQuiz } from '@/lib/data/content';
 import {
+	getLocalizedQuizTopicMessageMap,
 	type LocalizedQuizTopicMessages,
 	localizeQuizTopic,
 	localizeQuizTopics
@@ -27,12 +30,7 @@ import {
 	getRelatedQuizTopics,
 	quizTopics
 } from '@/lib/data/quizTopics';
-
-const SITE_URL = 'https://mapquiz.pro';
-const buildLocalePath = (locale: string, path: string) =>
-	locale === routing.defaultLocale ? path : `/${locale}${path}`;
-const buildAbsoluteUrl = (locale: string, path: string) =>
-	`${SITE_URL}${buildLocalePath(locale, path)}`;
+import { buildAbsoluteUrl, buildPageMetadata, SITE_URL } from '@/lib/seo';
 
 export const generateStaticParams = () =>
 	routing.locales.flatMap((locale) =>
@@ -60,15 +58,12 @@ export const generateMetadata = async ({
 		};
 	}
 
-	const tTopics = await getTranslations({ locale, namespace: 'QuizTopics' });
-	let seoTitle = topic.seoTitle;
-	let seoDescription = topic.seoDescription;
-	try {
-		seoTitle = tTopics(`${slug}.seoTitle`);
-		seoDescription = tTopics(`${slug}.seoDescription`);
-	} catch {
-		// key not found, use English fallback
-	}
+	const localizedTopic = localizeQuizTopic(
+		topic,
+		getLocalizedQuizTopicMessageMap(locale)[slug] as
+			| LocalizedQuizTopicMessages
+			| undefined
+	);
 
 	const keywordSet = new Set([
 		topic.primaryKeyword,
@@ -80,25 +75,14 @@ export const generateMetadata = async ({
 		...(parentTopic ? [parentTopic.title, parentTopic.primaryKeyword] : [])
 	]);
 
-	return {
-		title: seoTitle,
-		description: seoDescription,
-		alternates: {
-			canonical: buildAbsoluteUrl(locale, `/quiz/${topic.slug}`)
-		},
+	return buildPageMetadata({
+		locale,
+		path: `/quiz/${topic.slug}`,
+		title: localizedTopic.seoTitle,
+		description: localizedTopic.seoDescription,
 		keywords: [...keywordSet],
-		openGraph: {
-			url: buildAbsoluteUrl(locale, `/quiz/${topic.slug}`),
-			title: seoTitle,
-			description: seoDescription,
-			type: 'article'
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title: seoTitle,
-			description: seoDescription
-		}
-	};
+		openGraphType: 'article'
+	});
 };
 
 const QuizTopicPage = async ({
@@ -129,10 +113,18 @@ const QuizTopicPage = async ({
 	const localizedParentTopic = parentTopic
 		? localizeQuizTopic(parentTopic, quizTopicMessages[parentTopic.slug])
 		: null;
+	const relatedGuides = getRelatedBlogPostsForQuiz(
+		locale as AppLocale,
+		topic.slug,
+		3
+	);
 	const relatedTopics = localizeQuizTopics(
 		getRelatedQuizTopics(topic.slug, 3),
 		quizTopicMessages
 	);
+	const tBlog = await getTranslations({ locale, namespace: 'BlogPage' });
+	const readingTimeLabel = (minutes: number) =>
+		tBlog('readingTime', { minutes });
 	const fullScreenHref = `${buildGameHref(topic.gameConfig)}&topic=${topic.slug}`;
 	const pageJsonLd = {
 		'@context': 'https://schema.org',
@@ -483,6 +475,36 @@ const QuizTopicPage = async ({
 							</Link>
 						</div>
 					</div>
+
+					{relatedGuides.length > 0 && (
+						<div className="mt-10">
+							<h3 className="text-2xl font-bold tracking-tight text-slate-950">
+								{tPage('relatedGuidesTitle')}
+							</h3>
+							<p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+								{tPage('relatedGuidesDescription')}
+							</p>
+							<div className="mt-5 grid gap-4 sm:grid-cols-2">
+								{relatedGuides.map((guide) => (
+									<BlogPostCard
+										key={guide.slug}
+										post={guide}
+										ctaLabel={tBlog('articleCta')}
+										readingTimeLabel={readingTimeLabel}
+										compact
+									/>
+								))}
+							</div>
+							<div className="mt-5">
+								<Link
+									href="/blog"
+									className="inline-flex items-center justify-center rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
+								>
+									{tPage('browseGuideLibrary')}
+								</Link>
+							</div>
+						</div>
+					)}
 
 					<div className="mt-10">
 						<DailyChallengeCard />

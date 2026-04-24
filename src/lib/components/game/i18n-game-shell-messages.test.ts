@@ -93,6 +93,7 @@ const REQUIRED_MESSAGE_PATHS = [
 	'GamePage.lockTarget',
 	'GamePage.terrainInstruction',
 	'GamePage.flashInstruction',
+	'GamePage.microRegionInstruction',
 	'GamePage.revealClue',
 	'GamePage.deepenRead',
 	'GamePage.terrainHintHelper',

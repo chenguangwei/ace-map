@@ -43,9 +43,11 @@ import { getMapViewForGame } from '@/lib/utils/mapView';
 import type { PlaceWithoutName } from '@/lib/utils/places';
 import { formatDistance } from '@/lib/utils/places';
 import {
+	isWorldMicroRegionPlace,
 	resolveWorldFeatureNameForPlace,
 	resolveWorldFeatureSelection,
-	resolveWorldPlaceSelection
+	resolveWorldPlaceSelection,
+	worldMicroRegionFeatureCollection
 } from '@/lib/utils/worldRegions';
 import { Show } from '../Flow';
 import type { InfoState } from './Main';
@@ -245,6 +247,8 @@ const Game = (
 		string | null
 	>(null);
 	const [pulseTick, setPulseTick] = useState(0);
+	const [microTargetPulseTick, setMicroTargetPulseTick] = useState(0);
+	const [isCompactViewport, setIsCompactViewport] = useState(false);
 	const terrainBasemap = useMemo(() => getTerrainBasemapConfig(), []);
 	const { mode, countryCode, category } = props.gameState;
 	const isTerrainMode = props.mapDisplayMode === 'terrain';
@@ -261,6 +265,8 @@ const Game = (
 		() => resolveWorldFeatureNameForPlace(props.gameState.toMark),
 		[props.gameState.toMark]
 	);
+	const isMicroWorldTarget =
+		mode === 'world' && isWorldMicroRegionPlace(props.gameState.toMark);
 	const countryTargetSelection = useMemo(
 		() => resolveCountryPlaceSelection(countryCode, props.gameState.toMark),
 		[countryCode, props.gameState.toMark]
@@ -281,6 +287,7 @@ const Game = (
 		mode === 'country' && activeCountryRegionSource !== null;
 	const interactiveRegionLayerIds = [
 		isWorldRegionClickMode ? 'world-country-hit-fill' : null,
+		isWorldRegionClickMode ? 'world-country-micro-hit' : null,
 		staticCountryRegionSource?.hitLayerId ?? null
 	].filter((value): value is string => Boolean(value));
 	const initialView = getMapViewForGame({ mode, countryCode, category });
@@ -374,6 +381,47 @@ const Game = (
 		}
 	}, [props.mapDisplayMode]);
 
+	useEffect(() => {
+		const updateViewport = () => {
+			setIsCompactViewport(window.innerWidth < 640);
+		};
+
+		updateViewport();
+		window.addEventListener('resize', updateViewport);
+
+		return () => window.removeEventListener('resize', updateViewport);
+	}, []);
+
+	useEffect(() => {
+		if (
+			!isMicroWorldTarget ||
+			!worldTargetFeatureName ||
+			props.info ||
+			props.gameState.currentMarker !== 'none'
+		) {
+			setMicroTargetPulseTick(0);
+			return;
+		}
+
+		setMicroTargetPulseTick(0);
+		let frame = 0;
+		const intervalId = window.setInterval(() => {
+			frame += 1;
+			setMicroTargetPulseTick(frame);
+			if (frame >= (isCompactViewport ? 14 : 18)) {
+				window.clearInterval(intervalId);
+			}
+		}, 130);
+
+		return () => window.clearInterval(intervalId);
+	}, [
+		isMicroWorldTarget,
+		isCompactViewport,
+		props.gameState.currentMarker,
+		props.info,
+		worldTargetFeatureName
+	]);
+
 	const toMarkRef = useRef(props.gameState.toMark);
 	toMarkRef.current = props.gameState.toMark;
 
@@ -409,15 +457,21 @@ const Game = (
 			if (mode === 'world') {
 				const toMark = toMarkRef.current;
 				if (toMark) {
+					const isMicroTarget = isWorldMicroRegionPlace(toMark);
 					const continentScope = getContinentScopeForWorldPlace(
 						toMark.name
 					);
-					// Larger continents (Asia, Americas) get a slightly wider zoom
-					const zoom = continentScope
-						? ['Asia', 'Americas'].includes(continentScope.label)
-							? 2.4
-							: 2.8
-						: 2.4;
+					// Larger continents (Asia, Americas) get a slightly wider zoom.
+					// Tiny countries use a closer framing so the assist point reads immediately.
+					const zoom = isMicroTarget
+						? 3.9
+						: continentScope
+							? ['Asia', 'Americas'].includes(
+									continentScope.label
+								)
+								? 2.4
+								: 2.8
+							: 2.4;
 					map.easeTo({
 						center: [toMark.longitude, toMark.latitude],
 						zoom,
@@ -496,7 +550,9 @@ const Game = (
 	const handleWorldRegionSelection = useCallback(
 		(event: MapLayerMouseEvent) => {
 			const feature = event.features?.find(
-				(item) => item.layer.id === 'world-country-hit-fill'
+				(item) =>
+					item.layer.id === 'world-country-hit-fill' ||
+					item.layer.id === 'world-country-micro-hit'
 			);
 			const featureName = feature?.properties?.name;
 			if (typeof featureName !== 'string') return false;
@@ -587,6 +643,8 @@ const Game = (
 
 		const { toMark, guess } = props.info;
 		const map = mapRef.current.getMap();
+		const isMicroTarget =
+			mode === 'world' && isWorldMicroRegionPlace(toMark);
 
 		const lngs = [guess.longitude, toMark.longitude];
 		const lats = [guess.latitude, toMark.latitude];
@@ -603,7 +661,7 @@ const Game = (
 			if (isSameSpot) {
 				map.flyTo({
 					center: [toMark.longitude, toMark.latitude],
-					zoom: mode === 'world' ? 4.2 : 7,
+					zoom: mode === 'world' ? (isMicroTarget ? 5.2 : 4.2) : 7,
 					speed: 0.8,
 					curve: 1.4,
 					essential: true
@@ -618,7 +676,8 @@ const Game = (
 				],
 				{
 					padding: { top: 110, right: 72, bottom: 110, left: 72 },
-					maxZoom: mode === 'world' ? 4.6 : 7.2,
+					maxZoom:
+						mode === 'world' ? (isMicroTarget ? 5.4 : 4.6) : 7.2,
 					speed: 0.8,
 					curve: 1.4,
 					essential: true
@@ -701,7 +760,9 @@ const Game = (
 			onMouseMove={(event) => {
 				if (isWorldRegionClickMode) {
 					const worldFeature = event.features?.find(
-						(item) => item.layer.id === 'world-country-hit-fill'
+						(item) =>
+							item.layer.id === 'world-country-hit-fill' ||
+							item.layer.id === 'world-country-micro-hit'
 					);
 					const worldFeatureName = worldFeature?.properties?.name;
 					setHoveredWorldFeatureName(
@@ -890,8 +951,27 @@ const Game = (
 								: ['==', ['get', 'name'], '']
 						}
 						paint={{
-							'fill-color': isTerrainMode ? '#f8fafc' : '#22d3ee',
-							'fill-opacity': isTerrainMode ? 0.08 : 0.18
+							'fill-color': isTerrainMode ? '#f8fafc' : '#f59e0b',
+							'fill-opacity': isTerrainMode ? 0.08 : 0.24
+						}}
+					/>
+					<Layer
+						id="world-country-selected-halo"
+						type="line"
+						filter={
+							selectedWorldFeatureName
+								? [
+										'==',
+										['get', 'name'],
+										selectedWorldFeatureName
+									]
+								: ['==', ['get', 'name'], '']
+						}
+						paint={{
+							'line-color': isTerrainMode ? '#f8fafc' : '#f97316',
+							'line-width': isTerrainMode ? 4.6 : 5.4,
+							'line-opacity': isTerrainMode ? 0.22 : 0.3,
+							'line-blur': 3.2
 						}}
 					/>
 					<Layer
@@ -907,12 +987,158 @@ const Game = (
 								: ['==', ['get', 'name'], '']
 						}
 						paint={{
-							'line-color': isTerrainMode ? '#f8fafc' : '#06b6d4',
-							'line-width': isTerrainMode ? 2.1 : 2.8,
+							'line-color': isTerrainMode ? '#f8fafc' : '#f97316',
+							'line-width': isTerrainMode ? 2.1 : 3.2,
 							'line-opacity': isTerrainMode ? 0.78 : 0.95,
 							'line-dasharray': isTerrainMode
 								? [1.1, 1.4]
 								: [1, 0]
+						}}
+					/>
+				</Source>
+			)}
+
+			{isWorldRegionClickMode && (
+				<Source
+					id="world-country-micro-points"
+					type="geojson"
+					data={worldMicroRegionFeatureCollection}
+				>
+					<Layer
+						id="world-country-micro-hit"
+						type="circle"
+						paint={{
+							'circle-radius': 12,
+							'circle-color': '#ffffff',
+							'circle-opacity': 0.01
+						}}
+					/>
+					<Layer
+						id="world-country-micro-core"
+						type="circle"
+						paint={{
+							'circle-radius': isTerrainMode ? 3.6 : 4.2,
+							'circle-color': isTerrainMode
+								? '#f8fafc'
+								: '#f59e0b',
+							'circle-stroke-color': isTerrainMode
+								? 'rgba(255,255,255,0.78)'
+								: '#ffffff',
+							'circle-stroke-width': isTerrainMode ? 1.1 : 1.4,
+							'circle-opacity': isTerrainMode ? 0.68 : 0.88
+						}}
+					/>
+					<Layer
+						id="world-country-micro-target-pulse"
+						type="circle"
+						filter={
+							isMicroWorldTarget &&
+							worldTargetFeatureName &&
+							props.gameState.currentMarker === 'none' &&
+							!props.info &&
+							microTargetPulseTick < (isCompactViewport ? 14 : 18)
+								? [
+										'==',
+										['get', 'name'],
+										worldTargetFeatureName
+									]
+								: ['==', ['get', 'name'], '']
+						}
+						paint={{
+							'circle-radius': isTerrainMode
+								? isCompactViewport
+									? 6.8 + (microTargetPulseTick % 5) * 1.1
+									: 8 + (microTargetPulseTick % 6) * 1.4
+								: isCompactViewport
+									? 7.6 + (microTargetPulseTick % 5) * 1.3
+									: 9 + (microTargetPulseTick % 6) * 1.7,
+							'circle-color': isTerrainMode
+								? '#f8fafc'
+								: '#f59e0b',
+							'circle-opacity': Math.max(
+								0,
+								(isTerrainMode
+									? isCompactViewport
+										? 0.18
+										: 0.24
+									: isCompactViewport
+										? 0.22
+										: 0.3) -
+									microTargetPulseTick *
+										(isCompactViewport ? 0.017 : 0.014)
+							),
+							'circle-stroke-color': isTerrainMode
+								? '#f8fafc'
+								: '#f59e0b',
+							'circle-stroke-width': isTerrainMode
+								? isCompactViewport
+									? 1.1
+									: 1.4
+								: isCompactViewport
+									? 1.4
+									: 1.8,
+							'circle-stroke-opacity': Math.max(
+								0,
+								(isTerrainMode
+									? isCompactViewport
+										? 0.58
+										: 0.78
+									: isCompactViewport
+										? 0.68
+										: 0.88) -
+									microTargetPulseTick *
+										(isCompactViewport ? 0.05 : 0.04)
+							)
+						}}
+					/>
+					<Layer
+						id="world-country-micro-hover"
+						type="circle"
+						filter={
+							hoveredWorldFeatureName
+								? [
+										'==',
+										['get', 'name'],
+										hoveredWorldFeatureName
+									]
+								: ['==', ['get', 'name'], '']
+						}
+						paint={{
+							'circle-radius': isTerrainMode ? 7.5 : 8.5,
+							'circle-color': isTerrainMode
+								? '#f8fafc'
+								: '#38bdf8',
+							'circle-opacity': isTerrainMode ? 0.18 : 0.22,
+							'circle-stroke-color': isTerrainMode
+								? '#f8fafc'
+								: '#38bdf8',
+							'circle-stroke-width': isTerrainMode ? 1.2 : 1.5,
+							'circle-stroke-opacity': isTerrainMode ? 0.58 : 0.82
+						}}
+					/>
+					<Layer
+						id="world-country-micro-selected"
+						type="circle"
+						filter={
+							selectedWorldFeatureName
+								? [
+										'==',
+										['get', 'name'],
+										selectedWorldFeatureName
+									]
+								: ['==', ['get', 'name'], '']
+						}
+						paint={{
+							'circle-radius': isTerrainMode ? 8.2 : 9.4,
+							'circle-color': isTerrainMode
+								? '#f8fafc'
+								: '#f97316',
+							'circle-opacity': isTerrainMode ? 0.16 : 0.22,
+							'circle-stroke-color': isTerrainMode
+								? '#f8fafc'
+								: '#f97316',
+							'circle-stroke-width': isTerrainMode ? 1.5 : 1.8,
+							'circle-stroke-opacity': isTerrainMode ? 0.78 : 0.94
 						}}
 					/>
 				</Source>
@@ -1066,8 +1292,40 @@ const Game = (
 								paint={{
 									'fill-color': isTerrainMode
 										? '#f8fafc'
-										: '#22d3ee',
-									'fill-opacity': isTerrainMode ? 0.08 : 0.18
+										: '#f59e0b',
+									'fill-opacity': isTerrainMode ? 0.08 : 0.24
+								}}
+							/>
+							<Layer
+								id={`${activeCountryRegionSource.sourceId}-selected-halo`}
+								source={staticCountryRegionSource.sourceId}
+								type="line"
+								filter={
+									selectedCountryFeatureName
+										? [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												selectedCountryFeatureName
+											]
+										: [
+												'==',
+												[
+													'get',
+													activeCountryRegionSource.featureNameProperty
+												],
+												''
+											]
+								}
+								paint={{
+									'line-color': isTerrainMode
+										? '#f8fafc'
+										: '#f97316',
+									'line-width': isTerrainMode ? 4.6 : 5.4,
+									'line-opacity': isTerrainMode ? 0.22 : 0.3,
+									'line-blur': 3.2
 								}}
 							/>
 							<Layer
@@ -1098,8 +1356,8 @@ const Game = (
 								paint={{
 									'line-color': isTerrainMode
 										? '#f8fafc'
-										: '#06b6d4',
-									'line-width': isTerrainMode ? 2.1 : 2.8,
+										: '#f97316',
+									'line-width': isTerrainMode ? 2.1 : 3.2,
 									'line-opacity': isTerrainMode ? 0.78 : 0.95,
 									'line-dasharray': isTerrainMode
 										? [1.1, 1.4]

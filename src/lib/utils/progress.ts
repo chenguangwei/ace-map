@@ -12,6 +12,8 @@ export interface PracticeSession {
 	id: string;
 	resultCode: string;
 	topicSlug: string | null;
+	campaignSlug?: string | null;
+	campaignRemixPrompt?: string | null;
 	score: number;
 	total: number;
 	accuracy: number;
@@ -44,6 +46,8 @@ const normalizePracticeSession = (
 			/\s+/g,
 			'-'
 		),
+	campaignSlug: session.campaignSlug ?? null,
+	campaignRemixPrompt: session.campaignRemixPrompt ?? null,
 	...session
 });
 

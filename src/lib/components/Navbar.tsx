@@ -26,6 +26,30 @@ const Nav = () => {
 						{t('quizLibrary')}
 					</Link>
 				</Navbar.NavbarItem>
+				<Navbar.NavbarItem className="hidden sm:flex">
+					<Link
+						href="/campaigns"
+						className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+					>
+						{t('campaigns')}
+					</Link>
+				</Navbar.NavbarItem>
+				<Navbar.NavbarItem className="hidden sm:flex">
+					<Link
+						href="/blog"
+						className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+					>
+						{t('blog')}
+					</Link>
+				</Navbar.NavbarItem>
+				<Navbar.NavbarItem className="hidden sm:flex">
+					<Link
+						href="/faq"
+						className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+					>
+						{t('faq')}
+					</Link>
+				</Navbar.NavbarItem>
 				<Navbar.NavbarItem>
 					<CreditBadge />
 				</Navbar.NavbarItem>

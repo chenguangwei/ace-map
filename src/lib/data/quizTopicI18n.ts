@@ -1,5 +1,7 @@
 import type { QuizTopic } from '@/lib/data/quizTopics';
 import enMessages from '../../../messages/en.json';
+import jaMessages from '../../../messages/ja.json';
+import zhMessages from '../../../messages/zh.json';
 
 type LocalizedQuizTopicKey =
 	keyof (typeof enMessages.QuizTopics)[keyof typeof enMessages.QuizTopics];
@@ -13,6 +15,23 @@ export const LOCALIZED_QUIZ_TOPIC_KEYS = Object.freeze(
 export type LocalizedQuizTopicMessages = Partial<
 	Pick<QuizTopic, LocalizedQuizTopicKey>
 >;
+
+const QUIZ_TOPIC_MESSAGES_BY_LOCALE = {
+	en: enMessages.QuizTopics,
+	zh: zhMessages.QuizTopics,
+	ja: jaMessages.QuizTopics
+} as const;
+
+export const getLocalizedQuizTopicMessageMap = (locale: string) => {
+	const messageMap =
+		QUIZ_TOPIC_MESSAGES_BY_LOCALE[
+			locale as keyof typeof QUIZ_TOPIC_MESSAGES_BY_LOCALE
+		] ?? QUIZ_TOPIC_MESSAGES_BY_LOCALE.en;
+
+	return messageMap as Partial<
+		Record<string, LocalizedQuizTopicMessages | undefined>
+	>;
+};
 
 export const localizeQuizTopic = (
 	topic: QuizTopic,

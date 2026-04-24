@@ -17,10 +17,20 @@ import {
 import { useLocale, useMessages, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useRouter } from '@/i18n/navigation';
+import {
+	deriveCampaignRunState,
+	evaluateCampaignResult
+} from '@/lib/campaigns/runtime';
 import AdSlot from '@/lib/components/monetization/AdSlot';
 import DailyChallengeCard from '@/lib/components/quizzes/DailyChallengeCard';
 import MasteryDashboard from '@/lib/components/quizzes/MasteryDashboard';
 import MistakesReviewPanel from '@/lib/components/quizzes/MistakesReviewPanel';
+import {
+	type AppLocale,
+	buildCampaignPlayHref,
+	deriveCampaignRemixDraft,
+	getCampaignBySlug
+} from '@/lib/data/campaigns';
 import { FEATURED_COUNTRIES } from '@/lib/data/countries';
 import {
 	type LocalizedQuizTopicMessages,
@@ -66,6 +76,9 @@ const shadows = {
 	75: 'sm:shadow-emerald-500/50'
 };
 
+const capitalize = (value: string) =>
+	value.charAt(0).toUpperCase() + value.slice(1);
+
 const fire = (particleRatio: number, opts: Record<string, unknown>) => {
 	confetti({
 		...defaults,
@@ -74,7 +87,12 @@ const fire = (particleRatio: number, opts: Record<string, unknown>) => {
 	});
 };
 
-const Result = (props: { code: string }) => {
+const Result = (props: {
+	code: string;
+	campaignSlug?: string;
+	remixPrompt?: string;
+	topicSlug?: string;
+}) => {
 	const router = useRouter();
 	const locale = useLocale();
 	const t = useTranslations('Result');
@@ -101,6 +119,13 @@ const Result = (props: { code: string }) => {
 			DAILY_CHALLENGE_STORAGE_KEY,
 			initialDailyChallengeState
 		);
+	const activeCampaign = props.campaignSlug
+		? getCampaignBySlug(locale as AppLocale, props.campaignSlug)
+		: null;
+	const remixDraft =
+		activeCampaign && props.remixPrompt
+			? deriveCampaignRemixDraft(activeCampaign, props.remixPrompt)
+			: null;
 
 	useEffect(() => {
 		fire(0.4, { spread: 26, startVelocity: 55 });
@@ -137,6 +162,8 @@ const Result = (props: { code: string }) => {
 				id: sessionIdRef.current,
 				resultCode: props.code,
 				topicSlug: lastTopicSlug,
+				campaignSlug: props.campaignSlug ?? null,
+				campaignRemixPrompt: props.remixPrompt ?? null,
 				score: result.score,
 				total: result.total,
 				accuracy,
@@ -148,7 +175,13 @@ const Result = (props: { code: string }) => {
 		}
 
 		persistedRef.current = true;
-	}, [props.code, result, setChallengeState]);
+	}, [
+		props.campaignSlug,
+		props.code,
+		props.remixPrompt,
+		result,
+		setChallengeState
+	]);
 
 	const accuracy = result
 		? Math.round(
@@ -200,6 +233,45 @@ const Result = (props: { code: string }) => {
 	const textColor = txtColors[tier];
 	const shadow = shadows[tier];
 	const messageData = gradeMessages[tier];
+	const campaignRunState = useMemo(() => {
+		if (!activeCampaign || !result) return null;
+
+		return deriveCampaignRunState({
+			campaign: activeCampaign,
+			answeredQuestions: result.total,
+			totalQuestions: result.total,
+			correctAnswers: result.score
+		});
+	}, [activeCampaign, result]);
+	const campaignEvaluation = useMemo(() => {
+		if (!activeCampaign) return null;
+
+		return evaluateCampaignResult({
+			campaign: activeCampaign,
+			accuracy,
+			bestStreak: result?.bestStreak ?? 0
+		});
+	}, [accuracy, activeCampaign, result?.bestStreak]);
+	const campaignEndingIntro = useMemo(() => {
+		if (!campaignEvaluation) return null;
+		return t(
+			`campaignStoryEnding${campaignEvaluation.tier[0].toUpperCase()}${campaignEvaluation.tier.slice(1)}Intro`
+		);
+	}, [campaignEvaluation, t]);
+	const campaignEvaluationCopy = useMemo(() => {
+		if (!activeCampaign || !campaignEvaluation) return null;
+
+		const templateLabel = capitalize(activeCampaign.templateId);
+		const tierLabel = capitalize(campaignEvaluation.tier);
+
+		return {
+			title: t(`campaignEval${templateLabel}${tierLabel}Title`),
+			body: t(`campaignEval${templateLabel}${tierLabel}Body`, {
+				accuracy: campaignEvaluation.accuracy,
+				streak: campaignEvaluation.bestStreak
+			})
+		};
+	}, [activeCampaign, campaignEvaluation, t]);
 
 	const categoryText = useMemo(() => {
 		if (!result) return '';
@@ -261,8 +333,23 @@ const Result = (props: { code: string }) => {
 				: 'https://mapquiz.pro';
 		const url = new URL(locale === 'en' ? '/' : `/${locale}`, origin);
 		url.searchParams.set('code', props.code);
+		if (props.campaignSlug) {
+			url.searchParams.set('campaign', props.campaignSlug);
+		}
+		if (props.remixPrompt?.trim()) {
+			url.searchParams.set('remix', props.remixPrompt.trim());
+		}
+		if (props.topicSlug) {
+			url.searchParams.set('topic', props.topicSlug);
+		}
 		return url.toString();
-	}, [locale, props.code]);
+	}, [
+		locale,
+		props.campaignSlug,
+		props.code,
+		props.remixPrompt,
+		props.topicSlug
+	]);
 	const shareTitle = isDailyChallengeResult
 		? t('shareTitleDaily')
 		: t('shareTitleTopic', {
@@ -430,6 +517,15 @@ const Result = (props: { code: string }) => {
 								if (mode === 'country' && result.countryCode) {
 									url += `&country=${result.countryCode}`;
 								}
+								if (props.topicSlug) {
+									url += `&topic=${props.topicSlug}`;
+								}
+								if (props.campaignSlug) {
+									url += `&campaign=${props.campaignSlug}`;
+								}
+								if (props.remixPrompt?.trim()) {
+									url += `&remix=${encodeURIComponent(props.remixPrompt.trim())}`;
+								}
 								router.push(url);
 							}}
 						>
@@ -522,6 +618,110 @@ const Result = (props: { code: string }) => {
 					</div>
 				</div>
 			</section>
+
+			{activeCampaign && (
+				<section className="mt-8 rounded-[30px] border border-violet-200/80 bg-[linear-gradient(145deg,rgba(245,243,255,0.68),rgba(255,255,255,0.98))] p-6 shadow-[0_18px_44px_rgba(76,29,149,0.08)]">
+					<div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+						<div className="max-w-2xl">
+							<p className="text-[11px] font-bold uppercase tracking-[0.24em] text-violet-700">
+								{t('campaignEyebrow')}
+							</p>
+							<h2 className="mt-3 text-2xl font-bold tracking-tight text-slate-950">
+								{remixDraft?.title ?? activeCampaign.title}
+							</h2>
+							<p className="mt-2 text-sm leading-6 text-slate-600">
+								{remixDraft?.summary ?? activeCampaign.summary}
+							</p>
+							<div className="mt-4 flex flex-wrap gap-2">
+								<span className="rounded-full border border-violet-200 bg-white/88 px-3 py-1 text-xs font-semibold text-violet-800">
+									{activeCampaign.templateLabel}
+								</span>
+								<span className="rounded-full border border-violet-200 bg-white/88 px-3 py-1 text-xs font-semibold text-slate-700">
+									{t('campaignDurationChip', {
+										count: activeCampaign.durationMinutes
+									})}
+								</span>
+								{props.remixPrompt && (
+									<span className="rounded-full border border-violet-200 bg-white/88 px-3 py-1 text-xs font-semibold text-slate-700">
+										{t('campaignRemixChip')}
+									</span>
+								)}
+								{campaignRunState && (
+									<span className="rounded-full border border-violet-200 bg-white/88 px-3 py-1 text-xs font-semibold text-slate-700">
+										{t('campaignMissionProgressChip', {
+											current:
+												campaignRunState.completedMissions,
+											total: campaignRunState.missionCount
+										})}
+									</span>
+								)}
+							</div>
+							{props.remixPrompt && (
+								<p className="mt-4 text-sm font-semibold text-violet-800">
+									{t('campaignPromptLine', {
+										prompt: props.remixPrompt
+									})}
+								</p>
+							)}
+							{campaignEvaluation && (
+								<div className="mt-4 rounded-[22px] border border-violet-200/80 bg-white/75 p-4">
+									<p className="text-sm font-semibold text-slate-950">
+										{campaignEvaluationCopy?.title}
+									</p>
+									<p className="mt-1 text-sm leading-6 text-slate-600">
+										{campaignEvaluationCopy?.body}
+									</p>
+									<p className="mt-2 text-xs font-semibold text-violet-800">
+										{t('campaignPerformanceLine', {
+											accuracy:
+												campaignEvaluation.accuracy,
+											streak: campaignEvaluation.bestStreak
+										})}
+									</p>
+								</div>
+							)}
+							{activeCampaign.story.epilogue && (
+								<div className="mt-4 rounded-[22px] border border-slate-200/80 bg-slate-950/95 p-4 text-white">
+									<p className="text-[11px] font-bold uppercase tracking-[0.22em] text-violet-200/90">
+										{t('campaignStoryEndingEyebrow')}
+									</p>
+									<p className="mt-2 text-sm font-semibold text-white">
+										{t('campaignStoryEndingTitle')}
+									</p>
+									{campaignEndingIntro && (
+										<p className="mt-2 text-sm leading-6 text-violet-100">
+											{campaignEndingIntro}
+										</p>
+									)}
+									<p className="mt-3 text-sm leading-7 text-slate-200">
+										{activeCampaign.story.epilogue}
+									</p>
+								</div>
+							)}
+						</div>
+
+						<div className="flex flex-wrap gap-2">
+							<Link
+								href={`/campaign/${activeCampaign.slug}`}
+								className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white/88 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-950"
+							>
+								{t('returnToCampaign')}
+							</Link>
+							<Link
+								href={
+									remixDraft?.playHref ??
+									buildCampaignPlayHref(activeCampaign, {
+										remixPrompt: props.remixPrompt ?? null
+									})
+								}
+								className="inline-flex items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+							>
+								{t('playCampaignAgain')}
+							</Link>
+						</div>
+					</div>
+				</section>
+			)}
 
 			{recommendedTopics.length > 0 && (
 				<section className="mt-8">

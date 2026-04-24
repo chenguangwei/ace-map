@@ -1,4 +1,5 @@
 import { worldPlaces } from '@/lib/data/regions';
+import { WORLD_REGION_METRICS } from '@/lib/data/worldRegionMetrics';
 import type { Place } from '@/lib/utils/places';
 
 export const normalizeWorldRegionName = (value: string) =>
@@ -28,14 +29,20 @@ const WORLD_FEATURE_NAME_BY_PLACE_NAME = new Map<string, string>(
 	)
 );
 
+const WORLD_PLACES = worldPlaces.flatMap((group) => group.places);
+
 const WORLD_PLACE_INDEX = new Map<string, Place>(
-	worldPlaces.flatMap((group) =>
-		group.places.map((place) => [
-			normalizeWorldRegionName(place.name),
-			place
-		])
-	)
+	WORLD_PLACES.map((place) => [normalizeWorldRegionName(place.name), place])
 );
+
+export const WORLD_MICRO_REGION_RULES = {
+	// Narrow countries and island chains are easy to miss even when they span
+	// several degrees north-south, so width and height both need their own caps.
+	maxWidthDegrees: 2.4,
+	maxHeightDegrees: 1.8,
+	// Area catches compact shapes that are not extremely narrow in either axis.
+	maxBoundingArea: 2.2
+} as const;
 
 export interface WorldRegionSelection {
 	label: string;
@@ -87,4 +94,37 @@ export const resolveWorldRegionPlace = (featureName: string): Place | null => {
 	return (
 		WORLD_PLACE_INDEX.get(normalizeWorldRegionName(canonicalName)) ?? null
 	);
+};
+
+export const isWorldMicroRegionName = (name: string) => {
+	const metrics = WORLD_REGION_METRICS[normalizeWorldRegionName(name)];
+	if (!metrics) return false;
+
+	return (
+		metrics.width <= WORLD_MICRO_REGION_RULES.maxWidthDegrees ||
+		metrics.height <= WORLD_MICRO_REGION_RULES.maxHeightDegrees ||
+		metrics.area <= WORLD_MICRO_REGION_RULES.maxBoundingArea
+	);
+};
+
+export const isWorldMicroRegionPlace = (place: Place | null) =>
+	Boolean(place && isWorldMicroRegionName(place.name));
+
+export const worldMicroRegionFeatureCollection = {
+	type: 'FeatureCollection',
+	features: WORLD_PLACES.filter((place) =>
+		isWorldMicroRegionPlace(place)
+	).map((place) => {
+		return {
+			type: 'Feature' as const,
+			properties: {
+				name: resolveWorldFeatureNameForPlace(place) ?? place.name,
+				label: place.name
+			},
+			geometry: {
+				type: 'Point' as const,
+				coordinates: [place.longitude, place.latitude]
+			}
+		};
+	})
 };

@@ -7,6 +7,8 @@ import type { ReactNode } from 'react';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/lib/components/Navbar';
 import Providers from '@/lib/components/Providers';
+import SiteFooter from '@/lib/components/SiteFooter';
+import { SITE_URL } from '@/lib/seo';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({
@@ -45,15 +47,15 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL('https://mapquiz.pro'),
+	metadataBase: new URL(SITE_URL),
 	title: 'MapQuiz.pro — World Geography Quiz',
 	description: 'Test your world geography knowledge on an interactive map.',
-	alternates: { canonical: 'https://mapquiz.pro' },
+	applicationName: 'MapQuiz.pro',
 	openGraph: {
-		type: 'website',
-		locale: 'en_US',
-		url: 'https://mapquiz.pro/',
 		siteName: 'MapQuiz.pro'
+	},
+	twitter: {
+		card: 'summary_large_image'
 	}
 };
 
@@ -95,6 +97,7 @@ const RootLayout = async ({
 					<Providers>
 						<Navbar />
 						{children}
+						<SiteFooter />
 					</Providers>
 				</NextIntlClientProvider>
 			</body>

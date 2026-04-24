@@ -7,8 +7,10 @@ import {
 	CheckCircle,
 	Clock,
 	Flame,
+	MapPinned,
 	Pause,
 	Play,
+	Radio,
 	Satellite,
 	Send,
 	Target,
@@ -18,13 +20,20 @@ import { useTranslations } from 'next-intl';
 import { type RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import {
+	type CampaignRunState,
+	deriveCampaignDialogueFrame
+} from '@/lib/campaigns/runtime';
+import type { Campaign, CampaignMissionPreview } from '@/lib/data/campaigns';
+import {
 	deductCredit,
 	getBalance,
 	subscribeToCredits
 } from '@/lib/utils/credits';
-import { encodeResult, type GameState, getHeatLevel } from '@/lib/utils/game';
+import { type GameState, getHeatLevel } from '@/lib/utils/game';
+import { localizePlace } from '@/lib/utils/localizePlace';
 import type { MapDisplayMode } from '@/lib/utils/mapActivity';
 import { formatDistance } from '@/lib/utils/places';
+import { isWorldMicroRegionPlace } from '@/lib/utils/worldRegions';
 import type { InfoState } from './Main';
 
 const TimerComp = (props: { timer: RefObject<number> }) => {
@@ -127,6 +136,48 @@ const HeatBadge = ({ streak }: { streak: number }) => {
 	);
 };
 
+const CampaignProgressBadge = ({ runtime }: { runtime: CampaignRunState }) => {
+	const t = useTranslations('GameBar');
+	const missionLabel =
+		runtime.status === 'complete'
+			? t('campaignComplete')
+			: t('campaignMissionProgress', {
+					current: runtime.currentMission,
+					total: runtime.missionCount
+				});
+
+	return (
+		<div className="min-w-[150px] rounded-2xl border border-violet-300/75 bg-[rgba(245,243,255,0.9)] px-3 py-2 text-violet-950 shadow-[0_12px_28px_rgba(109,40,217,0.12)] backdrop-blur-md">
+			<div className="flex items-center justify-between gap-3">
+				<span className="text-[10px] font-bold uppercase tracking-[0.22em] text-violet-700">
+					{t('campaign')}
+				</span>
+				<span className="text-xs font-semibold text-violet-800">
+					{missionLabel}
+				</span>
+			</div>
+			<div className="mt-2 h-1.5 overflow-hidden rounded-full bg-violet-100">
+				<div
+					className="h-full rounded-full bg-[linear-gradient(90deg,#7c3aed,#06b6d4)] transition-[width]"
+					style={{
+						width: `${Math.max(8, Math.round(((runtime.completedMissions + runtime.missionProgress) / runtime.missionCount) * 100))}%`
+					}}
+				/>
+			</div>
+			<div className="mt-2 flex items-center justify-between gap-3 text-[11px] font-medium text-violet-800/90">
+				<span>
+					{t('campaignAccuracy', { accuracy: runtime.accuracy })}
+				</span>
+				<span>
+					{t('campaignQuestionsLeft', {
+						count: runtime.remainingQuestions
+					})}
+				</span>
+			</div>
+		</div>
+	);
+};
+
 const DistanceFeedback = ({
 	info
 }: {
@@ -161,6 +212,137 @@ const DistanceFeedback = ({
 	);
 };
 
+const CampaignTacticalCard = ({
+	campaign,
+	runtime,
+	mission,
+	selectedRegionLabel,
+	targetLabel,
+	info
+}: {
+	campaign: Campaign;
+	runtime: CampaignRunState;
+	mission: CampaignMissionPreview | null;
+	selectedRegionLabel?: string | null;
+	targetLabel?: string | null;
+	info: InfoState['info'];
+}) => {
+	const frame = deriveCampaignDialogueFrame({
+		campaign,
+		mission,
+		targetLabel: targetLabel ?? null,
+		selectedRegionLabel: selectedRegionLabel ?? null,
+		hasResult: Boolean(info),
+		isCorrect: info?.isCorrect ?? false
+	});
+	const accentTone =
+		campaign.accent === 'amber'
+			? 'from-amber-500/18 via-orange-400/8 to-transparent border-amber-200/16 text-amber-100'
+			: campaign.accent === 'emerald'
+				? 'from-emerald-500/18 via-cyan-400/8 to-transparent border-emerald-200/16 text-emerald-100'
+				: 'from-sky-500/18 via-cyan-400/8 to-transparent border-sky-200/16 text-sky-100';
+	const statusTone = info
+		? info.isCorrect
+			? 'border-emerald-300/70 bg-emerald-400/12 text-emerald-50'
+			: 'border-orange-300/70 bg-orange-400/12 text-orange-50'
+		: selectedRegionLabel
+			? 'border-amber-300/70 bg-amber-400/12 text-amber-50'
+			: 'border-white/14 bg-white/8 text-slate-50';
+
+	return (
+		<motion.div
+			key={`${runtime.currentMission}-${selectedRegionLabel ?? 'open'}-${info ? 'feedback' : 'active'}`}
+			initial={{ opacity: 0, y: 8, scale: 0.98 }}
+			animate={{ opacity: 1, y: 0, scale: 1 }}
+			exit={{ opacity: 0, y: 8, scale: 0.98 }}
+			className="pointer-events-auto absolute bottom-[8.2rem] left-3 right-3 max-w-md overflow-hidden rounded-[28px] border border-white/14 bg-[linear-gradient(145deg,rgba(15,23,42,0.94),rgba(30,41,59,0.84))] text-white shadow-[0_28px_70px_rgba(15,23,42,0.34)] backdrop-blur-md sm:bottom-5 sm:left-5 sm:right-auto sm:w-[25rem]"
+		>
+			<div
+				className={`absolute inset-x-0 top-0 h-20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_70%)]`}
+			/>
+			<div
+				className={`absolute inset-0 bg-[linear-gradient(135deg,transparent_12%,rgba(255,255,255,0.02)_54%,transparent_100%)]`}
+			/>
+			<div
+				className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-br ${accentTone}`}
+			/>
+			<div className="relative p-4 sm:p-5">
+				<div className="flex items-start justify-between gap-3">
+					<div>
+						<p className="text-[10px] font-bold uppercase tracking-[0.26em] text-slate-300">
+							{frame.channel}
+						</p>
+						<p className="mt-1 text-sm font-black text-white">
+							{frame.speaker}
+						</p>
+					</div>
+					<span className="rounded-full border border-white/12 bg-white/8 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-200">
+						{runtime.currentMission}/{runtime.missionCount}
+					</span>
+				</div>
+
+				<div className="mt-3 rounded-[22px] border border-white/10 bg-white/6 p-3.5">
+					<div className="flex items-start gap-3">
+						<span
+							className={`mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-2xl border ${statusTone}`}
+						>
+							{selectedRegionLabel || info ? (
+								<MapPinned className="size-4" />
+							) : (
+								<Radio className="size-4" />
+							)}
+						</span>
+						<div className="min-w-0 flex-1">
+							<p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+								{frame.channelDetail}
+							</p>
+							<h3 className="mt-1 text-base font-black leading-tight text-white">
+								{frame.headline}
+							</h3>
+							<p className="mt-2 text-xs leading-5 text-slate-300">
+								{frame.briefingLine}
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<div className="mt-3 rounded-[22px] border border-white/10 bg-slate-950/34 p-3.5">
+					<p className="text-[11px] font-semibold leading-6 text-slate-100">
+						{frame.actionLine}
+					</p>
+					<p className="mt-2 text-[11px] font-medium leading-5 text-slate-400">
+						{frame.footerLine}
+					</p>
+				</div>
+
+				<div className="mt-3 flex items-center justify-between gap-3">
+					<div className="min-w-0">
+						<p className="truncate text-sm font-semibold text-white">
+							{frame.actionLabel}
+						</p>
+					</div>
+					<div className="h-1.5 w-28 overflow-hidden rounded-full bg-white/10">
+						<div
+							className="h-full rounded-full bg-[linear-gradient(90deg,#f59e0b,#06b6d4)] transition-[width]"
+							style={{
+								width: `${Math.max(
+									8,
+									Math.round(
+										((runtime.completedMissions +
+											runtime.missionProgress) /
+											runtime.missionCount) *
+											100
+									)
+								)}%`
+							}}
+						/>
+					</div>
+				</div>
+			</div>
+		</motion.div>
+	);
+};
+
 const MotionLink = motion.create(Link);
 
 const GameBar = (
@@ -168,6 +350,11 @@ const GameBar = (
 		gameState: GameState;
 		mapDisplayMode: MapDisplayMode;
 		onSatelliteHint: (lat: number, lng: number, zoom: number) => void;
+		resultHref: string;
+		campaign?: Campaign | null;
+		campaignRunState?: CampaignRunState | null;
+		campaignMission?: CampaignMissionPreview | null;
+		campaignSelectedRegionLabel?: string | null;
 		placeNameMap?: Record<string, string> | null;
 	}
 ) => {
@@ -199,7 +386,6 @@ const GameBar = (
 			gameState.toMark === null &&
 			gameState.status === 'running'
 		) {
-			const resultCode = encodeResult(gameStateRef.current);
 			gameStateRef.current.reset();
 
 			addToast({
@@ -207,7 +393,7 @@ const GameBar = (
 				title: t('gameOverTitle'),
 				description: (
 					<MotionLink
-						href={`/?code=${resultCode}`}
+						href={props.resultHref}
 						className="font-semibold text-emerald-700 underline underline-offset-4"
 						initial={{ y: 0, rotate: 0 }}
 						animate={{
@@ -227,7 +413,7 @@ const GameBar = (
 			});
 		}
 		prevToMarkRef.current = gameState.toMark;
-	}, [gameState.toMark, gameState.status, t]);
+	}, [gameState.toMark, gameState.status, props.resultHref, t]);
 
 	const actionLabel = useMemo(() => {
 		if (gameState.status === 'running') return t('pause');
@@ -254,6 +440,33 @@ const GameBar = (
 		mapDisplayMode === 'terrain' ? t('terrainMode') : t('flashMode');
 	const idleHint =
 		mapDisplayMode === 'terrain' ? t('terrainRules') : t('flashRules');
+	const targetLabel = gameState.toMark
+		? localizePlace(gameState.toMark.name, props.placeNameMap ?? null)
+		: null;
+	const campaignDialogue = useMemo(() => {
+		if (!props.campaign || !props.campaignRunState) return null;
+
+		return deriveCampaignDialogueFrame({
+			campaign: props.campaign,
+			mission: props.campaignMission ?? null,
+			targetLabel: targetLabel ?? null,
+			selectedRegionLabel: props.campaignSelectedRegionLabel ?? null,
+			hasResult: Boolean(info),
+			isCorrect: info?.isCorrect ?? false
+		});
+	}, [
+		props.campaign,
+		props.campaignMission,
+		props.campaignRunState,
+		props.campaignSelectedRegionLabel,
+		targetLabel,
+		info
+	]);
+	const primaryLabel = campaignDialogue
+		? campaignDialogue.actionLabel
+		: info
+			? t('nextTarget')
+			: t('lockGuess');
 
 	const handleSatelliteHint = () => {
 		if (!gameState.toMark || hintUsedThisTurn) return;
@@ -271,7 +484,14 @@ const GameBar = (
 		const { strictness, mode } = gameState;
 		let zoom = 9;
 		if (mode === 'world') {
-			zoom = strictness <= 300000 ? 7 : 5;
+			const isMicroTarget = isWorldMicroRegionPlace(gameState.toMark);
+			zoom = isMicroTarget
+				? strictness <= 300000
+					? 8
+					: 6
+				: strictness <= 300000
+					? 7
+					: 5;
 		} else {
 			zoom = strictness <= 50000 ? 12 : strictness <= 150000 ? 9 : 6;
 		}
@@ -305,7 +525,28 @@ const GameBar = (
 				</div>
 			</div>
 
+			<AnimatePresence>
+				{props.campaign &&
+					props.campaignRunState &&
+					gameState.status !== 'idle' &&
+					gameState.toMark && (
+						<CampaignTacticalCard
+							campaign={props.campaign}
+							runtime={props.campaignRunState}
+							mission={props.campaignMission ?? null}
+							selectedRegionLabel={
+								props.campaignSelectedRegionLabel
+							}
+							targetLabel={targetLabel}
+							info={info}
+						/>
+					)}
+			</AnimatePresence>
+
 			<div className="absolute bottom-[4.8rem] right-3 flex max-w-[calc(100%-1.5rem)] flex-wrap items-center justify-end gap-2 sm:bottom-5 sm:right-5">
+				{props.campaignRunState && (
+					<CampaignProgressBadge runtime={props.campaignRunState} />
+				)}
 				<HeatBadge streak={gameState.streak} />
 				<StreakBadge streak={gameState.streak} />
 				<ScorePill
@@ -408,7 +649,7 @@ const GameBar = (
 								)
 							}
 						>
-							{info ? t('nextTarget') : t('lockGuess')}
+							{primaryLabel}
 						</Button>
 					</div>
 				</div>
