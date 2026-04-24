@@ -111,7 +111,7 @@ export const isWorldMicroRegionPlace = (place: Place | null) =>
 	Boolean(place && isWorldMicroRegionName(place.name));
 
 export const worldMicroRegionFeatureCollection = {
-	type: 'FeatureCollection',
+	type: 'FeatureCollection' as const,
 	features: WORLD_PLACES.filter((place) =>
 		isWorldMicroRegionPlace(place)
 	).map((place) => {
