@@ -23,6 +23,10 @@ const QUIZ_TOPIC_MESSAGES_BY_LOCALE = {
 } as const;
 
 export const getLocalizedQuizTopicMessageMap = (locale: string) => {
+	if (locale === 'en') {
+		return {};
+	}
+
 	const messageMap =
 		QUIZ_TOPIC_MESSAGES_BY_LOCALE[
 			locale as keyof typeof QUIZ_TOPIC_MESSAGES_BY_LOCALE
